@@ -1,5 +1,7 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/ashraful19/laravel-ai-orbit/main/art/logo.svg" alt="Laravel AI Orbit" width="400">
+    <!-- Logo placeholder — add art/logo.svg to your repo -->
+    <!-- <img src="https://raw.githubusercontent.com/ashraful19/laravel-ai-orbit/main/art/logo.svg" alt="Laravel AI Orbit" width="400"> -->
+    <h1 align="center">Laravel AI Orbit</h1>
 </p>
 
 <p align="center">
@@ -9,23 +11,23 @@
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
 </p>
 
-# Laravel AI Orbit
-
 Observability, management, and developer playground for the [Laravel AI SDK](https://github.com/laravel/ai).
 
 Orbit gives you a Telescope-style dashboard to see everything your AI agents are doing — conversations, execution traces, token usage, and an interactive sandbox to test agents without writing code.
 
 ## Installation
 
+Requires PHP 8.2+, Laravel 11+, and the [Laravel AI SDK](https://github.com/laravel/ai) already installed and migrated.
+
 ```bash
 composer require ashraful19/laravel-ai-orbit
 ```
 
-The package auto-discovers. No manual registration needed.
-
-> **Prerequisites:** Install and migrate the [Laravel AI SDK](https://github.com/laravel/ai) first. Orbit reads from the SDK's `agent_conversations` and `agent_conversation_messages` tables and adds zero migrations of its own.
+No service provider registration needed — the package auto-discovers.
 
 Visit `/ai-orbit` in your browser.
+
+> **Zero migrations.** Orbit reads from the SDK's `agent_conversations` and `agent_conversation_messages` tables. If those tables don't exist yet, you'll see a dismissible banner telling you to run `php artisan migrate`.
 
 ## Sections
 
@@ -58,8 +60,6 @@ By default, the dashboard is accessible in the `local` environment only.
 
 ### Gate (recommended)
 
-Define a `viewAiOrbit` Gate in your `AppServiceProvider`:
-
 ```php
 use Illuminate\Support\Facades\Gate;
 
@@ -73,12 +73,10 @@ Gate::define('viewAiOrbit', function ($user) {
 Customize the middleware stack in `config/ai-orbit.php`:
 
 ```php
-'middleware' => ['web', 'auth:api', 'ip:10.0.0.0/8'],
+'middleware' => ['web', 'auth:api'],
 ```
 
 ### Auth Guard
-
-Switch the authentication guard:
 
 ```php
 'auth_guard' => 'api',
@@ -121,24 +119,13 @@ Published views land in `resources/views/vendor/laravel-ai-orbit/`.
 
 ## Dark Mode
 
-Polished dark and light themes. Dark mode is the default. Toggle in the top bar persists via `localStorage`.
+Dark mode is the default. Toggle in the top bar persists via `localStorage`.
 
 ## Pro
 
-[Laravel AI Orbit Pro](https://anystack.com/products/ashraful19/laravel-ai-orbit-pro) extends Orbit with:
-
-- **Arena** — Side-by-side model comparison
-- **Step-Through Debugger** — Pause on tool calls, edit arguments
-- **Full Analytics** — Historical charts, cost forecasting
-- **Pricing Matrix** — Editable cost per model
-- **Budget Alerts** — Email, Slack, webhook notifications
-- **Audit Log** — Security audit and PII detection
-
-Pro extends free — never duplicates.
+[Laravel AI Orbit Pro](https://anystack.com/products/ashraful19/laravel-ai-orbit-pro) adds Arena, step-through debugging, historical analytics, pricing matrix, budget alerts, and audit logging. Pro controllers extend free controllers — no code duplication.
 
 ## Testing
-
-Orbit uses Pest. Run the suite:
 
 ```bash
 composer test
