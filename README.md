@@ -1,13 +1,13 @@
 <p align="center">
     <!-- Logo placeholder — add art/logo.svg to your repo -->
-    <!-- <img src="https://raw.githubusercontent.com/ashraful19/laravel-ai-orbit/main/art/logo.svg" alt="Laravel AI Orbit" width="400"> -->
+    <!-- <img src="https://raw.githubusercontent.com/ashrafic/laravel-ai-orbit/main/art/logo.svg" alt="Laravel AI Orbit" width="400"> -->
     <h1 align="center">Laravel AI Orbit</h1>
 </p>
 
 <p align="center">
-    <a href="https://packagist.org/packages/ashraful19/laravel-ai-orbit"><img src="https://img.shields.io/packagist/v/ashraful19/laravel-ai-orbit.svg?style=flat-square" alt="Latest Version"></a>
-    <a href="https://packagist.org/packages/ashraful19/laravel-ai-orbit"><img src="https://img.shields.io/packagist/dt/ashraful19/laravel-ai-orbit.svg?style=flat-square" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/ashraful19/laravel-ai-orbit"><img src="https://img.shields.io/packagist/php-v/ashraful19/laravel-ai-orbit.svg?style=flat-square" alt="PHP Version"></a>
+    <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/v/ashrafic/laravel-ai-orbit.svg?style=flat-square" alt="Latest Version"></a>
+    <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/dt/ashrafic/laravel-ai-orbit.svg?style=flat-square" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/php-v/ashrafic/laravel-ai-orbit.svg?style=flat-square" alt="PHP Version"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
 </p>
 
@@ -20,7 +20,7 @@ Orbit gives you a Telescope-style dashboard to see everything your AI agents are
 Requires PHP 8.2+, Laravel 11+, and the [Laravel AI SDK](https://github.com/laravel/ai) already installed and migrated.
 
 ```bash
-composer require ashraful19/laravel-ai-orbit
+composer require ashrafic/laravel-ai-orbit
 ```
 
 No service provider registration needed — the package auto-discovers.
@@ -115,7 +115,7 @@ php artisan vendor:publish --tag=ai-orbit-config
 php artisan vendor:publish --tag=ai-orbit-assets
 ```
 
-Published views land in `resources/views/vendor/laravel-ai-orbit/`.
+Published views land in `resources/views/vendor/ai-orbit/`.
 
 ## Dark Mode
 
@@ -123,7 +123,7 @@ Dark mode is the default. Toggle in the top bar persists via `localStorage`.
 
 ## Pro
 
-[Laravel AI Orbit Pro](https://anystack.com/products/ashraful19/laravel-ai-orbit-pro) adds Arena, step-through debugging, historical analytics, pricing matrix, budget alerts, and audit logging. Pro controllers extend free controllers — no code duplication.
+[Laravel AI Orbit Pro](https://anystack.com/products/ashrafic/laravel-ai-orbit-pro) adds Arena, step-through debugging, historical analytics, pricing matrix, budget alerts, and audit logging. Pro controllers extend free controllers — no code duplication.
 
 ## Testing
 
@@ -134,7 +134,7 @@ composer test
 ## Development
 
 ```bash
-git clone git@github.com:ashraful19/laravel-ai-orbit.git
+git clone git@github.com:ashrafic/laravel-ai-orbit.git
 cd laravel-ai-orbit
 composer install
 ```
