@@ -1,4 +1,4 @@
-<x-orbit::layout>
+<x-laravel-ai-orbit::layout>
     <div class="space-y-6">
         <div class="flex items-center gap-3">
             <a href="{{ route('orbit.conversations.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -11,4 +11,4 @@
 
         <livewire:orbit.message-timeline :conversationId="$id" />
     </div>
-</x-orbit::layout>
+</x-laravel-ai-orbit::layout>

@@ -1,4 +1,4 @@
-<x-orbit::layout>
+<x-laravel-ai-orbit::layout>
     <div class="space-y-6">
         <div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h2>
@@ -56,4 +56,4 @@
             </a>
         </div>
     </div>
-</x-orbit::layout>
+</x-laravel-ai-orbit::layout>

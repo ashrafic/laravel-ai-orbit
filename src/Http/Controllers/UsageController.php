@@ -12,6 +12,6 @@ class UsageController extends Controller
      */
     public function index(): View
     {
-        return view('orbit::usage.index');
+        return view('laravel-ai-orbit::usage.index');
     }
 }

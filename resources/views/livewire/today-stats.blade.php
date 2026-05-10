@@ -1,7 +1,7 @@
 <div>
     {{-- Stat Cards --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <x-orbit::stat
+        <x-laravel-ai-orbit::stat
             :value="$stats['total_conversations']"
             label="Conversations Today"
             color="blue"
@@ -11,9 +11,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
                 </svg>
             </x-slot:icon>
-        </x-orbit::stat>
+        </x-laravel-ai-orbit::stat>
 
-        <x-orbit::stat
+        <x-laravel-ai-orbit::stat
             :value="$stats['total_messages']"
             label="Messages Today"
             color="green"
@@ -23,9 +23,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
                 </svg>
             </x-slot:icon>
-        </x-orbit::stat>
+        </x-laravel-ai-orbit::stat>
 
-        <x-orbit::stat
+        <x-laravel-ai-orbit::stat
             :value="$stats['input_tokens']"
             label="Input Tokens"
             color="purple"
@@ -35,9 +35,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path>
                 </svg>
             </x-slot:icon>
-        </x-orbit::stat>
+        </x-laravel-ai-orbit::stat>
 
-        <x-orbit::stat
+        <x-laravel-ai-orbit::stat
             :value="$stats['output_tokens']"
             label="Output Tokens"
             color="orange"
@@ -47,19 +47,19 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
             </x-slot:icon>
-        </x-orbit::stat>
+        </x-laravel-ai-orbit::stat>
     </div>
 
     {{-- Agent Breakdown Chart --}}
     @if ($breakdown->isNotEmpty())
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <x-orbit::card title="Agent Token Breakdown" padding="p-4">
+            <x-laravel-ai-orbit::card title="Agent Token Breakdown" padding="p-4">
                 <div class="h-64">
                     <canvas id="agentBreakdownChart"></canvas>
                 </div>
-            </x-orbit::card>
+            </x-laravel-ai-orbit::card>
 
-            <x-orbit::card title="Agent Summary" padding="p-0">
+            <x-laravel-ai-orbit::card title="Agent Summary" padding="p-0">
                 <div class="divide-y divide-gray-200 dark:divide-gray-800">
                     @foreach ($breakdown as $item)
                         @php
@@ -82,7 +82,7 @@
                         </div>
                     @endforeach
                 </div>
-            </x-orbit::card>
+            </x-laravel-ai-orbit::card>
         </div>
 
         @push('scripts')
@@ -122,10 +122,10 @@
             </script>
         @endpush
     @else
-        <x-orbit::empty-state title="No data for today">
+        <x-laravel-ai-orbit::empty-state title="No data for today">
             <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">
                 Agent activity will appear here once conversations are recorded.
             </p>
-        </x-orbit::empty-state>
+        </x-laravel-ai-orbit::empty-state>
     @endif
 </div>

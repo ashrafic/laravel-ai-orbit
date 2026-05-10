@@ -19,9 +19,9 @@
         <div>
             <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Structured Output</h3>
             @if ($agentMeta['has_schema'])
-                <x-orbit::badge label="Enabled" color="green" />
+                <x-laravel-ai-orbit::badge label="Enabled" color="green" />
             @else
-                <x-orbit::badge label="Disabled" color="gray" />
+                <x-laravel-ai-orbit::badge label="Disabled" color="gray" />
             @endif
         </div>
 

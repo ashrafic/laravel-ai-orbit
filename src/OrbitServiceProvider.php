@@ -83,7 +83,7 @@ class OrbitServiceProvider extends ServiceProvider
     protected function loadViews(): void
     {
         $this->loadViewsFrom(
-            __DIR__.'/../resources/views', 'orbit'
+            __DIR__.'/../resources/views', 'laravel-ai-orbit'
         );
     }
 
@@ -111,11 +111,11 @@ class OrbitServiceProvider extends ServiceProvider
         ], 'ai-orbit-config');
 
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/orbit'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-ai-orbit'),
         ], 'ai-orbit-views');
 
         $this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/orbit'),
+            __DIR__.'/../resources/assets' => public_path('vendor/laravel-ai-orbit'),
         ], 'ai-orbit-assets');
     }
 

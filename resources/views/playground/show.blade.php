@@ -1,4 +1,4 @@
-<x-orbit::layout>
+<x-laravel-ai-orbit::layout>
     <div class="space-y-6">
         <div class="flex items-center gap-3">
             <a href="{{ route('orbit.playground.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -15,17 +15,17 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {{-- Sandbox --}}
             <div class="lg:col-span-2">
-                <x-orbit::card title="Chat" padding="p-4">
+                <x-laravel-ai-orbit::card title="Chat" padding="p-4">
                     <livewire:orbit.agent-sandbox :agentClass="$agent" />
-                </x-orbit::card>
+                </x-laravel-ai-orbit::card>
             </div>
 
             {{-- Inspector Sidebar --}}
             <div>
-                <x-orbit::card title="Agent Inspector">
+                <x-laravel-ai-orbit::card title="Agent Inspector">
                     <livewire:orbit.agent-inspector :agentClass="$agent" />
-                </x-orbit::card>
+                </x-laravel-ai-orbit::card>
             </div>
         </div>
     </div>
-</x-orbit::layout>
+</x-laravel-ai-orbit::layout>

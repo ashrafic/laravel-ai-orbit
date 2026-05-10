@@ -19,7 +19,7 @@ class TraceController extends Controller
             abort(404);
         }
 
-        return view('orbit::traces.show', [
+        return view('laravel-ai-orbit::traces.show', [
             'conversation' => $conversation,
             'messages' => $conversation->messages ?? collect(),
         ]);

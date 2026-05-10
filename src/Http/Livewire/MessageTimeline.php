@@ -31,7 +31,7 @@ class MessageTimeline extends Component
             abort(404);
         }
 
-        return view('orbit::livewire.message-timeline', [
+        return view('laravel-ai-orbit::livewire.message-timeline', [
             'conversation' => $this->conversation,
             'messages' => $this->conversation->messages ?? collect(),
         ]);

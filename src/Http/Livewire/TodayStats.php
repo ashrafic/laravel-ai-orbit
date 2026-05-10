@@ -12,7 +12,7 @@ class TodayStats extends Component
     {
         $aggregator = app(TokenAggregator::class);
 
-        return view('orbit::livewire.today-stats', [
+        return view('laravel-ai-orbit::livewire.today-stats', [
             'stats' => $aggregator->todayStats(),
             'breakdown' => $aggregator->agentBreakdown(),
         ]);

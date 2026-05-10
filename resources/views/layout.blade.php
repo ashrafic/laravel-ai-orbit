@@ -45,7 +45,7 @@
     <div class="flex min-h-screen">
 
         {{-- Sidebar --}}
-        <x-orbit::nav />
+        <x-laravel-ai-orbit::nav />
 
         {{-- Main Content --}}
         <div class="flex-1 flex flex-col min-w-0">
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <x-orbit::theme-toggle />
+                    <x-laravel-ai-orbit::theme-toggle />
                 </div>
             </header>
 

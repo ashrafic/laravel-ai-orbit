@@ -12,6 +12,6 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        return view('orbit::dashboard');
+        return view('laravel-ai-orbit::dashboard');
     }
 }

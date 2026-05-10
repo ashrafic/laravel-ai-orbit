@@ -1,4 +1,4 @@
-<x-orbit::layout>
+<x-laravel-ai-orbit::layout>
     <div class="space-y-6">
         <div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Playground</h2>
@@ -6,7 +6,7 @@
         </div>
 
         @if ($agents->isEmpty())
-            <x-orbit::empty-state title="No agents discovered"
+            <x-laravel-ai-orbit::empty-state title="No agents discovered"
                 description="Place your agent classes in app/AI/Agents/. They must implement the Laravel\Ai\Contracts\Agent interface." />
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -15,7 +15,7 @@
                         $shortName = class_basename($agentClass);
                         $meta = app(\Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract::class)->find($agentClass);
                     @endphp
-                    <x-orbit::card padding="p-4" class="hover:border-orbit-300 dark:hover:border-orbit-700 transition-colors">
+                    <x-laravel-ai-orbit::card padding="p-4" class="hover:border-orbit-300 dark:hover:border-orbit-700 transition-colors">
                         <div class="space-y-3">
                             <div>
                                 <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $shortName }}</h3>
@@ -29,11 +29,11 @@
                                     @endif
 
                                     @if (!empty($meta['tools']))
-                                        <x-orbit::badge :label="count($meta['tools']).' tools'" color="blue" />
+                                        <x-laravel-ai-orbit::badge :label="count($meta['tools']).' tools'" color="blue" />
                                     @endif
 
                                     @if ($meta['has_schema'])
-                                        <x-orbit::badge label="Structured Output" color="green" />
+                                        <x-laravel-ai-orbit::badge label="Structured Output" color="green" />
                                     @endif
                                 </div>
                             @endif
@@ -43,9 +43,9 @@
                                 Open Sandbox
                             </a>
                         </div>
-                    </x-orbit::card>
+                    </x-laravel-ai-orbit::card>
                 @endforeach
             </div>
         @endif
     </div>
-</x-orbit::layout>
+</x-laravel-ai-orbit::layout>

@@ -72,7 +72,7 @@ class ThreadExplorer extends Component
 
         $conversations = $repository->list($filters);
 
-        return view('orbit::livewire.thread-explorer', [
+        return view('laravel-ai-orbit::livewire.thread-explorer', [
             'conversations' => $conversations,
         ]);
     }

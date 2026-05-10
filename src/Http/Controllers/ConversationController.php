@@ -12,7 +12,7 @@ class ConversationController extends Controller
      */
     public function index(): View
     {
-        return view('orbit::conversations.index');
+        return view('laravel-ai-orbit::conversations.index');
     }
 
     /**
@@ -20,6 +20,6 @@ class ConversationController extends Controller
      */
     public function show(string $id): View
     {
-        return view('orbit::conversations.show', ['id' => $id]);
+        return view('laravel-ai-orbit::conversations.show', ['id' => $id]);
     }
 }

@@ -21,6 +21,6 @@ class AgentInspector extends Component
 
     public function render(): View
     {
-        return view('orbit::livewire.agent-inspector');
+        return view('laravel-ai-orbit::livewire.agent-inspector');
     }
 }

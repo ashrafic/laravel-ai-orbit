@@ -15,7 +15,7 @@ class PlaygroundController extends Controller
     {
         $registry = app(AgentRegistryContract::class);
 
-        return view('orbit::playground.index', [
+        return view('laravel-ai-orbit::playground.index', [
             'agents' => $registry->all(),
         ]);
     }
@@ -25,6 +25,6 @@ class PlaygroundController extends Controller
      */
     public function show(string $agent): View
     {
-        return view('orbit::playground.show', ['agent' => $agent]);
+        return view('laravel-ai-orbit::playground.show', ['agent' => $agent]);
     }
 }

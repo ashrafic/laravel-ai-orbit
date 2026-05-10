@@ -1,4 +1,4 @@
-<x-orbit::layout>
+<x-laravel-ai-orbit::layout>
     <div class="space-y-6">
         <div class="flex items-center gap-3">
             <a href="{{ route('orbit.conversations.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -20,7 +20,7 @@
         </div>
 
         {{-- Conversation Info --}}
-        <x-orbit::card>
+        <x-laravel-ai-orbit::card>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                 <div>
                     <span class="text-gray-500 dark:text-gray-400">Conversation ID</span>
@@ -39,11 +39,11 @@
                     <p class="text-gray-900 dark:text-gray-100">{{ \Carbon\Carbon::parse($conversation->updated_at)->format('M d, Y H:i') }}</p>
                 </div>
             </div>
-        </x-orbit::card>
+        </x-laravel-ai-orbit::card>
 
         {{-- Timeline --}}
         @if ($messages->isEmpty())
-            <x-orbit::empty-state title="No messages" description="This conversation has no recorded messages to trace." />
+            <x-laravel-ai-orbit::empty-state title="No messages" description="This conversation has no recorded messages to trace." />
         @else
             <div class="relative">
                 {{-- Vertical line --}}
@@ -82,12 +82,12 @@
 
                             {{-- Content --}}
                             <div class="flex-1 min-w-0">
-                                <x-orbit::card padding="p-4">
+                                <x-laravel-ai-orbit::card padding="p-4">
                                     <div class="flex flex-wrap items-center gap-2 mb-2">
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
                                             Step {{ $index + 1 }}
                                         </span>
-                                        <x-orbit::badge :label="$stepLabel" :color="match($message->role) {
+                                        <x-laravel-ai-orbit::badge :label="$stepLabel" :color="match($message->role) {
                                             'user' => 'blue',
                                             'system' => 'yellow',
                                             'assistant' => 'green',
@@ -147,7 +147,7 @@
                                             </div>
                                         @endif
                                     @endif
-                                </x-orbit::card>
+                                </x-laravel-ai-orbit::card>
                             </div>
                         </div>
                     @endforeach
@@ -155,4 +155,4 @@
             </div>
         @endif
     </div>
-</x-orbit::layout>
+</x-laravel-ai-orbit::layout>
