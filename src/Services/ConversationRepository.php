@@ -2,13 +2,14 @@
 
 namespace Ashraf\LaravelAiOrbit\Services;
 
+use Ashraf\LaravelAiOrbit\Services\Concerns\UsesAiConnection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class ConversationRepository
 {
+    use UsesAiConnection;
+
     /**
      * Get a paginated list of conversations with optional filters.
      *
@@ -17,32 +18,40 @@ class ConversationRepository
      */
     public function list(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = DB::table('agent_conversations')
+        if (! $this->hasTable('agent_conversations')) {
+            return new LengthAwarePaginator([], 0, $perPage);
+        }
+
+        $query = $this->connection()->table('agent_conversations')
             ->select([
                 'agent_conversations.id',
                 'agent_conversations.user_id',
                 'agent_conversations.title',
                 'agent_conversations.created_at',
                 'agent_conversations.updated_at',
-            ])
-            ->selectRaw('COUNT(agent_conversation_messages.id) as message_count');
+            ]);
 
-        if ($this->hasColumn('agent_conversation_messages', 'agent')) {
-            $query->addSelect(
-                DB::raw('MAX(agent_conversation_messages.agent) as agent_class')
-            );
+        if ($this->hasTable('agent_conversation_messages')) {
+            $query->selectRaw('COUNT(agent_conversation_messages.id) as message_count');
+
+            if ($this->hasColumn('agent_conversation_messages', 'agent')) {
+                $query->addSelect(
+                    $this->connection()->raw('MAX(agent_conversation_messages.agent) as agent_class')
+                );
+            }
+
+            if ($this->hasColumn('agent_conversation_messages', 'usage')) {
+                $query->addSelect(
+                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.input_tokens')), 0) as total_input_tokens")
+                );
+                $query->addSelect(
+                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.output_tokens')), 0) as total_output_tokens")
+                );
+            }
+
+            $query->leftJoin('agent_conversation_messages', 'agent_conversations.id', '=', 'agent_conversation_messages.conversation_id');
         }
 
-        if ($this->hasColumn('agent_conversation_messages', 'usage')) {
-            $query->addSelect(
-                DB::raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.input_tokens')), 0) as total_input_tokens")
-            );
-            $query->addSelect(
-                DB::raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.output_tokens')), 0) as total_output_tokens")
-            );
-        }
-
-        $query->leftJoin('agent_conversation_messages', 'agent_conversations.id', '=', 'agent_conversation_messages.conversation_id');
         $query->groupBy('agent_conversations.id');
 
         if (! empty($filters['date_from'])) {
@@ -53,7 +62,7 @@ class ConversationRepository
             $query->where('agent_conversations.created_at', '<=', $filters['date_to']);
         }
 
-        if (! empty($filters['agent'])) {
+        if (! empty($filters['agent']) && $this->hasTable('agent_conversation_messages')) {
             $query->where('agent_conversation_messages.agent', $filters['agent']);
         }
 
@@ -67,7 +76,11 @@ class ConversationRepository
      */
     public function find(string $id): ?object
     {
-        $conversation = DB::table('agent_conversations')
+        if (! $this->hasTable('agent_conversations')) {
+            return null;
+        }
+
+        $conversation = $this->connection()->table('agent_conversations')
             ->where('id', $id)
             ->first();
 
@@ -87,6 +100,10 @@ class ConversationRepository
      */
     public function messages(string $conversationId): Collection
     {
+        if (! $this->hasTable('agent_conversation_messages')) {
+            return collect();
+        }
+
         $selectColumns = [
             'id',
             'conversation_id',
@@ -119,7 +136,7 @@ class ConversationRepository
             $selectColumns[] = 'meta';
         }
 
-        return DB::table('agent_conversation_messages')
+        return $this->connection()->table('agent_conversation_messages')
             ->select($selectColumns)
             ->where('conversation_id', $conversationId)
             ->orderBy('created_at', 'asc')
@@ -131,20 +148,16 @@ class ConversationRepository
      */
     public function delete(string $id): void
     {
-        DB::table('agent_conversation_messages')
-            ->where('conversation_id', $id)
-            ->delete();
+        if ($this->hasTable('agent_conversation_messages')) {
+            $this->connection()->table('agent_conversation_messages')
+                ->where('conversation_id', $id)
+                ->delete();
+        }
 
-        DB::table('agent_conversations')
-            ->where('id', $id)
-            ->delete();
-    }
-
-    /**
-     * Check if a column exists in a table.
-     */
-    private function hasColumn(string $table, string $column): bool
-    {
-        return Schema::hasColumn($table, $column);
+        if ($this->hasTable('agent_conversations')) {
+            $this->connection()->table('agent_conversations')
+                ->where('id', $id)
+                ->delete();
+        }
     }
 }

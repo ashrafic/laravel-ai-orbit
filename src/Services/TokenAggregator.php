@@ -2,12 +2,13 @@
 
 namespace Ashraf\LaravelAiOrbit\Services;
 
+use Ashraf\LaravelAiOrbit\Services\Concerns\UsesAiConnection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class TokenAggregator
 {
+    use UsesAiConnection;
+
     /**
      * Get token usage statistics for today.
      *
@@ -15,21 +16,26 @@ class TokenAggregator
      */
     public function todayStats(): array
     {
-        $conversationsQuery = DB::table('agent_conversations')
-            ->whereDate('created_at', today());
+        $totalConversations = 0;
+        $totalMessages = 0;
 
-        $totalConversations = $conversationsQuery->count();
+        if ($this->hasTable('agent_conversations')) {
+            $totalConversations = $this->connection()->table('agent_conversations')
+                ->whereDate('created_at', today())
+                ->count();
+        }
 
-        $messagesQuery = DB::table('agent_conversation_messages')
-            ->whereDate('created_at', today());
-
-        $totalMessages = $messagesQuery->count();
+        if ($this->hasTable('agent_conversation_messages')) {
+            $totalMessages = $this->connection()->table('agent_conversation_messages')
+                ->whereDate('created_at', today())
+                ->count();
+        }
 
         $inputTokens = 0;
         $outputTokens = 0;
 
-        if ($this->hasColumn('agent_conversation_messages', 'usage')) {
-            $tokenData = DB::table('agent_conversation_messages')
+        if ($this->hasTable('agent_conversation_messages') && $this->hasColumn('agent_conversation_messages', 'usage')) {
+            $tokenData = $this->connection()->table('agent_conversation_messages')
                 ->whereDate('created_at', today())
                 ->selectRaw(
                     "COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) as input_tokens"
@@ -46,24 +52,26 @@ class TokenAggregator
         $providerCount = 0;
         $agentCount = 0;
 
-        if ($this->hasColumn('agent_conversation_messages', 'agent')) {
-            $agentData = DB::table('agent_conversation_messages')
-                ->whereDate('created_at', today())
-                ->selectRaw('COUNT(DISTINCT agent) as agent_count')
-                ->first();
+        if ($this->hasTable('agent_conversation_messages')) {
+            if ($this->hasColumn('agent_conversation_messages', 'agent')) {
+                $agentData = $this->connection()->table('agent_conversation_messages')
+                    ->whereDate('created_at', today())
+                    ->selectRaw('COUNT(DISTINCT agent) as agent_count')
+                    ->first();
 
-            $agentCount = (int) ($agentData->agent_count ?? 0);
-        }
+                $agentCount = (int) ($agentData->agent_count ?? 0);
+            }
 
-        if ($this->hasColumn('agent_conversation_messages', 'meta')) {
-            $providerData = DB::table('agent_conversation_messages')
-                ->whereDate('created_at', today())
-                ->selectRaw(
-                    "COUNT(DISTINCT JSON_EXTRACT(meta, '$.provider')) as provider_count"
-                )
-                ->first();
+            if ($this->hasColumn('agent_conversation_messages', 'meta')) {
+                $providerData = $this->connection()->table('agent_conversation_messages')
+                    ->whereDate('created_at', today())
+                    ->selectRaw(
+                        "COUNT(DISTINCT JSON_EXTRACT(meta, '$.provider')) as provider_count"
+                    )
+                    ->first();
 
-            $providerCount = (int) ($providerData->provider_count ?? 0);
+                $providerCount = (int) ($providerData->provider_count ?? 0);
+            }
         }
 
         return [
@@ -83,34 +91,30 @@ class TokenAggregator
      */
     public function agentBreakdown(): Collection
     {
+        if (! $this->hasTable('agent_conversation_messages')) {
+            return collect();
+        }
+
         if (! $this->hasColumn('agent_conversation_messages', 'agent')) {
             return collect();
         }
 
         $selects = [
             'agent',
-            DB::raw('COUNT(*) as message_count'),
+            $this->connection()->raw('COUNT(*) as message_count'),
         ];
 
         if ($this->hasColumn('agent_conversation_messages', 'usage')) {
-            $selects[] = DB::raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) as input_tokens");
-            $selects[] = DB::raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.output_tokens')), 0) as output_tokens");
-            $selects[] = DB::raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) + COALESCE(SUM(JSON_EXTRACT(usage, '$.output_tokens')), 0) as total");
+            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) as input_tokens");
+            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.output_tokens')), 0) as output_tokens");
+            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) + COALESCE(SUM(JSON_EXTRACT(usage, '$.output_tokens')), 0) as total");
         }
 
-        return DB::table('agent_conversation_messages')
+        return $this->connection()->table('agent_conversation_messages')
             ->whereDate('created_at', today())
             ->select($selects)
             ->groupBy('agent')
             ->orderByDesc('total')
             ->get();
-    }
-
-    /**
-     * Check if a column exists in a table.
-     */
-    private function hasColumn(string $table, string $column): bool
-    {
-        return Schema::hasColumn($table, $column);
     }
 }
