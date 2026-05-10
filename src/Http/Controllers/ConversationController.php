@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\Orbit\Http\Controllers;
+namespace Ashraf\LaravelAiOrbit\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;

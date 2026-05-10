@@ -1,6 +1,6 @@
 <?php
 
-use Ashraf\Orbit\Support\FreeFeatureGate;
+use Ashraf\LaravelAiOrbit\Support\FreeFeatureGate;
 
 it('returns false for all pro features', function () {
     $gate = new FreeFeatureGate;

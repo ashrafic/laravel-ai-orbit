@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\Orbit\Http\Livewire;
+namespace Ashraf\LaravelAiOrbit\Http\Livewire;
 
-use Ashraf\Orbit\Contracts\AgentRegistryContract;
+use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 

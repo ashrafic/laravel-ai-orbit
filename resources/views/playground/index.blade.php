@@ -13,7 +13,7 @@
                 @foreach ($agents as $agentClass)
                     @php
                         $shortName = class_basename($agentClass);
-                        $meta = app(\Ashraf\Orbit\Contracts\AgentRegistryContract::class)->find($agentClass);
+                        $meta = app(\Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract::class)->find($agentClass);
                     @endphp
                     <x-orbit::card padding="p-4" class="hover:border-orbit-300 dark:hover:border-orbit-700 transition-colors">
                         <div class="space-y-3">

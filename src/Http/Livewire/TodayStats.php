@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\Orbit\Http\Livewire;
+namespace Ashraf\LaravelAiOrbit\Http\Livewire;
 
-use Ashraf\Orbit\Services\TokenAggregator;
+use Ashraf\LaravelAiOrbit\Services\TokenAggregator;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 

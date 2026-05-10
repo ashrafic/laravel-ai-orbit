@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\Orbit\Http\Controllers;
+namespace Ashraf\LaravelAiOrbit\Http\Controllers;
 
-use Ashraf\Orbit\Services\ConversationRepository;
+use Ashraf\LaravelAiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
 

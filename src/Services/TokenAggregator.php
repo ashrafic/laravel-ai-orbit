@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\Orbit\Services;
+namespace Ashraf\LaravelAiOrbit\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

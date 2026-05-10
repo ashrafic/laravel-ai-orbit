@@ -1,17 +1,17 @@
 <?php
 
-namespace Ashraf\Orbit;
+namespace Ashraf\LaravelAiOrbit;
 
-use Ashraf\Orbit\Contracts\AgentRegistryContract;
-use Ashraf\Orbit\Contracts\FeatureGate;
-use Ashraf\Orbit\Http\Livewire\AgentInspector;
-use Ashraf\Orbit\Http\Livewire\AgentSandbox;
-use Ashraf\Orbit\Http\Livewire\MessageTimeline;
-use Ashraf\Orbit\Http\Livewire\ThreadExplorer;
-use Ashraf\Orbit\Http\Livewire\TodayStats;
-use Ashraf\Orbit\Http\Middleware\Authorize;
-use Ashraf\Orbit\Services\AgentRegistry;
-use Ashraf\Orbit\Support\FreeFeatureGate;
+use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
+use Ashraf\LaravelAiOrbit\Contracts\FeatureGate;
+use Ashraf\LaravelAiOrbit\Http\Livewire\AgentInspector;
+use Ashraf\LaravelAiOrbit\Http\Livewire\AgentSandbox;
+use Ashraf\LaravelAiOrbit\Http\Livewire\MessageTimeline;
+use Ashraf\LaravelAiOrbit\Http\Livewire\ThreadExplorer;
+use Ashraf\LaravelAiOrbit\Http\Livewire\TodayStats;
+use Ashraf\LaravelAiOrbit\Http\Middleware\Authorize;
+use Ashraf\LaravelAiOrbit\Services\AgentRegistry;
+use Ashraf\LaravelAiOrbit\Support\FreeFeatureGate;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;

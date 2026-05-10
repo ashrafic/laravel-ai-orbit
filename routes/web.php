@@ -1,10 +1,10 @@
 <?php
 
-use Ashraf\Orbit\Http\Controllers\ConversationController;
-use Ashraf\Orbit\Http\Controllers\DashboardController;
-use Ashraf\Orbit\Http\Controllers\PlaygroundController;
-use Ashraf\Orbit\Http\Controllers\TraceController;
-use Ashraf\Orbit\Http\Controllers\UsageController;
+use Ashraf\LaravelAiOrbit\Http\Controllers\ConversationController;
+use Ashraf\LaravelAiOrbit\Http\Controllers\DashboardController;
+use Ashraf\LaravelAiOrbit\Http\Controllers\PlaygroundController;
+use Ashraf\LaravelAiOrbit\Http\Controllers\TraceController;
+use Ashraf\LaravelAiOrbit\Http\Controllers\UsageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('orbit.dashboard');

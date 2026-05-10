@@ -30,18 +30,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Ashraf\\Orbit\\": "src/"
+            "Ashraf\\LaravelAiOrbit\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ashraf\\Orbit\\Tests\\": "tests/"
+            "Ashraf\\LaravelAiOrbit\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Ashraf\\Orbit\\OrbitServiceProvider"
+                "Ashraf\\LaravelAiOrbit\\OrbitServiceProvider"
             ]
         }
     },

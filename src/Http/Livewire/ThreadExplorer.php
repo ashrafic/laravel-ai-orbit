@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\Orbit\Http\Livewire;
+namespace Ashraf\LaravelAiOrbit\Http\Livewire;
 
-use Ashraf\Orbit\Services\ConversationRepository;
+use Ashraf\LaravelAiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;

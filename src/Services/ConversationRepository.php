@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\Orbit\Services;
+namespace Ashraf\LaravelAiOrbit\Services;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;

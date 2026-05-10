@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\Orbit\Contracts;
+namespace Ashraf\LaravelAiOrbit\Contracts;
 
 interface FeatureGate
 {

@@ -70,7 +70,7 @@
         </div>
 
         @php
-            $featureGate = app(\Ashraf\Orbit\Contracts\FeatureGate::class);
+            $featureGate = app(\Ashraf\LaravelAiOrbit\Contracts\FeatureGate::class);
         @endphp
 
         @foreach ($proLinks as $proLink)

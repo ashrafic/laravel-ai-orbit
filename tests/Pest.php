@@ -1,5 +1,5 @@
 <?php
 
-use Ashraf\Orbit\Tests\TestCase;
+use Ashraf\LaravelAiOrbit\Tests\TestCase;
 
 uses(TestCase::class)->in('Feature', 'Unit');

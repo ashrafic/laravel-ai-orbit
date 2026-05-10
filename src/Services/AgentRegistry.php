@@ -1,9 +1,9 @@
 <?php
 
-namespace Ashraf\Orbit\Services;
+namespace Ashraf\LaravelAiOrbit\Services;
 
-use Ashraf\Orbit\Contracts\AgentRegistryContract;
-use Ashraf\Orbit\Support\OrbitConfig;
+use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
+use Ashraf\LaravelAiOrbit\Support\OrbitConfig;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Ai\Contracts\Agent;

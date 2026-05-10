@@ -1,6 +1,6 @@
 <?php
 
-use Ashraf\Orbit\Http\Middleware\Authorize;
+use Ashraf\LaravelAiOrbit\Http\Middleware\Authorize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpKernel\Exception\HttpException;

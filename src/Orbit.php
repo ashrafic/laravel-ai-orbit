@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\Orbit;
+namespace Ashraf\LaravelAiOrbit;
 
-use Ashraf\Orbit\Support\OrbitConfig;
+use Ashraf\LaravelAiOrbit\Support\OrbitConfig;
 
 class Orbit
 {

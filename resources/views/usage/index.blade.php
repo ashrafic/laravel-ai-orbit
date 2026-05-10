@@ -10,7 +10,7 @@
 
         {{-- Pro Feature Teasers --}}
         @php
-            $featureGate = app(\Ashraf\Orbit\Contracts\FeatureGate::class);
+            $featureGate = app(\Ashraf\LaravelAiOrbit\Contracts\FeatureGate::class);
         @endphp
 
         @if (! $featureGate->hasAdvancedAnalytics())

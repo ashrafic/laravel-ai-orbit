@@ -1,6 +1,6 @@
 <?php
 
-use Ashraf\Orbit\Support\OrbitConfig;
+use Ashraf\LaravelAiOrbit\Support\OrbitConfig;
 use Illuminate\Support\Facades\Config;
 
 it('returns configured path', function () {
