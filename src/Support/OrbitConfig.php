@@ -55,4 +55,12 @@ class OrbitConfig
     {
         return Config::get('ai-orbit.domain');
     }
+
+    /**
+     * Get the configured agent registry cache TTL.
+     */
+    public static function registryCacheTtl(): int
+    {
+        return (int) Config::get('ai-orbit.registry_cache_ttl', 3600);
+    }
 }
