@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Livewire;
+namespace Ashrafic\AiOrbit\Http\Livewire;
 
-use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
+use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
@@ -21,6 +21,6 @@ class AgentInspector extends Component
 
     public function render(): View
     {
-        return view('laravel-ai-orbit::livewire.agent-inspector');
+        return view('ai-orbit::livewire.agent-inspector');
     }
 }

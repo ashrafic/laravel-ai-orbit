@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Support;
+namespace Ashrafic\AiOrbit\Support;
 
 use Illuminate\Support\Facades\Config;
 

@@ -1,17 +1,17 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit;
+namespace Ashrafic\AiOrbit;
 
-use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
-use Ashraf\LaravelAiOrbit\Contracts\FeatureGate;
-use Ashraf\LaravelAiOrbit\Http\Livewire\AgentInspector;
-use Ashraf\LaravelAiOrbit\Http\Livewire\AgentSandbox;
-use Ashraf\LaravelAiOrbit\Http\Livewire\MessageTimeline;
-use Ashraf\LaravelAiOrbit\Http\Livewire\ThreadExplorer;
-use Ashraf\LaravelAiOrbit\Http\Livewire\TodayStats;
-use Ashraf\LaravelAiOrbit\Http\Middleware\Authorize;
-use Ashraf\LaravelAiOrbit\Services\AgentRegistry;
-use Ashraf\LaravelAiOrbit\Support\FreeFeatureGate;
+use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
+use Ashrafic\AiOrbit\Contracts\FeatureGate;
+use Ashrafic\AiOrbit\Http\Livewire\AgentInspector;
+use Ashrafic\AiOrbit\Http\Livewire\AgentSandbox;
+use Ashrafic\AiOrbit\Http\Livewire\MessageTimeline;
+use Ashrafic\AiOrbit\Http\Livewire\ThreadExplorer;
+use Ashrafic\AiOrbit\Http\Livewire\TodayStats;
+use Ashrafic\AiOrbit\Http\Middleware\Authorize;
+use Ashrafic\AiOrbit\Services\AgentRegistry;
+use Ashrafic\AiOrbit\Support\FreeFeatureGate;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -83,7 +83,7 @@ class OrbitServiceProvider extends ServiceProvider
     protected function loadViews(): void
     {
         $this->loadViewsFrom(
-            __DIR__.'/../resources/views', 'laravel-ai-orbit'
+            __DIR__.'/../resources/views', 'ai-orbit'
         );
     }
 
@@ -124,10 +124,10 @@ class OrbitServiceProvider extends ServiceProvider
      */
     protected function registerLivewireComponents(): void
     {
-        Livewire::component('orbit.today-stats', TodayStats::class);
-        Livewire::component('orbit.thread-explorer', ThreadExplorer::class);
-        Livewire::component('orbit.message-timeline', MessageTimeline::class);
-        Livewire::component('orbit.agent-sandbox', AgentSandbox::class);
-        Livewire::component('orbit.agent-inspector', AgentInspector::class);
+        Livewire::component('ai-orbit.today-stats', TodayStats::class);
+        Livewire::component('ai-orbit.thread-explorer', ThreadExplorer::class);
+        Livewire::component('ai-orbit.message-timeline', MessageTimeline::class);
+        Livewire::component('ai-orbit.agent-sandbox', AgentSandbox::class);
+        Livewire::component('ai-orbit.agent-inspector', AgentInspector::class);
     }
 }

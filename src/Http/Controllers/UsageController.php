@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Controllers;
+namespace Ashrafic\AiOrbit\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
@@ -12,6 +12,6 @@ class UsageController extends Controller
      */
     public function index(): View
     {
-        return view('laravel-ai-orbit::usage.index');
+        return view('ai-orbit::usage.index');
     }
 }

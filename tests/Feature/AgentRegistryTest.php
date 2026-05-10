@@ -1,6 +1,6 @@
 <?php
 
-use Ashraf\LaravelAiOrbit\Services\AgentRegistry;
+use Ashrafic\AiOrbit\Services\AgentRegistry;
 use Illuminate\Support\Collection;
 
 it('returns empty collection when no agents exist', function () {

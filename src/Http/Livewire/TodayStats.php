@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Livewire;
+namespace Ashrafic\AiOrbit\Http\Livewire;
 
-use Ashraf\LaravelAiOrbit\Services\TokenAggregator;
+use Ashrafic\AiOrbit\Services\TokenAggregator;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
@@ -12,7 +12,7 @@ class TodayStats extends Component
     {
         $aggregator = app(TokenAggregator::class);
 
-        return view('laravel-ai-orbit::livewire.today-stats', [
+        return view('ai-orbit::livewire.today-stats', [
             'stats' => $aggregator->todayStats(),
             'breakdown' => $aggregator->agentBreakdown(),
         ]);

@@ -1,6 +1,6 @@
 <?php
 
-use Ashraf\LaravelAiOrbit\Services\ConversationRepository;
+use Ashrafic\AiOrbit\Services\ConversationRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 it('can list conversations with pagination', function () {

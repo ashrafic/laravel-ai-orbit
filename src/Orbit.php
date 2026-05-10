@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit;
+namespace Ashrafic\AiOrbit;
 
-use Ashraf\LaravelAiOrbit\Support\OrbitConfig;
+use Ashrafic\AiOrbit\Support\OrbitConfig;
 use Illuminate\Support\Facades\Schema;
 
 class Orbit

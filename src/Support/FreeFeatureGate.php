@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Support;
+namespace Ashrafic\AiOrbit\Support;
 
-use Ashraf\LaravelAiOrbit\Contracts\FeatureGate;
+use Ashrafic\AiOrbit\Contracts\FeatureGate;
 
 class FreeFeatureGate implements FeatureGate
 {

@@ -1,5 +1,5 @@
 {
-    "name": "ashraful19/laravel-ai-orbit",
+    "name": "ashrafic/laravel-ai-orbit",
     "description": "Observability, management, and developer playground for the Laravel AI SDK.",
     "keywords": [
         "laravel",
@@ -30,18 +30,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Ashraf\\LaravelAiOrbit\\": "src/"
+            "Ashrafic\\AiOrbit\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ashraf\\LaravelAiOrbit\\Tests\\": "tests/"
+            "Ashrafic\\AiOrbit\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Ashraf\\LaravelAiOrbit\\OrbitServiceProvider"
+                "Ashrafic\\AiOrbit\\OrbitServiceProvider"
             ]
         }
     },

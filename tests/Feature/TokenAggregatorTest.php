@@ -1,6 +1,6 @@
 <?php
 
-use Ashraf\LaravelAiOrbit\Services\TokenAggregator;
+use Ashrafic\AiOrbit\Services\TokenAggregator;
 use Illuminate\Support\Collection;
 
 it('returns zero stats when no data exists', function () {

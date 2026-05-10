@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Livewire;
+namespace Ashrafic\AiOrbit\Http\Livewire;
 
-use Ashraf\LaravelAiOrbit\Services\ConversationRepository;
+use Ashrafic\AiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -72,7 +72,7 @@ class ThreadExplorer extends Component
 
         $conversations = $repository->list($filters);
 
-        return view('laravel-ai-orbit::livewire.thread-explorer', [
+        return view('ai-orbit::livewire.thread-explorer', [
             'conversations' => $conversations,
         ]);
     }

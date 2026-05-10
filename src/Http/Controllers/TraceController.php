@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Controllers;
+namespace Ashrafic\AiOrbit\Http\Controllers;
 
-use Ashraf\LaravelAiOrbit\Services\ConversationRepository;
+use Ashrafic\AiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
 
@@ -19,7 +19,7 @@ class TraceController extends Controller
             abort(404);
         }
 
-        return view('laravel-ai-orbit::traces.show', [
+        return view('ai-orbit::traces.show', [
             'conversation' => $conversation,
             'messages' => $conversation->messages ?? collect(),
         ]);

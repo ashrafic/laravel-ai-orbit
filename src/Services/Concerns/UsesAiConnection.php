@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Services\Concerns;
+namespace Ashrafic\AiOrbit\Services\Concerns;
 
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\DB;

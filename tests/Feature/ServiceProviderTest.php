@@ -1,9 +1,9 @@
 <?php
 
-use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
-use Ashraf\LaravelAiOrbit\Contracts\FeatureGate;
-use Ashraf\LaravelAiOrbit\Services\AgentRegistry;
-use Ashraf\LaravelAiOrbit\Support\FreeFeatureGate;
+use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
+use Ashrafic\AiOrbit\Contracts\FeatureGate;
+use Ashrafic\AiOrbit\Services\AgentRegistry;
+use Ashrafic\AiOrbit\Support\FreeFeatureGate;
 
 it('registers the service provider and merges config', function () {
     expect(config('ai-orbit.path'))->toBe('ai-orbit');

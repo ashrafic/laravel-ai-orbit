@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Livewire;
+namespace Ashrafic\AiOrbit\Http\Livewire;
 
-use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
+use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
 use Illuminate\Contracts\View\View;
 use Laravel\Ai\Contracts\Agent;
 use Livewire\Component;
@@ -73,6 +73,6 @@ class AgentSandbox extends Component
 
     public function render(): View
     {
-        return view('laravel-ai-orbit::livewire.agent-sandbox');
+        return view('ai-orbit::livewire.agent-sandbox');
     }
 }

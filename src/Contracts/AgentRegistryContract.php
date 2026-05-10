@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Contracts;
+namespace Ashrafic\AiOrbit\Contracts;
 
 use Illuminate\Support\Collection;
 

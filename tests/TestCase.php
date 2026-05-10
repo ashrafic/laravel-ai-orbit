@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Tests;
+namespace Ashrafic\AiOrbit\Tests;
 
-use Ashraf\LaravelAiOrbit\OrbitServiceProvider;
+use Ashrafic\AiOrbit\OrbitServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Schema;
 use Livewire\LivewireServiceProvider;

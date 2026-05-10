@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Controllers;
+namespace Ashrafic\AiOrbit\Http\Controllers;
 
-use Ashraf\LaravelAiOrbit\Contracts\AgentRegistryContract;
+use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
 
@@ -15,7 +15,7 @@ class PlaygroundController extends Controller
     {
         $registry = app(AgentRegistryContract::class);
 
-        return view('laravel-ai-orbit::playground.index', [
+        return view('ai-orbit::playground.index', [
             'agents' => $registry->all(),
         ]);
     }
@@ -25,6 +25,6 @@ class PlaygroundController extends Controller
      */
     public function show(string $agent): View
     {
-        return view('laravel-ai-orbit::playground.show', ['agent' => $agent]);
+        return view('ai-orbit::playground.show', ['agent' => $agent]);
     }
 }

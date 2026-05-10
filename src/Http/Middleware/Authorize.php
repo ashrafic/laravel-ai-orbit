@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Middleware;
+namespace Ashrafic\AiOrbit\Http\Middleware;
 
-use Ashraf\LaravelAiOrbit\Support\OrbitConfig;
+use Ashrafic\AiOrbit\Support\OrbitConfig;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

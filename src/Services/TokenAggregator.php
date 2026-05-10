@@ -1,8 +1,8 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Services;
+namespace Ashrafic\AiOrbit\Services;
 
-use Ashraf\LaravelAiOrbit\Services\Concerns\UsesAiConnection;
+use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
 use Illuminate\Support\Collection;
 
 class TokenAggregator

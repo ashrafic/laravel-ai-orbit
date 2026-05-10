@@ -1,6 +1,6 @@
 <?php
 
-namespace Ashraf\LaravelAiOrbit\Http\Controllers;
+namespace Ashrafic\AiOrbit\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Routing\Controller;
@@ -12,7 +12,7 @@ class ConversationController extends Controller
      */
     public function index(): View
     {
-        return view('laravel-ai-orbit::conversations.index');
+        return view('ai-orbit::conversations.index');
     }
 
     /**
@@ -20,6 +20,6 @@ class ConversationController extends Controller
      */
     public function show(string $id): View
     {
-        return view('laravel-ai-orbit::conversations.show', ['id' => $id]);
+        return view('ai-orbit::conversations.show', ['id' => $id]);
     }
 }
