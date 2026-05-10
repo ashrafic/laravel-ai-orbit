@@ -4,6 +4,8 @@ namespace Ashraf\Orbit;
 
 use Ashraf\Orbit\Contracts\AgentRegistryContract;
 use Ashraf\Orbit\Contracts\FeatureGate;
+use Ashraf\Orbit\Http\Livewire\AgentInspector;
+use Ashraf\Orbit\Http\Livewire\AgentSandbox;
 use Ashraf\Orbit\Http\Livewire\MessageTimeline;
 use Ashraf\Orbit\Http\Livewire\ThreadExplorer;
 use Ashraf\Orbit\Http\Livewire\TodayStats;
@@ -125,5 +127,7 @@ class OrbitServiceProvider extends ServiceProvider
         Livewire::component('orbit.today-stats', TodayStats::class);
         Livewire::component('orbit.thread-explorer', ThreadExplorer::class);
         Livewire::component('orbit.message-timeline', MessageTimeline::class);
+        Livewire::component('orbit.agent-sandbox', AgentSandbox::class);
+        Livewire::component('orbit.agent-inspector', AgentInspector::class);
     }
 }
