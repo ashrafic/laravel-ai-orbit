@@ -54,7 +54,11 @@ php artisan vendor:publish --tag=ai-orbit-config
 
 ## Authorization
 
-By default, the dashboard is accessible in the `local` environment only. For production:
+By default, the dashboard is accessible in the `local` environment only.
+
+### Gate (recommended)
+
+Define a `viewAiOrbit` Gate in your `AppServiceProvider`:
 
 ```php
 use Illuminate\Support\Facades\Gate;
@@ -62,6 +66,30 @@ use Illuminate\Support\Facades\Gate;
 Gate::define('viewAiOrbit', function ($user) {
     return $user->isAdmin();
 });
+```
+
+### Middleware
+
+Customize the middleware stack in `config/ai-orbit.php`:
+
+```php
+'middleware' => ['web', 'auth:api', 'ip:10.0.0.0/8'],
+```
+
+### Auth Guard
+
+Switch the authentication guard:
+
+```php
+'auth_guard' => 'api',
+```
+
+### Domain
+
+Isolate the dashboard on a subdomain:
+
+```php
+'domain' => 'orbit.yourapp.com',
 ```
 
 ## Routes
