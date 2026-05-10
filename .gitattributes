@@ -1,0 +1,13 @@
+.github/ export-ignore
+vite.config.js export-ignore
+tailwind.config.js export-ignore
+postcss.config.js export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+node_modules/ export-ignore
+resources/css/ export-ignore
+tests/ export-ignore
+phpstan.neon export-ignore
+phpstan.neon.dist export-ignore
+phpunit.xml export-ignore
+phpunit.xml.dist export-ignore

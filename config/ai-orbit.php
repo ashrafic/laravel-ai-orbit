@@ -52,6 +52,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Back to Application URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used for the "Back to App" link in the Orbit dashboard
+    | header. Set this to your application's home page or any URL where
+    | users should return after using the Orbit dashboard.
+    |
+    */
+
+    'back_to_app_url' => env('AI_ORBIT_BACK_TO_APP_URL', '/'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Agent Discovery Directories
     |--------------------------------------------------------------------------
     |

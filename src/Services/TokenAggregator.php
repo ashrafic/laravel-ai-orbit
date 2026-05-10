@@ -3,6 +3,8 @@
 namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class TokenAggregator
@@ -10,38 +12,41 @@ class TokenAggregator
     use UsesAiConnection;
 
     /**
-     * Get token usage statistics for today.
+     * Get token usage statistics for a given time period.
      *
      * @return array<string, int>
      */
-    public function todayStats(): array
+    public function todayStats(string $period = 'today'): array
     {
+        [$from, $to] = $this->resolveDateRange($period);
+
         $totalConversations = 0;
         $totalMessages = 0;
 
         if ($this->hasTable('agent_conversations')) {
-            $totalConversations = $this->connection()->table('agent_conversations')
-                ->whereDate('created_at', today())
-                ->count();
+            $totalConversations = $this->applyDateFilter(
+                $this->connection()->table('agent_conversations'), 'created_at', $from, $to
+            )->count();
         }
 
         if ($this->hasTable('agent_conversation_messages')) {
-            $totalMessages = $this->connection()->table('agent_conversation_messages')
-                ->whereDate('created_at', today())
-                ->count();
+            $totalMessages = $this->applyDateFilter(
+                $this->connection()->table('agent_conversation_messages'), 'created_at', $from, $to
+            )->count();
         }
 
         $inputTokens = 0;
         $outputTokens = 0;
 
         if ($this->hasTable('agent_conversation_messages') && $this->hasColumn('agent_conversation_messages', 'usage')) {
-            $tokenData = $this->connection()->table('agent_conversation_messages')
-                ->whereDate('created_at', today())
+            $tokenData = $this->applyDateFilter(
+                $this->connection()->table('agent_conversation_messages'), 'created_at', $from, $to
+            )
                 ->selectRaw(
-                    "COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) as input_tokens"
+                    "COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) as input_tokens"
                 )
                 ->selectRaw(
-                    "COALESCE(SUM(JSON_EXTRACT(usage, '$.output_tokens')), 0) as output_tokens"
+                    "COALESCE(SUM(JSON_EXTRACT(`usage`, '$.completion_tokens')), 0) as output_tokens"
                 )
                 ->first();
 
@@ -54,8 +59,9 @@ class TokenAggregator
 
         if ($this->hasTable('agent_conversation_messages')) {
             if ($this->hasColumn('agent_conversation_messages', 'agent')) {
-                $agentData = $this->connection()->table('agent_conversation_messages')
-                    ->whereDate('created_at', today())
+                $agentData = $this->applyDateFilter(
+                    $this->connection()->table('agent_conversation_messages'), 'created_at', $from, $to
+                )
                     ->selectRaw('COUNT(DISTINCT agent) as agent_count')
                     ->first();
 
@@ -63,8 +69,9 @@ class TokenAggregator
             }
 
             if ($this->hasColumn('agent_conversation_messages', 'meta')) {
-                $providerData = $this->connection()->table('agent_conversation_messages')
-                    ->whereDate('created_at', today())
+                $providerData = $this->applyDateFilter(
+                    $this->connection()->table('agent_conversation_messages'), 'created_at', $from, $to
+                )
                     ->selectRaw(
                         "COUNT(DISTINCT JSON_EXTRACT(meta, '$.provider')) as provider_count"
                     )
@@ -85,12 +92,14 @@ class TokenAggregator
     }
 
     /**
-     * Get token usage breakdown by agent class for today.
+     * Get token usage breakdown by agent class for a given time period.
      *
      * @return Collection<int, object>
      */
-    public function agentBreakdown(): Collection
+    public function agentBreakdown(string $period = 'today'): Collection
     {
+        [$from, $to] = $this->resolveDateRange($period);
+
         if (! $this->hasTable('agent_conversation_messages')) {
             return collect();
         }
@@ -105,16 +114,53 @@ class TokenAggregator
         ];
 
         if ($this->hasColumn('agent_conversation_messages', 'usage')) {
-            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) as input_tokens");
-            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.output_tokens')), 0) as output_tokens");
-            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(usage, '$.input_tokens')), 0) + COALESCE(SUM(JSON_EXTRACT(usage, '$.output_tokens')), 0) as total");
+            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) as input_tokens");
+            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.completion_tokens')), 0) as output_tokens");
+            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) + COALESCE(SUM(JSON_EXTRACT(`usage`, '$.completion_tokens')), 0) as total");
         }
 
-        return $this->connection()->table('agent_conversation_messages')
-            ->whereDate('created_at', today())
+        return $this->applyDateFilter(
+            $this->connection()->table('agent_conversation_messages'), 'created_at', $from, $to
+        )
             ->select($selects)
             ->groupBy('agent')
             ->orderByDesc('total')
             ->get();
+    }
+
+    /**
+     * Resolve the date range from a period key.
+     *
+     * @return array{0: Carbon|string|null, 1: Carbon|string|null}
+     */
+    private function resolveDateRange(string $period): array
+    {
+        return match ($period) {
+            '7d' => [now()->subDays(7)->startOfDay(), null],
+            '30d' => [now()->subDays(30)->startOfDay(), null],
+            'month' => [now()->startOfMonth()->startOfDay(), null],
+            'all' => [null, null],
+            default => [today(), today()], // 'today'
+        };
+    }
+
+    /**
+     * Apply date filters to a query builder instance.
+     *
+     * @param  Builder  $query
+     * @param  Carbon|string|null  $from
+     * @param  Carbon|string|null  $to
+     */
+    private function applyDateFilter($query, string $column, $from = null, $to = null): mixed
+    {
+        if ($from && $to && $from instanceof Carbon && $from->equalTo($to)) {
+            return $query->whereDate($column, $from);
+        }
+
+        if ($from) {
+            $query->where($column, '>=', $from);
+        }
+
+        return $query;
     }
 }

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Cache;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Tools\ToolNameResolver;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
@@ -71,18 +73,48 @@ class AgentRegistry implements AgentRegistryContract
         }
 
         try {
-            $instance = app($class);
-
-            $instructions = (string) $instance->instructions();
-
+            $implementsHasTools = is_subclass_of($class, HasTools::class);
+            $hasSchema = is_subclass_of($class, HasStructuredOutput::class);
+            $instructions = '';
             $tools = [];
-            if ($instance instanceof HasTools) {
-                foreach ($instance->tools() as $tool) {
-                    $tools[] = get_class($tool);
-                }
+
+            try {
+                $instance = app($class);
+            } catch (\Throwable) {
+                $instance = null;
             }
 
-            $hasSchema = $instance instanceof HasStructuredOutput;
+            if ($instance !== null) {
+                try {
+                    $instructions = (string) $instance->instructions();
+                } catch (\Throwable) {
+                }
+
+                if ($implementsHasTools && $instance instanceof HasTools) {
+                    try {
+                        foreach ($instance->tools() as $tool) {
+                            $name = $tool instanceof Tool
+                                ? ToolNameResolver::resolve($tool)
+                                : class_basename($tool);
+
+                            $description = '';
+                            if ($tool instanceof Tool) {
+                                try {
+                                    $description = (string) $tool->description();
+                                } catch (\Throwable) {
+                                }
+                            }
+
+                            $tools[] = [
+                                'class' => get_class($tool),
+                                'name' => $name,
+                                'description' => $description,
+                            ];
+                        }
+                    } catch (\Throwable) {
+                    }
+                }
+            }
 
             $metadata = [
                 'class' => $class,

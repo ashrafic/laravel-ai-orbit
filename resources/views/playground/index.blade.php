@@ -26,6 +26,8 @@
                                 <div class="flex flex-wrap gap-1.5">
                                     @if (!empty($meta['instructions']))
                                         <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 w-full">{{ $meta['instructions'] }}</p>
+                                    @else
+                                        <p class="text-xs text-gray-400 dark:text-gray-500 italic w-full">No description available</p>
                                     @endif
 
                                     @if (!empty($meta['tools']))

@@ -42,10 +42,10 @@ class ConversationRepository
 
             if ($this->hasColumn('agent_conversation_messages', 'usage')) {
                 $query->addSelect(
-                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.input_tokens')), 0) as total_input_tokens")
+                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.prompt_tokens')), 0) as total_input_tokens")
                 );
                 $query->addSelect(
-                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.output_tokens')), 0) as total_output_tokens")
+                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.completion_tokens')), 0) as total_output_tokens")
                 );
             }
 
@@ -64,6 +64,13 @@ class ConversationRepository
 
         if (! empty($filters['agent']) && $this->hasTable('agent_conversation_messages')) {
             $query->where('agent_conversation_messages.agent', $filters['agent']);
+        }
+
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('agent_conversations.title', 'like', "%{$search}%");
+            });
         }
 
         $query->orderBy('agent_conversations.created_at', 'desc');

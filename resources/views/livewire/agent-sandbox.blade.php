@@ -47,7 +47,10 @@
     <div class="flex-shrink-0">
         @if ($error)
             <div class="mb-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded text-xs text-red-600 dark:text-red-400">
-                {{ $error }}
+                <p class="font-medium">{{ $error }}</p>
+                <p class="mt-1 text-red-400 dark:text-red-500">
+                    This is likely an issue with your agent class. Check your agent's implementation.
+                </p>
             </div>
         @endif
 
@@ -56,12 +59,12 @@
                 wire:model="prompt"
                 type="text"
                 placeholder="Type a message..."
-                :disabled="$sending"
+                :disabled="$wire.sending"
                 class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500 disabled:opacity-50"
             >
             <button
                 type="submit"
-                :disabled="$sending || $prompt === ''"
+                :disabled="$wire.sending || $wire.prompt === ''"
                 class="px-4 py-2 bg-orbit-500 text-white text-sm font-medium rounded-lg hover:bg-orbit-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
             >
                 @if ($sending)

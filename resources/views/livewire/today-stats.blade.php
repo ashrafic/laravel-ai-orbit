@@ -1,4 +1,21 @@
 <div>
+    {{-- Period Selector --}}
+    <div class="flex items-center gap-1 mb-4">
+        @foreach ($periods as $value => $label)
+            <button
+                wire:click="$set('period', '{{ $value }}')"
+                wire:key="period-{{ $value }}"
+                @class([
+                    'px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
+                    'bg-orbit-500 text-white' => $period === $value,
+                    'text-gray-400 hover:text-gray-200 hover:bg-gray-700 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-gray-800' => $period !== $value,
+                ])
+            >
+                {{ $label }}
+            </button>
+        @endforeach
+    </div>
+
     {{-- Stat Cards --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <x-ai-orbit::stat
@@ -122,7 +139,7 @@
             </script>
         @endpush
     @else
-        <x-ai-orbit::empty-state title="No data for today">
+        <x-ai-orbit::empty-state title="No data for {{ strtolower($periods[$period]) }}">
             <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">
                 Agent activity will appear here once conversations are recorded.
             </p>

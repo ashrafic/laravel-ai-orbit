@@ -14,6 +14,11 @@
                 <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Instructions</h3>
                 <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ $agentMeta['instructions'] }}</p>
             </div>
+        @else
+            <div>
+                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Instructions</h3>
+                <p class="text-sm text-gray-400 dark:text-gray-500 italic">Instructions require runtime context</p>
+            </div>
         @endif
 
         <div>
@@ -27,11 +32,20 @@
 
         @if (!empty($agentMeta['tools']))
             <div>
-                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Tools</h3>
-                <div class="space-y-1">
+                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Tools ({{ count($agentMeta['tools']) }})</h3>
+                <div class="space-y-2">
                     @foreach ($agentMeta['tools'] as $tool)
-                        <div class="text-sm font-mono text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 rounded px-2 py-1">
-                            {{ class_basename($tool) }}
+                        @php
+                            $toolName = is_array($tool) ? ($tool['name'] ?? '') : class_basename($tool);
+                            $toolClass = is_array($tool) ? ($tool['class'] ?? $tool) : $tool;
+                            $toolDesc = is_array($tool) ? ($tool['description'] ?? '') : '';
+                        @endphp
+                        <div class="p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $toolName }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5">{{ $toolClass }}</p>
+                            @if ($toolDesc)
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ $toolDesc }}</p>
+                            @endif
                         </div>
                     @endforeach
                 </div>

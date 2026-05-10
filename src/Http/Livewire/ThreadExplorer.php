@@ -4,6 +4,7 @@ namespace Ashrafic\AiOrbit\Http\Livewire;
 
 use Ashrafic\AiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -51,6 +52,23 @@ class ThreadExplorer extends Component
         app(ConversationRepository::class)->delete($id);
     }
 
+    /**
+     * @return array<int, string>
+     */
+    public function availableAgents(): array
+    {
+        try {
+            return DB::table('agent_conversation_messages')
+                ->select('agent')
+                ->distinct()
+                ->whereNotNull('agent')
+                ->pluck('agent')
+                ->toArray();
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
     public function render(): View
     {
         $repository = app(ConversationRepository::class);
@@ -68,6 +86,10 @@ class ThreadExplorer extends Component
 
         if ($this->agentClass !== '' && $this->agentClass !== '0') {
             $filters['agent'] = $this->agentClass;
+        }
+
+        if ($this->search !== '') {
+            $filters['search'] = $this->search;
         }
 
         $conversations = $repository->list($filters);

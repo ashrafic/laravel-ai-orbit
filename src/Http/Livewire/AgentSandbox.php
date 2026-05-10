@@ -54,14 +54,14 @@ class AgentSandbox extends Component
                 'content' => (string) $response,
             ];
         } catch (\Throwable $e) {
-            $this->error = $e->getMessage();
+            $this->error = 'Agent execution failed: '.$e->getMessage();
             $this->history[] = [
                 'role' => 'error',
-                'content' => 'Error: '.$e->getMessage(),
+                'content' => 'Agent execution failed: '.$e->getMessage(),
             ];
+        } finally {
+            $this->sending = false;
         }
-
-        $this->sending = false;
     }
 
     public function clear(): void

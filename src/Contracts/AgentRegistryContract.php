@@ -19,7 +19,7 @@ interface AgentRegistryContract
      * @return array{
      *     class: string,
      *     instructions: string,
-     *     tools: array<int, string>,
+     *     tools: array<int, array{class: string, name: string, description: string}>,
      *     has_schema: bool,
      *     provider?: string,
      *     model?: string

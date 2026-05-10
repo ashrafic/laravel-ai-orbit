@@ -115,7 +115,7 @@ class OrbitServiceProvider extends ServiceProvider
         ], 'ai-orbit-views');
 
         $this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/laravel-ai-orbit'),
+            __DIR__.'/../dist' => public_path('vendor/ai-orbit'),
         ], 'ai-orbit-assets');
     }
 

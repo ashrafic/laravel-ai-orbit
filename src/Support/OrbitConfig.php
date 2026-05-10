@@ -63,4 +63,12 @@ class OrbitConfig
     {
         return (int) Config::get('ai-orbit.registry_cache_ttl', 3600);
     }
+
+    /**
+     * Get the configured back-to-app URL.
+     */
+    public static function backToAppUrl(): string
+    {
+        return Config::get('ai-orbit.back_to_app_url', '/');
+    }
 }
