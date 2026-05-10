@@ -11,7 +11,7 @@ class OrbitConfig
      */
     public static function path(): string
     {
-        return Config::get('ai-orbit.path', 'ai-orbit');
+        return Config::get('ai-orbit.path') ?: 'ai-orbit';
     }
 
     /**

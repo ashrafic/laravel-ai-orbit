@@ -17,7 +17,7 @@ class Authorize
     {
         $user = Auth::guard(OrbitConfig::guard())->user();
 
-        if (! Gate::forUser($user)->check('viewAiOrbit')) {
+        if (! Gate::check('viewAiOrbit', [$user])) {
             abort(403);
         }
 
