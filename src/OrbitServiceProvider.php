@@ -4,6 +4,8 @@ namespace Ashraf\Orbit;
 
 use Ashraf\Orbit\Contracts\AgentRegistryContract;
 use Ashraf\Orbit\Contracts\FeatureGate;
+use Ashraf\Orbit\Http\Livewire\MessageTimeline;
+use Ashraf\Orbit\Http\Livewire\ThreadExplorer;
 use Ashraf\Orbit\Http\Livewire\TodayStats;
 use Ashraf\Orbit\Http\Middleware\Authorize;
 use Ashraf\Orbit\Services\AgentRegistry;
@@ -121,5 +123,7 @@ class OrbitServiceProvider extends ServiceProvider
     protected function registerLivewireComponents(): void
     {
         Livewire::component('orbit.today-stats', TodayStats::class);
+        Livewire::component('orbit.thread-explorer', ThreadExplorer::class);
+        Livewire::component('orbit.message-timeline', MessageTimeline::class);
     }
 }
