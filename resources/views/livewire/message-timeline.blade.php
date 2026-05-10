@@ -1,7 +1,7 @@
 <div class="space-y-6">
     {{-- Conversation Header --}}
     @if ($conversation)
-        <x-laravel-ai-orbit::card>
+        <x-ai-orbit::card>
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $conversation->title }}</h2>
@@ -11,7 +11,7 @@
                         </span>
                         @if (!empty($conversation->agent_class))
                             <span class="text-xs text-gray-500 dark:text-gray-400">&middot;</span>
-                            <x-laravel-ai-orbit::badge :label="class_basename($conversation->agent_class)" color="blue" />
+                            <x-ai-orbit::badge :label="class_basename($conversation->agent_class)" color="blue" />
                         @endif
                     </div>
                 </div>
@@ -24,12 +24,12 @@
                     </button>
                 </div>
             </div>
-        </x-laravel-ai-orbit::card>
+        </x-ai-orbit::card>
     @endif
 
     {{-- Messages Timeline --}}
     @if ($messages->isEmpty())
-        <x-laravel-ai-orbit::empty-state title="No messages" description="This conversation has no recorded messages." />
+        <x-ai-orbit::empty-state title="No messages" description="This conversation has no recorded messages." />
     @else
         <div class="space-y-4">
             @foreach ($messages as $message)

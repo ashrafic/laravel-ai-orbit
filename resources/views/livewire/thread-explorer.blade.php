@@ -22,7 +22,7 @@
     </div>
 
     {{-- Table --}}
-    <x-laravel-ai-orbit::card padding="p-0">
+    <x-ai-orbit::card padding="p-0">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
@@ -87,7 +87,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-4 py-12">
-                                <x-laravel-ai-orbit::empty-state title="No conversations found"
+                                <x-ai-orbit::empty-state title="No conversations found"
                                     description="Agent conversations will appear here once activity is recorded." />
                             </td>
                         </tr>
@@ -101,5 +101,5 @@
                 {{ $conversations->links() }}
             </div>
         @endif
-    </x-laravel-ai-orbit::card>
+    </x-ai-orbit::card>
 </div>

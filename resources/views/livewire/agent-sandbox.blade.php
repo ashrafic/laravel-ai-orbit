@@ -3,7 +3,7 @@
     <div class="flex-1 overflow-y-auto space-y-3 mb-4 pr-2" id="sandbox-messages">
         @if (empty($history) && !$sending)
             <div class="flex items-center justify-center h-full">
-                <x-laravel-ai-orbit::empty-state title="Start a conversation"
+                <x-ai-orbit::empty-state title="Start a conversation"
                     description="Send a message to begin chatting with this agent." />
             </div>
         @endif

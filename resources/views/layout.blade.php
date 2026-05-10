@@ -45,7 +45,7 @@
     <div class="flex min-h-screen">
 
         {{-- Sidebar --}}
-        <x-laravel-ai-orbit::nav />
+        <x-ai-orbit::nav />
 
         {{-- Main Content --}}
         <div class="flex-1 flex flex-col min-w-0">
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <x-laravel-ai-orbit::theme-toggle />
+                    <x-ai-orbit::theme-toggle />
                 </div>
             </header>
 
@@ -75,7 +75,7 @@
             <main class="flex-1 p-4 lg:p-6 overflow-x-hidden">
 
                 {{-- Health Check Warnings --}}
-                @php $healthIssues = \Ashraf\LaravelAiOrbit\Orbit::healthCheck(); @endphp
+                @php $healthIssues = \Ashrafic\AiOrbit\Orbit::healthCheck(); @endphp
                 @if (!empty($healthIssues))
                     <div x-data="{ dismissed: false }" x-show="!dismissed" class="mb-6 space-y-3">
                         @foreach ($healthIssues as $issue)

@@ -1,4 +1,4 @@
-<x-laravel-ai-orbit::layout>
+<x-ai-orbit::layout>
     <div class="space-y-6">
         <div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Usage</h2>
@@ -6,11 +6,11 @@
         </div>
 
         {{-- Today's Stats --}}
-        <livewire:orbit.today-stats />
+        <livewire:ai-orbit.today-stats />
 
         {{-- Pro Feature Teasers --}}
         @php
-            $featureGate = app(\Ashraf\LaravelAiOrbit\Contracts\FeatureGate::class);
+            $featureGate = app(\Ashrafic\AiOrbit\Contracts\FeatureGate::class);
         @endphp
 
         @if (! $featureGate->hasAdvancedAnalytics())
@@ -101,4 +101,4 @@
             </div>
         @endif
     </div>
-</x-laravel-ai-orbit::layout>
+</x-ai-orbit::layout>

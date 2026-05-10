@@ -1,11 +1,11 @@
-<x-laravel-ai-orbit::layout>
+<x-ai-orbit::layout>
     <div class="space-y-6">
         <div>
             <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Overview of your AI agent activity today.</p>
         </div>
 
-        <livewire:orbit.today-stats />
+        <livewire:ai-orbit.today-stats />
 
         {{-- Quick Links --}}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -56,4 +56,4 @@
             </a>
         </div>
     </div>
-</x-laravel-ai-orbit::layout>
+</x-ai-orbit::layout>
