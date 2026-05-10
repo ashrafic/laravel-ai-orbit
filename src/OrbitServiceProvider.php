@@ -4,12 +4,14 @@ namespace Ashraf\Orbit;
 
 use Ashraf\Orbit\Contracts\AgentRegistryContract;
 use Ashraf\Orbit\Contracts\FeatureGate;
+use Ashraf\Orbit\Http\Livewire\TodayStats;
 use Ashraf\Orbit\Http\Middleware\Authorize;
 use Ashraf\Orbit\Services\AgentRegistry;
 use Ashraf\Orbit\Support\FreeFeatureGate;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class OrbitServiceProvider extends ServiceProvider
 {
@@ -41,6 +43,7 @@ class OrbitServiceProvider extends ServiceProvider
         $this->loadViews();
         $this->defineGate();
         $this->registerPublishables();
+        $this->registerLivewireComponents();
     }
 
     /**
@@ -110,5 +113,13 @@ class OrbitServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/assets' => public_path('vendor/orbit'),
         ], 'ai-orbit-assets');
+    }
+
+    /**
+     * Register the package Livewire components.
+     */
+    protected function registerLivewireComponents(): void
+    {
+        Livewire::component('orbit.today-stats', TodayStats::class);
     }
 }
