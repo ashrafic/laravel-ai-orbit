@@ -90,4 +90,90 @@ return [
 
     'registry_cache_ttl' => 3600,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Currency Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The default currency and symbol used for cost calculations and display
+    | throughout the dashboard (pricing matrix, cost dashboard, etc.).
+    |
+    */
+
+    'currency' => env('ORBIT_CURRENCY', 'USD'),
+
+    'currency_symbol' => env('ORBIT_CURRENCY_SYMBOL', '$'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Budget Monitoring
+    |--------------------------------------------------------------------------
+    |
+    | Configure budget alert functionality. Notifications are dispatched via
+    | Laravel's queue system (non-blocking) so they never slow down requests.
+    |
+    */
+
+    'budget' => [
+
+        'enabled' => env('ORBIT_BUDGET_ENABLED', true),
+
+        'notification_channels' => ['mail'],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Arena Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Settings for the Arena feature, which runs one prompt against multiple
+    | models concurrently for side-by-side comparison.
+    |
+    */
+
+    'arena' => [
+
+        'max_concurrent_models' => (int) env('ORBIT_ARENA_MAX_MODELS', 3),
+
+        'timeout_seconds' => (int) env('ORBIT_ARENA_TIMEOUT', 120),
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Export Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Settings for conversation export functionality — Pest test generation
+    | and JSON fine-tuning exports.
+    |
+    */
+
+    'export' => [
+
+        'pest_namespace' => env('ORBIT_PEST_NAMESPACE', 'Tests\\Feature\\AI'),
+
+        'json_format' => env('ORBIT_JSON_FORMAT', 'openai'),
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Audit Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Security audit and compliance settings. Includes access logging,
+    | PII detection, and data retention policies.
+    |
+    */
+
+    'audit' => [
+
+        'enabled' => env('ORBIT_AUDIT_ENABLED', true),
+
+        'retention_days' => (int) env('ORBIT_RETENTION_DAYS', 90),
+
+    ],
+
 ];

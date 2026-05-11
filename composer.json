@@ -1,6 +1,6 @@
 {
     "name": "ashrafic/laravel-ai-orbit",
-    "description": "Observability, management, and developer playground for the Laravel AI SDK.",
+    "description": "Observability, management, playground, arena, audit, and analytics for the Laravel AI SDK.",
     "keywords": [
         "laravel",
         "ai",
