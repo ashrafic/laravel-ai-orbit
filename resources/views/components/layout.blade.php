@@ -85,7 +85,11 @@
                     </div>
                 @endif
 
-                {{ $slot }}
+                @isset($slot)
+                    {{ $slot }}
+                @else
+                    @yield('content')
+                @endisset
             </main>
         </div>
     </div>

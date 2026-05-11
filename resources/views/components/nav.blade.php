@@ -20,10 +20,14 @@
                 ['route' => 'orbit.usage.index', 'label' => 'Usage', 'icon' => 'chart'],
             ];
 
-            $proLinks = [
-                ['label' => 'Arena', 'feature' => 'hasArena'],
-                ['label' => 'Audit', 'feature' => 'hasAudit'],
-                ['label' => 'Prompts', 'feature' => 'hasAdvancedAnalytics'],
+            $advancedLinks = [
+                ['route' => 'orbit.arena.index', 'label' => 'Arena', 'icon' => 'arena'],
+                ['route' => 'orbit.usage.dashboard', 'label' => 'Analytics', 'icon' => 'chart'],
+                ['route' => 'orbit.usage.pricing', 'label' => 'Pricing', 'icon' => 'dollar'],
+                ['route' => 'orbit.usage.alerts', 'label' => 'Alerts', 'icon' => 'bell'],
+                ['route' => 'orbit.usage.health', 'label' => 'Health', 'icon' => 'heart'],
+                ['route' => 'orbit.audit.index', 'label' => 'Audit', 'icon' => 'shield'],
+                ['route' => 'orbit.prompts.index', 'label' => 'Prompts', 'icon' => 'bolt'],
             ];
         @endphp
 
@@ -37,7 +41,6 @@
                           ? 'bg-orbit-50 dark:bg-orbit-900/30 text-orbit-600 dark:text-orbit-400'
                           : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200' }}"
             >
-                {{-- Icon --}}
                 <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
                     @if ($link['icon'] === 'dashboard')
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,55 +65,30 @@
             </a>
         @endforeach
 
-        {{-- Pro Features Divider --}}
+        {{-- Advanced Features Divider --}}
         <div class="pt-4 pb-1">
             <div class="border-t border-gray-200 dark:border-gray-800 pt-3 px-3">
-                <span class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Pro</span>
+                <span class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Advanced</span>
             </div>
         </div>
 
-        @php
-            $featureGate = app(\Ashrafic\AiOrbit\Contracts\FeatureGate::class);
-        @endphp
-
-        @foreach ($proLinks as $proLink)
+        @foreach ($advancedLinks as $link)
             @php
-                $hasFeature = method_exists($featureGate, $proLink['feature'])
-                    ? $featureGate->{$proLink['feature']}()
-                    : false;
+                $isActive = request()->routeIs($link['route']);
             @endphp
-
-            @if ($hasFeature)
-                <a href="#"
-                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                          text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200"
-                >
-                    <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </span>
-                    <span>{{ $proLink['label'] }}</span>
-                </a>
-            @else
-                <span class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-400 dark:text-gray-600 cursor-not-allowed select-none">
-                    <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                    </span>
-                    <span>{{ $proLink['label'] }}</span>
+            <a href="{{ route($link['route']) }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                      {{ $isActive
+                          ? 'bg-orbit-50 dark:bg-orbit-900/30 text-orbit-600 dark:text-orbit-400'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200' }}"
+            >
+                <span class="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
                 </span>
-            @endif
+                <span>{{ $link['label'] }}</span>
+            </a>
         @endforeach
     </nav>
-
-    {{-- Pro CTA --}}
-    <div class="p-3 border-t border-gray-200 dark:border-gray-800">
-        @if (! $featureGate->hasArena())
-            <a href="#" class="block text-center text-xs py-2 px-3 rounded-lg bg-orbit-500 text-white font-medium hover:bg-orbit-600 transition-colors">
-                Upgrade to Pro
-            </a>
-        @endif
-    </div>
 </div>
