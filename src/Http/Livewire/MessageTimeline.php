@@ -2,6 +2,7 @@
 
 namespace Ashrafic\AiOrbit\Http\Livewire;
 
+use Ashrafic\AiOrbit\Models\Bookmark;
 use Ashrafic\AiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -25,10 +26,31 @@ class MessageTimeline extends Component
         $this->showRawPayload = ! $this->showRawPayload;
     }
 
+    public function toggleBookmark(): void
+    {
+        $existing = Bookmark::where('conversation_id', $this->conversationId)->first();
+
+        if ($existing) {
+            $existing->delete();
+        } else {
+            Bookmark::create(['conversation_id' => $this->conversationId]);
+        }
+    }
+
+    public function isBookmarked(): bool
+    {
+        return Bookmark::where('conversation_id', $this->conversationId)->exists();
+    }
+
     public function render(): View
     {
         if ($this->conversation === null) {
-            abort(404);
+            $repository = app(ConversationRepository::class);
+            $this->conversation = $repository->find($this->conversationId);
+
+            if ($this->conversation === null) {
+                abort(404);
+            }
         }
 
         return view('ai-orbit::livewire.message-timeline', [

@@ -2,6 +2,7 @@
 
 namespace Ashrafic\AiOrbit\Http\Livewire;
 
+use Ashrafic\AiOrbit\Models\Bookmark;
 use Ashrafic\AiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,24 @@ class ThreadExplorer extends Component
 
     public string $sortDirection = 'desc';
 
+    public string $userIdFilter = '';
+
+    public ?int $tokenMin = null;
+
+    public ?int $tokenMax = null;
+
+    public ?float $costMin = null;
+
+    public ?float $costMax = null;
+
+    public ?float $latencyMin = null;
+
+    public ?float $latencyMax = null;
+
+    public string $statusFilter = '';
+
+    public bool $bookmarkedOnly = false;
+
     public function updatingSearch(): void
     {
         $this->resetPage();
@@ -33,6 +52,51 @@ class ThreadExplorer extends Component
     }
 
     public function updatingAgentClass(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingUserIdFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingTokenMin(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingTokenMax(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingCostMin(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingCostMax(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingLatencyMin(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingLatencyMax(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingBookmarkedOnly(): void
     {
         $this->resetPage();
     }
@@ -50,6 +114,22 @@ class ThreadExplorer extends Component
     public function deleteConversation(string $id): void
     {
         app(ConversationRepository::class)->delete($id);
+    }
+
+    public function toggleBookmark(string $conversationId): void
+    {
+        $existing = Bookmark::where('conversation_id', $conversationId)->first();
+
+        if ($existing) {
+            $existing->delete();
+        } else {
+            Bookmark::create(['conversation_id' => $conversationId]);
+        }
+    }
+
+    public function isBookmarked(string $conversationId): bool
+    {
+        return Bookmark::where('conversation_id', $conversationId)->exists();
     }
 
     /**
@@ -91,6 +171,20 @@ class ThreadExplorer extends Component
         if ($this->search !== '') {
             $filters['search'] = $this->search;
         }
+
+        if ($this->userIdFilter !== '') {
+            $filters['user_id'] = $this->userIdFilter;
+        }
+
+        if ($this->tokenMin !== null) {
+            $filters['token_min'] = $this->tokenMin;
+        }
+
+        if ($this->tokenMax !== null) {
+            $filters['token_max'] = $this->tokenMax;
+        }
+
+        $filters['bookmarked_only'] = $this->bookmarkedOnly;
 
         $conversations = $repository->list($filters);
 

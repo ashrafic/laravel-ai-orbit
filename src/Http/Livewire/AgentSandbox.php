@@ -23,6 +23,26 @@ class AgentSandbox extends Component
 
     public ?string $error = null;
 
+    public bool $proMode = true;
+
+    public ?string $overrideSystemPrompt = null;
+
+    public ?string $overrideModel = null;
+
+    public ?string $overrideProvider = null;
+
+    public ?float $overrideTemperature = null;
+
+    public ?int $overrideMaxTokens = null;
+
+    public bool $debuggerEnabled = false;
+
+    public array $pendingToolCalls = [];
+
+    public ?string $contextJson = null;
+
+    public array $forkPoints = [];
+
     public function mount(string $agentClass): void
     {
         $this->agentClass = $agentClass;
@@ -69,6 +89,56 @@ class AgentSandbox extends Component
         $this->history = [];
         $this->error = null;
         $this->prompt = '';
+    }
+
+    public function applyOverrides(): void
+    {
+        $this->dispatch('overrides-applied', overrides: [
+            'system_prompt' => $this->overrideSystemPrompt,
+            'model' => $this->overrideModel,
+            'provider' => $this->overrideProvider,
+            'temperature' => $this->overrideTemperature,
+            'max_tokens' => $this->overrideMaxTokens,
+        ]);
+    }
+
+    public function clearOverrides(): void
+    {
+        $this->overrideSystemPrompt = null;
+        $this->overrideModel = null;
+        $this->overrideProvider = null;
+        $this->overrideTemperature = null;
+        $this->overrideMaxTokens = null;
+    }
+
+    public function toggleDebugger(): void
+    {
+        $this->debuggerEnabled = ! $this->debuggerEnabled;
+    }
+
+    public function approveToolCall(string $toolCallId): void
+    {
+        unset($this->pendingToolCalls[$toolCallId]);
+    }
+
+    public function editToolCall(string $toolCallId, array $editedArgs): void
+    {
+        $this->pendingToolCalls[$toolCallId]['args'] = $editedArgs;
+    }
+
+    public function mockToolResponse(string $toolCallId, string $mockResponse): void
+    {
+        $this->pendingToolCalls[$toolCallId]['mock'] = $mockResponse;
+    }
+
+    public function injectContextJson(string $json): void
+    {
+        $this->contextJson = $json;
+    }
+
+    public function forkConversation(int $messageIndex): void
+    {
+        $this->forkPoints[] = $messageIndex;
     }
 
     public function render(): View
