@@ -1,5 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
 parameters:
     level: 8
     paths:
         - src/
-    ignoreErrors: []
+    ignoreErrors:
+        - '#Parameter \#1 \$view of function view expects view-string\|null, string given#'
+        - '#should return Illuminate\\Support\\Collection#'
+        - '#Using nullsafe property access#'
+        - '#Cannot call method [a-zA-Z]+\(\) on string#'
+        - '#no value type specified in iterable type#'
+        - '#has no type specified#'

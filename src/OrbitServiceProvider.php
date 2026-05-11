@@ -3,15 +3,19 @@
 namespace Ashrafic\AiOrbit;
 
 use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
-use Ashrafic\AiOrbit\Contracts\FeatureGate;
 use Ashrafic\AiOrbit\Http\Livewire\AgentInspector;
 use Ashrafic\AiOrbit\Http\Livewire\AgentSandbox;
+use Ashrafic\AiOrbit\Http\Livewire\ArenaCompare;
+use Ashrafic\AiOrbit\Http\Livewire\BudgetAlerts;
+use Ashrafic\AiOrbit\Http\Livewire\CostDashboard;
 use Ashrafic\AiOrbit\Http\Livewire\MessageTimeline;
+use Ashrafic\AiOrbit\Http\Livewire\PricingMatrix;
+use Ashrafic\AiOrbit\Http\Livewire\PromptLibrary;
+use Ashrafic\AiOrbit\Http\Livewire\ProviderHealth;
 use Ashrafic\AiOrbit\Http\Livewire\ThreadExplorer;
 use Ashrafic\AiOrbit\Http\Livewire\TodayStats;
 use Ashrafic\AiOrbit\Http\Middleware\Authorize;
 use Ashrafic\AiOrbit\Services\AgentRegistry;
-use Ashrafic\AiOrbit\Support\FreeFeatureGate;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -28,8 +32,6 @@ class OrbitServiceProvider extends ServiceProvider
             __DIR__.'/../config/ai-orbit.php', 'ai-orbit'
         );
 
-        $this->app->bind(FeatureGate::class, FreeFeatureGate::class);
-
         $this->app->singleton(Orbit::class);
 
         $this->app->singleton(
@@ -45,6 +47,7 @@ class OrbitServiceProvider extends ServiceProvider
     {
         $this->loadRoutes();
         $this->loadViews();
+        $this->loadMigrations();
         $this->defineGate();
         $this->registerPublishables();
         $this->registerLivewireComponents();
@@ -85,6 +88,14 @@ class OrbitServiceProvider extends ServiceProvider
         $this->loadViewsFrom(
             __DIR__.'/../resources/views', 'ai-orbit'
         );
+    }
+
+    /**
+     * Load the package database migrations.
+     */
+    protected function loadMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     /**
@@ -129,5 +140,11 @@ class OrbitServiceProvider extends ServiceProvider
         Livewire::component('ai-orbit.message-timeline', MessageTimeline::class);
         Livewire::component('ai-orbit.agent-sandbox', AgentSandbox::class);
         Livewire::component('ai-orbit.agent-inspector', AgentInspector::class);
+        Livewire::component('ai-orbit.arena-compare', ArenaCompare::class);
+        Livewire::component('ai-orbit.cost-dashboard', CostDashboard::class);
+        Livewire::component('ai-orbit.pricing-matrix', PricingMatrix::class);
+        Livewire::component('ai-orbit.budget-alerts', BudgetAlerts::class);
+        Livewire::component('ai-orbit.provider-health', ProviderHealth::class);
+        Livewire::component('ai-orbit.prompt-library', PromptLibrary::class);
     }
 }

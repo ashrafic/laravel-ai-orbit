@@ -1,19 +1,11 @@
 <?php
 
 use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
-use Ashrafic\AiOrbit\Contracts\FeatureGate;
 use Ashrafic\AiOrbit\Services\AgentRegistry;
-use Ashrafic\AiOrbit\Support\FreeFeatureGate;
 
 it('registers the service provider and merges config', function () {
     expect(config('ai-orbit.path'))->toBe('ai-orbit');
     expect(config('ai-orbit.auth_guard'))->toBe('web');
-});
-
-it('binds FeatureGate to FreeFeatureGate by default', function () {
-    $gate = app(FeatureGate::class);
-
-    expect($gate)->toBeInstanceOf(FreeFeatureGate::class);
 });
 
 it('binds AgentRegistryContract', function () {
