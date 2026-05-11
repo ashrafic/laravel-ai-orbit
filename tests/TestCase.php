@@ -14,7 +14,8 @@ abstract class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
-        $this->runMigrations();
+        $this->runSdkMigrations();
+        $this->runOrbitMigrations();
     }
 
     /**
@@ -49,9 +50,9 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Run the database migrations.
+     * Run the SDK database migrations.
      */
-    protected function runMigrations(): void
+    protected function runSdkMigrations(): void
     {
         if (Schema::hasTable('agent_conversations')) {
             return;
@@ -61,6 +62,23 @@ abstract class TestCase extends OrchestraTestCase
 
         if (is_dir($aiMigrationPath)) {
             foreach (glob($aiMigrationPath.'/*.php') as $file) {
+                $migration = include $file;
+                if (is_object($migration) && method_exists($migration, 'up')) {
+                    $migration->up();
+                }
+            }
+        }
+    }
+
+    /**
+     * Run the Orbit package database migrations.
+     */
+    protected function runOrbitMigrations(): void
+    {
+        $orbitMigrationPath = dirname(__DIR__).'/database/migrations';
+
+        if (is_dir($orbitMigrationPath)) {
+            foreach (glob($orbitMigrationPath.'/*.php') as $file) {
                 $migration = include $file;
                 if (is_object($migration) && method_exists($migration, 'up')) {
                     $migration->up();
