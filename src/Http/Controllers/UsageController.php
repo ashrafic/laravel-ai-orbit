@@ -14,4 +14,36 @@ class UsageController extends Controller
     {
         return view('ai-orbit::usage.index');
     }
+
+    /**
+     * Display the full analytics dashboard.
+     */
+    public function dashboard(): View
+    {
+        return view('ai-orbit::usage.dashboard');
+    }
+
+    /**
+     * Display the pricing matrix.
+     */
+    public function pricing(): View
+    {
+        return view('ai-orbit::usage.pricing');
+    }
+
+    /**
+     * Display the budget alerts.
+     */
+    public function alerts(): View
+    {
+        return view('ai-orbit::usage.alerts');
+    }
+
+    /**
+     * Display the provider health panel.
+     */
+    public function health(): View
+    {
+        return view('ai-orbit::usage.health');
+    }
 }

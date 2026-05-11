@@ -12,7 +12,9 @@ class ConversationController extends Controller
      */
     public function index(): View
     {
-        return view('ai-orbit::conversations.index');
+        return view('ai-orbit::conversations.index', [
+            'useProExplorer' => true,
+        ]);
     }
 
     /**

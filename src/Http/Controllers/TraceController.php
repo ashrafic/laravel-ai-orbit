@@ -22,6 +22,7 @@ class TraceController extends Controller
         return view('ai-orbit::traces.show', [
             'conversation' => $conversation,
             'messages' => $conversation->messages ?? collect(),
+            'isPro' => true,
         ]);
     }
 }

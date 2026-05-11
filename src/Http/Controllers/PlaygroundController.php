@@ -25,6 +25,9 @@ class PlaygroundController extends Controller
      */
     public function show(string $agent): View
     {
-        return view('ai-orbit::playground.show', ['agent' => $agent]);
+        return view('ai-orbit::playground.show', [
+            'agent' => $agent,
+            'isPro' => true,
+        ]);
     }
 }
