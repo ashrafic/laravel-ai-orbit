@@ -1,13 +1,21 @@
 {
     "name": "ashrafic/laravel-ai-orbit",
-    "description": "Observability, management, playground, arena, audit, and analytics for the Laravel AI SDK.",
+    "description": "The Intelligent Control Tower for Laravel AI SDK.",
     "keywords": [
         "laravel",
         "ai",
         "orbit",
         "observability",
         "agent",
-        "playground"
+        "playground",
+        "arena",
+        "audit",
+        "analytics",
+        "debugging",
+        "export",
+        "prompts",
+        "pricing",
+        "monitoring"
     ],
     "license": "MIT",
     "authors": [
