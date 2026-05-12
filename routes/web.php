@@ -20,7 +20,6 @@ Route::get('/traces/{id}', [TraceController::class, 'show'])->name('orbit.traces
 Route::get('/usage', [UsageController::class, 'index'])->name('orbit.usage.index');
 
 Route::get('/arena', [ArenaController::class, 'index'])->name('orbit.arena.index');
-Route::post('/arena/session', [ArenaController::class, 'store'])->name('orbit.arena.store');
 Route::get('/arena/session/{id}', [ArenaController::class, 'show'])->name('orbit.arena.show');
 
 Route::get('/usage/dashboard', [UsageController::class, 'dashboard'])->name('orbit.usage.dashboard');

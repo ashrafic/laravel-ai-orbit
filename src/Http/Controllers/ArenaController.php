@@ -25,9 +25,4 @@ class ArenaController extends Controller
             'session' => $session,
         ]);
     }
-
-    public function store(): void
-    {
-        // Handled by ArenaSession Livewire component
-    }
 }

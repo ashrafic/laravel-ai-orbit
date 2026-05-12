@@ -56,13 +56,35 @@ class ProviderHealthChecker
                 ? round((($total - $errorCount) / $total) * 100, 2)
                 : 100.0;
 
+            $rateLimitCount = $this->connection()->table('agent_conversation_messages')
+                ->where('created_at', '>=', $dateFrom)
+                ->whereRaw($jsonProvider.' = ?', [$provider])
+                ->where(function ($q) {
+                    $q->whereRaw("JSON_EXTRACT(meta, '$.error') LIKE '%rate limit%'")
+                        ->orWhereRaw("JSON_EXTRACT(meta, '$.error') LIKE '%429%'")
+                        ->orWhereRaw("JSON_EXTRACT(meta, '$.error') LIKE '%too many%'");
+                })
+                ->count();
+
+            $avgLatency = 0;
+            $latencyData = $this->connection()->table('agent_conversation_messages')
+                ->where('created_at', '>=', $dateFrom)
+                ->whereRaw($jsonProvider.' = ?', [$provider])
+                ->whereRaw("JSON_EXTRACT(meta, '$.latency_ms') IS NOT NULL")
+                ->selectRaw("AVG(JSON_EXTRACT(meta, '$.latency_ms')) as avg_ms")
+                ->first();
+
+            if ($latencyData && isset($latencyData->avg_ms)) {
+                $avgLatency = round((float) $latencyData->avg_ms, 2);
+            }
+
             $results->push([
                 'provider' => $provider,
                 'total_requests' => $total,
                 'success_rate' => $successRate,
                 'error_count' => $errorCount,
-                'rate_limit_count' => 0,
-                'avg_latency_ms' => 0,
+                'rate_limit_count' => $rateLimitCount,
+                'avg_latency_ms' => $avgLatency,
                 'status' => $successRate >= 95 ? 'healthy' : ($successRate >= 80 ? 'degraded' : 'unhealthy'),
             ]);
         }
