@@ -20,6 +20,8 @@ class PricingMatrix extends Component
 
     public ?int $editingId = null;
 
+    public bool $showForm = false;
+
     protected $rules = [
         'model' => 'required|string|max:255',
         'provider' => 'nullable|string|max:255',
@@ -33,6 +35,7 @@ class PricingMatrix extends Component
         if ($id) {
             $rule = PricingRule::findOrFail($id);
             $this->editingId = $id;
+            $this->showForm = true;
             $this->model = $rule->model;
             $this->provider = $rule->provider;
             $this->inputCost = (string) $rule->input_cost_per_1m;
@@ -61,7 +64,7 @@ class PricingMatrix extends Component
             PricingRule::create($data);
         }
 
-        $this->reset(['editingId', 'model', 'provider', 'inputCost', 'outputCost', 'currency']);
+        $this->reset(['editingId', 'showForm', 'model', 'provider', 'inputCost', 'outputCost', 'currency']);
     }
 
     public function delete(int $id): void
@@ -71,7 +74,7 @@ class PricingMatrix extends Component
 
     public function cancelEdit(): void
     {
-        $this->reset(['editingId', 'model', 'provider', 'inputCost', 'outputCost', 'currency']);
+        $this->reset(['editingId', 'showForm', 'model', 'provider', 'inputCost', 'outputCost', 'currency']);
     }
 
     public function render(): View

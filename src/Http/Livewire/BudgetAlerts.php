@@ -18,6 +18,8 @@ class BudgetAlerts extends Component
 
     public ?int $editingId = null;
 
+    public bool $showForm = false;
+
     protected $rules = [
         'thresholdAmount' => 'required|numeric|min:0.01',
         'period' => 'required|string|in:daily,weekly,monthly',
@@ -30,6 +32,7 @@ class BudgetAlerts extends Component
         if ($id) {
             $alert = BudgetAlert::findOrFail($id);
             $this->editingId = $id;
+            $this->showForm = true;
             $this->thresholdAmount = (string) $alert->threshold_amount;
             $this->period = $alert->period;
             $this->channels = $alert->channels ?? ['mail'];
@@ -67,7 +70,7 @@ class BudgetAlerts extends Component
             BudgetAlert::create($data);
         }
 
-        $this->reset(['editingId', 'thresholdAmount', 'period', 'channels', 'enabled']);
+        $this->reset(['editingId', 'showForm', 'thresholdAmount', 'period', 'channels', 'enabled']);
     }
 
     public function delete(int $id): void
@@ -77,7 +80,7 @@ class BudgetAlerts extends Component
 
     public function cancelEdit(): void
     {
-        $this->reset(['editingId', 'thresholdAmount', 'period', 'channels', 'enabled']);
+        $this->reset(['editingId', 'showForm', 'thresholdAmount', 'period', 'channels', 'enabled']);
     }
 
     public function render(): View

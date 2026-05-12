@@ -1,5 +1,16 @@
 <div>
+    {{-- Add New Button --}}
+    @if(! $showForm)
+    <div class="mb-4">
+        <button wire:click="$set('showForm', true)"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg">
+            + Add Pricing Rule
+        </button>
+    </div>
+    @endif
+
     {{-- Form --}}
+    @if($showForm)
     <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 mb-6">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {{ $editingId ? 'Edit Pricing Rule' : 'Add Pricing Rule' }}
@@ -38,14 +49,13 @@
                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg">
                 {{ $editingId ? 'Update' : 'Save' }}
             </button>
-            @if($editingId)
             <button wire:click="cancelEdit"
                 class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
                 Cancel
             </button>
-            @endif
         </div>
     </div>
+    @endif
 
     {{-- Table --}}
     <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
