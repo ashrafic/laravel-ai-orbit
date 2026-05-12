@@ -1,17 +1,26 @@
-@props(['label' => '', 'color' => 'gray'])
+@props(['label' => '', 'color' => 'gray', 'variant' => null])
 
 @php
-    $colorClasses = [
-        'gray' => 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-        'blue' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
-        'green' => 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
-        'red' => 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300',
-        'yellow' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300',
-        'purple' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
-        'orange' => 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
-    ][$color] ?? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300';
+    $colorMap = $variant ? match($variant) {
+        'success' => 'green',
+        'danger' => 'red',
+        'warning' => 'yellow',
+        'info' => 'blue',
+        default => 'gray',
+    } : $color;
+
+    $colorClasses = match($colorMap) {
+        'gray' => 'bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-gray-400',
+        'blue' => 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400',
+        'green' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400',
+        'red' => 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400',
+        'yellow' => 'bg-yellow-50 text-yellow-600 dark:bg-yellow-500/10 dark:text-yellow-400',
+        'purple' => 'bg-purple-50 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400',
+        'orange' => 'bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400',
+        default => 'bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-gray-400',
+    };
 @endphp
 
-<span {{ $attributes->merge(['class' => 'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium '.$colorClasses]) }}>
+<span {{ $attributes->merge(['class' => 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium '.$colorClasses]) }}>
     {{ $label }}
 </span>

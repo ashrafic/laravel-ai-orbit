@@ -1,14 +1,14 @@
 <div>
-    <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
+    <x-ai-orbit::card>
         <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Cost Dashboard</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50 tracking-tight">Cost Dashboard</h2>
             <div class="flex gap-2">
-                <select wire:model.live="period" class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 text-sm">
+                <select wire:model.live="period" class="orbit-input">
                     @foreach($periods as $key => $label)
                     <option value="{{ $key }}">{{ $label }}</option>
                     @endforeach
                 </select>
-                <select wire:model.live="groupBy" class="rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1.5 text-sm">
+                <select wire:model.live="groupBy" class="orbit-input">
                     @foreach($groups as $key => $label)
                     <option value="{{ $key }}">{{ $label }}</option>
                     @endforeach
@@ -16,50 +16,40 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <x-ai-orbit::card>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Total Cost</span>
-                <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ $currencySymbol }}{{ number_format($totalCost, 4) }}</span>
-            </x-ai-orbit::card>
-            <x-ai-orbit::card>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Conversations</span>
-                <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($stats['total_conversations']) }}</span>
-            </x-ai-orbit::card>
-            <x-ai-orbit::card>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Input Tokens</span>
-                <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($stats['input_tokens']) }}</span>
-            </x-ai-orbit::card>
-            <x-ai-orbit::card>
-                <span class="text-sm text-gray-500 dark:text-gray-400">Output Tokens</span>
-                <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($stats['output_tokens']) }}</span>
-            </x-ai-orbit::card>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            <x-ai-orbit::stat label="Total Cost" value="{{ $currencySymbol }}{{ number_format($totalCost, 4) }}" />
+            <x-ai-orbit::stat label="Conversations" value="{{ number_format($stats['total_conversations']) }}" />
+            <x-ai-orbit::stat label="Input Tokens" value="{{ number_format($stats['input_tokens']) }}" />
+            <x-ai-orbit::stat label="Output Tokens" value="{{ number_format($stats['output_tokens']) }}" />
         </div>
 
         @if($breakdown->isNotEmpty())
-        <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-800">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{{ ucfirst($groupBy) }}</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Messages</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Input Tokens</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Output Tokens</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
-                    @foreach($breakdown as $row)
-                    <tr>
-                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">{{ class_basename($row->agent ?? 'Unknown') }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">{{ number_format($row->message_count ?? 0) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">{{ number_format($row->input_tokens ?? 0) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-600 dark:text-gray-400">{{ number_format($row->output_tokens ?? 0) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+        <x-ai-orbit::card padding="p-0">
+            <div class="overflow-x-auto">
+                <table class="orbit-table w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-200/60 dark:border-white/8">
+                            <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ ucfirst($groupBy) }}</th>
+                            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Messages</th>
+                            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Input Tokens</th>
+                            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Output Tokens</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-white/4">
+                        @foreach($breakdown as $row)
+                        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                            <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-50">{{ class_basename($row->agent ?? 'Unknown') }}</td>
+                            <td class="px-4 py-3 text-sm text-right text-gray-500 dark:text-gray-400">{{ number_format($row->message_count ?? 0) }}</td>
+                            <td class="px-4 py-3 text-sm text-right text-gray-500 dark:text-gray-400">{{ number_format($row->input_tokens ?? 0) }}</td>
+                            <td class="px-4 py-3 text-sm text-right text-gray-500 dark:text-gray-400">{{ number_format($row->output_tokens ?? 0) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </x-ai-orbit::card>
         @else
         <x-ai-orbit::empty-state message="No data for the selected period." />
         @endif
-    </div>
+    </x-ai-orbit::card>
 </div>

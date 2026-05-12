@@ -1,12 +1,12 @@
-@extends('ai-orbit::components.layout')
+<x-ai-orbit::layout>
+    @slot('breadcrumb', 'Alerts')
 
-@section('content')
-<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-    <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Budget Alerts</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Set thresholds to get notified when AI spending exceeds your budget.</p>
+    <div class="space-y-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Budget Alerts</h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Set thresholds to get notified when AI spending exceeds your budget.</p>
+        </div>
+
+        <livewire:ai-orbit.budget-alerts />
     </div>
-
-    <livewire:ai-orbit.budget-alerts />
-</div>
-@endsection
+</x-ai-orbit::layout>

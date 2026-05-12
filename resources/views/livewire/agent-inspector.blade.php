@@ -1,18 +1,18 @@
 <div class="space-y-4">
     @if ($agentMeta === null)
-        <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+        <div class="p-4 glass-card border-yellow-200/50 dark:border-yellow-800/50 rounded-xl">
             <p class="text-sm text-yellow-700 dark:text-yellow-300">Agent metadata could not be loaded.</p>
         </div>
     @else
         <div>
             <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Agent Class</h3>
-            <p class="text-sm font-mono text-gray-900 dark:text-gray-100 break-all">{{ $agentMeta['class'] }}</p>
+            <p class="text-sm font-mono text-gray-900 dark:text-gray-50 break-all">{{ $agentMeta['class'] }}</p>
         </div>
 
         @if (!empty($agentMeta['instructions']))
             <div>
                 <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Instructions</h3>
-                <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ $agentMeta['instructions'] }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 whitespace-pre-wrap">{{ $agentMeta['instructions'] }}</p>
             </div>
         @else
             <div>
@@ -40,9 +40,9 @@
                             $toolClass = is_array($tool) ? ($tool['class'] ?? $tool) : $tool;
                             $toolDesc = is_array($tool) ? ($tool['description'] ?? '') : '';
                         @endphp
-                        <div class="p-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
-                            <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $toolName }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 font-mono mt-0.5">{{ $toolClass }}</p>
+                        <div class="p-2 glass-card rounded">
+                            <p class="text-sm font-medium text-gray-900 dark:text-gray-50">{{ $toolName }}</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{{ $toolClass }}</p>
                             @if ($toolDesc)
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ $toolDesc }}</p>
                             @endif

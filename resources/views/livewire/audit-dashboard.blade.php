@@ -1,28 +1,28 @@
 <div class="space-y-6">
     {{-- Access Log --}}
-    <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Access Log</h2>
+    <x-ai-orbit::card padding="p-0">
+        <div class="px-6 py-4 border-b border-gray-200/60 dark:border-white/8">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50 tracking-tight">Access Log</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Recent conversations across all agents.</p>
         </div>
 
         @if($recentConversations->isNotEmpty())
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-800">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ID</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Agent</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Messages</th>
-                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Created</th>
+            <table class="orbit-table w-full text-sm">
+                <thead>
+                    <tr class="border-b border-gray-200/60 dark:border-white/8">
+                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Agent</th>
+                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Messages</th>
+                        <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody class="divide-y divide-gray-100 dark:divide-white/4">
                     @foreach($recentConversations as $conv)
-                    <tr>
-                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">#{{ $conv->id }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ class_basename($conv->agent_class ?? 'Unknown') }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ number_format($conv->messages_count ?? 0) }}</td>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                        <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-50">#{{ $conv->id }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ class_basename($conv->agent_class ?? 'Unknown') }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ number_format($conv->messages_count ?? 0) }}</td>
                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ isset($conv->created_at) ? \Illuminate\Support\Carbon::parse($conv->created_at)->diffForHumans() : '—' }}</td>
                     </tr>
                     @endforeach
@@ -34,26 +34,26 @@
             No conversations recorded yet.
         </div>
         @endif
-    </div>
+    </x-ai-orbit::card>
 
     {{-- PII Detection --}}
-    <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">PII Detection</h2>
+    <x-ai-orbit::card>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50 tracking-tight mb-4">PII Detection</h2>
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Scan text for potential personally identifiable information (email, phone, SSN, credit card, IP).</p>
 
         <div class="mb-4">
             <textarea wire:model="scanContent" rows="4"
-                class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 text-sm"
+                class="orbit-input w-full"
                 placeholder="Paste message content to scan for PII..."></textarea>
         </div>
 
         <button wire:click="scanPii"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg mb-4">
+            class="orbit-btn-primary mb-4">
             Scan for PII
         </button>
 
         @if($piiResults !== null)
-        <div class="rounded-lg border {{ $piiResults['has_pii'] ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20' : 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20' }} p-4">
+        <div class="glass-card {{ $piiResults['has_pii'] ? 'border-red-200/50 dark:border-red-800/50' : 'border-green-200/50 dark:border-green-800/50' }} p-4">
             @if($piiResults['has_pii'])
                 <div class="flex items-center gap-2 mb-3">
                     <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,22 +83,22 @@
             @endif
         </div>
         @endif
-    </div>
+    </x-ai-orbit::card>
 
     {{-- Data Retention --}}
-    <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Data Retention</h2>
+    <x-ai-orbit::card>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50 tracking-tight mb-4">Data Retention</h2>
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Manage automatic purging of old conversations for compliance.</p>
 
         <div class="flex items-center gap-3 mb-4">
             <label class="text-sm text-gray-700 dark:text-gray-300">Retention period (days):</label>
             <input wire:model="retentionDays" type="number" min="1"
-                class="w-24 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-3 py-1.5 text-sm">
+                class="orbit-input w-24">
         </div>
 
         <div class="flex gap-2 mb-4">
             <button wire:click="dryRun"
-                class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600">
+                class="orbit-btn-secondary">
                 Dry Run
             </button>
             <button wire:click="purge" wire:confirm="This will permanently delete conversations older than {{ $retentionDays }} days. Are you sure?"
@@ -108,7 +108,7 @@
         </div>
 
         @if($dryRunResults !== null)
-        <div class="rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 p-4">
+        <div class="glass-card border-yellow-200/50 dark:border-yellow-800/50 p-4">
             <p class="text-sm text-yellow-700 dark:text-yellow-300">
                 <strong>{{ $dryRunResults['count'] }}</strong> conversation(s) older than {{ $retentionDays }} days would be deleted.
             </p>
@@ -116,11 +116,11 @@
         @endif
 
         @if($purgedCount !== null)
-        <div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+        <div class="glass-card border-green-200/50 dark:border-green-800/50 p-4">
             <p class="text-sm text-green-700 dark:text-green-300">
                 Successfully purged <strong>{{ $purgedCount }}</strong> conversation(s).
             </p>
         </div>
         @endif
-    </div>
+    </x-ai-orbit::card>
 </div>

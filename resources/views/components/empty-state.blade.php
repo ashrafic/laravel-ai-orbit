@@ -1,4 +1,8 @@
-@props(['icon' => null, 'title' => 'No data found', 'description' => null])
+@props(['icon' => null, 'title' => 'No data found', 'description' => null, 'message' => null])
+
+@php
+    $displayDescription = $description ?? $message;
+@endphp
 
 <div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-12 text-center']) }}>
     @if ($icon)
@@ -15,8 +19,8 @@
 
     <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ $title }}</h3>
 
-    @if ($description)
-        <p class="mt-1 text-sm text-gray-400 dark:text-gray-500">{{ $description }}</p>
+    @if ($displayDescription)
+        <p class="mt-1 text-sm text-gray-400 dark:text-gray-500">{{ $displayDescription }}</p>
     @endif
 
     {{ $slot }}

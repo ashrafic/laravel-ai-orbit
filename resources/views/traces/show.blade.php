@@ -1,4 +1,6 @@
 <x-ai-orbit::layout>
+    @slot('breadcrumb', 'Execution Trace')
+
     <div class="space-y-6">
         <div class="flex items-center gap-3">
             <a href="{{ route('orbit.conversations.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -7,7 +9,7 @@
                 </svg>
             </a>
             <div>
-                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Execution Trace</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Execution Trace</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ \Illuminate\Support\Str::limit($conversation->title, 60) }}</p>
             </div>
         </div>
@@ -21,22 +23,22 @@
 
         {{-- Conversation Info --}}
         <x-ai-orbit::card>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
                 <div>
                     <span class="text-gray-500 dark:text-gray-400">Conversation ID</span>
-                    <p class="font-mono text-gray-900 dark:text-gray-100">{{ \Illuminate\Support\Str::limit($conversation->id, 12, '') }}</p>
+                    <p class="font-mono text-gray-900 dark:text-gray-50">{{ \Illuminate\Support\Str::limit($conversation->id, 12, '') }}</p>
                 </div>
                 <div>
                     <span class="text-gray-500 dark:text-gray-400">Messages</span>
-                    <p class="text-gray-900 dark:text-gray-100">{{ $messages->count() }}</p>
+                    <p class="text-gray-900 dark:text-gray-50">{{ $messages->count() }}</p>
                 </div>
                 <div>
                     <span class="text-gray-500 dark:text-gray-400">Created</span>
-                    <p class="text-gray-900 dark:text-gray-100">{{ \Carbon\Carbon::parse($conversation->created_at)->format('M d, Y H:i') }}</p>
+                    <p class="text-gray-900 dark:text-gray-50">{{ \Carbon\Carbon::parse($conversation->created_at)->format('M d, Y H:i') }}</p>
                 </div>
                 <div>
                     <span class="text-gray-500 dark:text-gray-400">Last Updated</span>
-                    <p class="text-gray-900 dark:text-gray-100">{{ \Carbon\Carbon::parse($conversation->updated_at)->format('M d, Y H:i') }}</p>
+                    <p class="text-gray-900 dark:text-gray-50">{{ \Carbon\Carbon::parse($conversation->updated_at)->format('M d, Y H:i') }}</p>
                 </div>
             </div>
         </x-ai-orbit::card>
@@ -74,10 +76,10 @@
                             };
                         @endphp
 
-                        <div class="flex gap-4">
+                        <div class="flex gap-3">
                             {{-- Timeline dot --}}
                             <div class="relative flex-shrink-0 mt-1">
-                                <div class="w-3 h-3 rounded-full {{ $stepColor }} ring-4 ring-white dark:ring-gray-950"></div>
+                                <div class="w-3 h-3 rounded-full {{ $stepColor }} ring-4 ring-white dark:ring-[#111827]"></div>
                             </div>
 
                             {{-- Content --}}
@@ -105,11 +107,11 @@
                                     </div>
 
                                     @if ($message->role === 'system')
-                                        <div class="text-sm text-gray-700 dark:text-gray-300 font-mono whitespace-pre-wrap bg-gray-50 dark:bg-gray-800/50 rounded p-3">
+                                        <div class="text-sm text-gray-500 dark:text-gray-400 font-mono whitespace-pre-wrap bg-gray-50/50 dark:bg-white/[0.02] rounded p-3">
                                             {{ $message->content }}
                                         </div>
                                     @else
-                                        <div class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                                        <div class="text-sm text-gray-500 dark:text-gray-400 whitespace-pre-wrap">
                                             {{ \Illuminate\Support\Str::limit($message->content, 500) }}
                                             @if (mb_strlen($message->content) > 500)
                                                 <details class="mt-2">
@@ -124,7 +126,7 @@
                                     @if (!empty($message->tool_calls) && $message->tool_calls !== 'null')
                                         @php $toolCalls = json_decode($message->tool_calls, true) ?? []; @endphp
                                         @foreach ($toolCalls as $callIndex => $toolCall)
-                                            <div class="mt-3 p-3 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded">
+                                            <div class="mt-3 p-3 glass-card border-purple-200/50 dark:border-purple-800/50">
                                                 <div class="text-xs font-semibold text-purple-700 dark:text-purple-300 mb-1">
                                                     Tool Call: {{ $toolCall['function']['name'] ?? $toolCall['name'] ?? "Call #{$callIndex}" }}
                                                 </div>
