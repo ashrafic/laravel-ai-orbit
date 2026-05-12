@@ -27,12 +27,14 @@ class ProviderHealthChecker
             default => now()->subDays(7),
         };
 
+        $jsonProvider = "REPLACE(JSON_EXTRACT(meta, '\$.provider'), '\"', '')";
+
         $providers = $this->connection()->table('agent_conversation_messages')
             ->where('created_at', '>=', $dateFrom)
             ->whereNotNull('meta')
-            ->selectRaw("JSON_UNQUOTE(JSON_EXTRACT(meta, '$.provider')) as provider")
+            ->selectRaw($jsonProvider.' as provider')
             ->selectRaw('COUNT(*) as total')
-            ->groupBy($this->connection()->raw("JSON_UNQUOTE(JSON_EXTRACT(meta, '$.provider'))"))
+            ->groupBy($this->connection()->raw($jsonProvider))
             ->get();
 
         $results = collect();
@@ -43,7 +45,7 @@ class ProviderHealthChecker
 
             $errorCount = $this->connection()->table('agent_conversation_messages')
                 ->where('created_at', '>=', $dateFrom)
-                ->whereRaw("JSON_EXTRACT(meta, '$.provider') = ?", [$provider])
+                ->whereRaw($jsonProvider.' = ?', [$provider])
                 ->where(function ($q) {
                     $q->where('role', 'tool')
                         ->orWhereRaw("JSON_EXTRACT(meta, '$.error') IS NOT NULL");

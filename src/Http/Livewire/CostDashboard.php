@@ -18,7 +18,7 @@ class CostDashboard extends Component
         $aggregator = app(TokenAggregator::class);
 
         $stats = $aggregator->todayStats($this->period);
-        $breakdown = $aggregator->agentBreakdown($this->period);
+        $breakdown = $aggregator->agentBreakdown($this->period, $this->groupBy);
 
         $calculator = app(CostCalculator::class);
         $totalCost = $calculator->calculateForConversations($breakdown);
@@ -36,7 +36,7 @@ class CostDashboard extends Component
             'agent' => 'By Agent',
         ];
 
-        return view('ai-orbit::usage.dashboard', [
+        return view('ai-orbit::usage.dashboard-livewire', [
             'stats' => $stats,
             'breakdown' => $breakdown,
             'totalCost' => $totalCost,

@@ -92,11 +92,11 @@ class TokenAggregator
     }
 
     /**
-     * Get token usage breakdown by agent class for a given time period.
+     * Get token usage breakdown for a given time period.
      *
      * @return Collection<int, object>
      */
-    public function agentBreakdown(string $period = 'today'): Collection
+    public function agentBreakdown(string $period = 'today', string $groupBy = 'agent'): Collection
     {
         [$from, $to] = $this->resolveDateRange($period);
 
@@ -104,14 +104,29 @@ class TokenAggregator
             return collect();
         }
 
-        if (! $this->hasColumn('agent_conversation_messages', 'agent')) {
+        $hasAgent = $this->hasColumn('agent_conversation_messages', 'agent');
+        $hasMeta = $this->hasColumn('agent_conversation_messages', 'meta');
+
+        $jsonVal = fn (string $path): string => "REPLACE(JSON_EXTRACT(meta, '{$path}'), '\"', '')";
+
+        $groupColumn = match ($groupBy) {
+            'model' => $hasMeta ? $jsonVal('$.model') : null,
+            'provider' => $hasMeta ? $jsonVal('$.provider') : null,
+            default => $hasAgent ? 'agent' : null,
+        };
+
+        if ($groupColumn === null) {
             return collect();
         }
 
         $selects = [
-            'agent',
+            $this->connection()->raw("{$groupColumn} as agent"),
             $this->connection()->raw('COUNT(*) as message_count'),
         ];
+
+        if ($hasMeta) {
+            $selects[] = $this->connection()->raw("COALESCE(MIN({$jsonVal('$.model')}), 'unknown') as model");
+        }
 
         if ($this->hasColumn('agent_conversation_messages', 'usage')) {
             $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) as input_tokens");
@@ -123,7 +138,7 @@ class TokenAggregator
             $this->connection()->table('agent_conversation_messages'), 'created_at', $from, $to
         )
             ->select($selects)
-            ->groupBy('agent')
+            ->groupBy($this->connection()->raw($groupColumn))
             ->orderByDesc('total')
             ->get();
     }
