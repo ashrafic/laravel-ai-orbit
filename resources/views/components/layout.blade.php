@@ -97,6 +97,29 @@
     {{-- Livewire Scripts --}}
     @livewireScripts
 
+    {{-- Orbit Guard: Prevent rendering inside iframes or Livewire partial contexts --}}
+    <script>
+        (function() {
+            if (window.top !== window.self) {
+                window.top.location.href = window.location.href;
+                return;
+            }
+
+            if (typeof window.Livewire !== 'undefined') {
+                document.addEventListener('livewire:initialized', function () {
+                    window.Livewire.hook('commit', function ({ fail }) {
+                        fail(function ({ status, preventDefault }) {
+                            if (status >= 400 || status === 0) {
+                                preventDefault();
+                                window.location.reload();
+                            }
+                        });
+                    });
+                });
+            }
+        })();
+    </script>
+
     {{-- Theme Persistence --}}
     <script>
         (function() {

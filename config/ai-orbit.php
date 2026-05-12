@@ -31,12 +31,13 @@ return [
     | Route Middleware
     |--------------------------------------------------------------------------
     |
-    | Middleware applied to all Orbit dashboard routes. For most applications,
-    | the defaults ("web" and "auth") are sufficient.
+    | Middleware applied to all Orbit dashboard routes. The "web" middleware
+    | group is always applied. Add "auth" or custom auth middleware here
+    | if you want to require authentication.
     |
     */
 
-    'middleware' => ['web', 'auth'],
+    'middleware' => ['web'],
 
     /*
     |--------------------------------------------------------------------------

@@ -29,7 +29,7 @@ class OrbitConfig
      */
     public static function middleware(): array
     {
-        return Config::get('ai-orbit.middleware', ['web', 'auth']);
+        return Config::get('ai-orbit.middleware', ['web']);
     }
 
     /**
