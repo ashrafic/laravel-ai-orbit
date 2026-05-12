@@ -21,8 +21,8 @@
                     @foreach($recentConversations as $conv)
                     <tr>
                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-300">#{{ $conv->id }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ class_basename($conv->agent ?? 'Unknown') }}</td>
-                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ $conv->messages_count ?? '—' }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ class_basename($conv->agent_class ?? 'Unknown') }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ number_format($conv->messages_count ?? 0) }}</td>
                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ isset($conv->created_at) ? \Illuminate\Support\Carbon::parse($conv->created_at)->diffForHumans() : '—' }}</td>
                     </tr>
                     @endforeach

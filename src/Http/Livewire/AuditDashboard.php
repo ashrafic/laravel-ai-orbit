@@ -53,12 +53,34 @@ class AuditDashboard extends Component
 
     public function render(): View
     {
-        $recentConversations = $this->hasTable('agent_conversations')
-            ? $this->connection()->table('agent_conversations')
-                ->orderByDesc('created_at')
-                ->limit(10)
-                ->get()
-            : collect();
+        if (! $this->hasTable('agent_conversations')) {
+            return view('ai-orbit::livewire.audit-dashboard', [
+                'recentConversations' => collect(),
+            ]);
+        }
+
+        $query = $this->connection()->table('agent_conversations')
+            ->select([
+                'agent_conversations.id',
+                'agent_conversations.created_at',
+            ]);
+
+        if ($this->hasTable('agent_conversation_messages')) {
+            $query->selectRaw('COUNT(agent_conversation_messages.id) as messages_count');
+
+            if ($this->hasColumn('agent_conversation_messages', 'agent')) {
+                $query->addSelect(
+                    $this->connection()->raw('MAX(agent_conversation_messages.agent) as agent_class')
+                );
+            }
+
+            $query->leftJoin('agent_conversation_messages', 'agent_conversations.id', '=', 'agent_conversation_messages.conversation_id');
+            $query->groupBy('agent_conversations.id');
+        }
+
+        $recentConversations = $query->orderByDesc('agent_conversations.created_at')
+            ->limit(10)
+            ->get();
 
         return view('ai-orbit::livewire.audit-dashboard', [
             'recentConversations' => $recentConversations,
