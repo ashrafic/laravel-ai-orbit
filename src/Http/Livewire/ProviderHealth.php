@@ -21,7 +21,7 @@ class ProviderHealth extends Component
             '30d' => 'Last 30 Days',
         ];
 
-        return view('ai-orbit::usage.health', [
+        return view('ai-orbit::livewire.provider-health', [
             'metrics' => $metrics,
             'periods' => $periods,
         ]);

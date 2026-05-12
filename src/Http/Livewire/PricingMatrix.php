@@ -78,7 +78,7 @@ class PricingMatrix extends Component
     {
         $rules = PricingRule::orderBy('model')->get();
 
-        return view('ai-orbit::usage.pricing', [
+        return view('ai-orbit::livewire.pricing-matrix', [
             'rules' => $rules,
         ]);
     }

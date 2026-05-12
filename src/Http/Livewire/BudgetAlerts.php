@@ -84,7 +84,7 @@ class BudgetAlerts extends Component
     {
         $alerts = BudgetAlert::orderBy('created_at')->get();
 
-        return view('ai-orbit::usage.alerts', [
+        return view('ai-orbit::livewire.budget-alerts', [
             'alerts' => $alerts,
         ]);
     }
