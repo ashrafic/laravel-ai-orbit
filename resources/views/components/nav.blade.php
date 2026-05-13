@@ -74,7 +74,7 @@
             @endforeach
 
             <div class="pt-3 pb-1 advanced-divider">
-                <div class="border-t border-gray-200/60 dark:border-white/8 pt-2 px-3">
+                <div class="border-t border-gray-200/30 dark:border-white/5 pt-2 px-3">
                     <span class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Advanced</span>
                 </div>
             </div>
