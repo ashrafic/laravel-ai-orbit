@@ -1,0 +1,12 @@
+<x-ai-orbit::layout>
+    @slot('breadcrumb', 'Conversations')
+
+    <div class="space-y-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Conversations</h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Browse and inspect recorded agent conversations.</p>
+        </div>
+
+        <livewire:ai-orbit.thread-explorer />
+    </div>
+</x-ai-orbit::layout>

@@ -1,0 +1,33 @@
+name: build-assets
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'resources/views/**'
+      - 'resources/css/**'
+      - 'tailwind.config.js'
+      - 'postcss.config.js'
+      - 'vite.config.js'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: build assets'
+          file_pattern: 'dist/'
