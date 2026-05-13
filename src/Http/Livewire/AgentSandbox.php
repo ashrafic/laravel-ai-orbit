@@ -218,21 +218,29 @@ class AgentSandbox extends Component
 
     private function persistSession(): void
     {
-        if ($this->sdkConversationId) {
-            session()->put(
-                $this->sessionKey(),
-                $this->sdkConversationId
-            );
-        }
+        session()->put($this->sessionKey(), [
+            'conversation_id' => $this->sdkConversationId,
+            'param_inputs' => $this->paramInputs,
+            'mode' => $this->simulationMode,
+        ]);
     }
 
     private function restoreSession(): void
     {
-        $conversationId = session()->get($this->sessionKey());
+        $data = session()->get($this->sessionKey());
 
-        if ($conversationId !== null) {
-            $this->sdkConversationId = $conversationId;
-            $this->simulationMode = 'full';
+        if ($data === null) {
+            return;
+        }
+
+        $this->sdkConversationId = $data['conversation_id'] ?? null;
+
+        if (! empty($data['param_inputs'] ?? [])) {
+            $this->paramInputs = $data['param_inputs'];
+        }
+
+        if ($this->allRequiredInputsProvided()) {
+            $this->simulationMode = 'ready';
         }
     }
 

@@ -1,6 +1,8 @@
-<div class="flex flex-col h-[calc(100vh-10rem)]">
+<div class="flex flex-col h-[calc(100vh-10rem)]"
+    x-data="{ optimisticMessage: '' }"
+    x-init="$wire.$watch('history', () => { optimisticMessage = ''; });">
     {{-- Section A: Dependency Resolution Panel --}}
-    @if ($needsInput && $simulationMode === 'pending')
+    @if ($needsInput && count($constructorParams) > 0)
     <div class="flex-shrink-0 mb-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
         <h3 class="text-sm font-semibold text-amber-800 dark:text-amber-200 mb-2 flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,12 +87,21 @@
 
     {{-- Section C: Chat Messages --}}
     <div class="flex-1 overflow-y-auto space-y-3 mb-4 pr-2" id="sandbox-messages">
-        @if (empty($history) && !$sending)
-            <div class="flex items-center justify-center h-full">
+        @if (empty($history))
+            <div wire:loading.remove wire:target="send" class="flex items-center justify-center h-full">
                 <x-ai-orbit::empty-state title="Start a conversation"
                     description="Send a message to begin chatting with this agent." />
             </div>
         @endif
+
+        {{-- Optimistic user message (appears before server re-renders) --}}
+        <template x-if="optimisticMessage">
+            <div class="flex justify-end">
+                <div class="max-w-[80%] bg-gradient-to-br from-orbit-500 to-orbit-600 text-white rounded-xl px-4 py-3">
+                    <p class="text-sm whitespace-pre-wrap" x-text="optimisticMessage"></p>
+                </div>
+            </div>
+        </template>
 
         @foreach ($history as $message)
             @if ($message['role'] === 'user')
@@ -177,17 +188,15 @@
             @endif
         @endforeach
 
-        @if ($sending)
-            <div class="flex justify-start">
-                <div class="glass-card rounded-xl px-4 py-3">
-                    <div class="flex items-center gap-1">
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-pulse"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></span>
-                    </div>
+        <div wire:loading wire:target="send" class="flex justify-start">
+            <div class="glass-card rounded-xl px-4 py-3">
+                <div class="flex items-center gap-1">
+                    <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-pulse"></span>
+                    <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></span>
+                    <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></span>
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 
     {{-- Input --}}
@@ -201,26 +210,32 @@
             </div>
         @endif
 
-        <form wire:submit="send" class="flex gap-2">
+        <form wire:submit.prevent="send"
+              @submit="optimisticMessage = $refs.promptInput.value; $refs.promptInput.value = ''"
+              class="flex gap-2">
             <input
                 wire:model="prompt"
+                x-ref="promptInput"
                 type="text"
                 placeholder="Type a message..."
-                :disabled="$wire.sending || ($wire.simulationMode === 'pending' && $wire.needsInput)"
+                wire:loading.attr="disabled" wire:target="send"
+                :disabled="$wire.simulationMode === 'pending' && $wire.needsInput"
                 class="orbit-input flex-1 disabled:opacity-50"
             >
             <button
                 type="submit"
-                :disabled="$wire.sending || $wire.prompt === '' || ($wire.simulationMode === 'pending' && $wire.needsInput)"
+                wire:loading.attr="disabled" wire:target="send"
+                :disabled="$wire.prompt === '' || ($wire.simulationMode === 'pending' && $wire.needsInput)"
                 class="orbit-btn-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
             >
-                @if ($sending)
+                <span wire:loading.remove wire:target="send">Send</span>
+                <span wire:loading wire:target="send" class="flex items-center gap-1">
                     <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
-                @endif
-                Send
+                    Sending...
+                </span>
             </button>
             @if (!empty($history))
                 <button
