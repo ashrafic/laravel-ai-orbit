@@ -51,7 +51,7 @@ class DataRetention
         $conversations = $this->getDeletableConversations($retentionDays);
 
         if ($conversations->isEmpty()) {
-            return 0;
+            return $this->purgeStaleSandboxSessions();
         }
 
         $ids = $conversations->pluck('id')->toArray();
@@ -66,6 +66,37 @@ class DataRetention
             ->whereIn('id', $ids)
             ->delete();
 
-        return count($ids);
+        return count($ids) + $this->purgeStaleSandboxSessions();
+    }
+
+    /**
+     * Clean up stale sandbox sessions older than 24 hours.
+     */
+    public function purgeStaleSandboxSessions(): int
+    {
+        try {
+            $staleIds = $this->connection()->table('agent_conversations')
+                ->where('user_id', '=', 0)
+                ->where('created_at', '<', now()->subHours(24))
+                ->pluck('id');
+        } catch (\Throwable) {
+            return 0;
+        }
+
+        if ($staleIds->isEmpty()) {
+            return 0;
+        }
+
+        if ($this->hasTable('agent_conversation_messages')) {
+            $this->connection()->table('agent_conversation_messages')
+                ->whereIn('conversation_id', $staleIds)
+                ->delete();
+        }
+
+        $this->connection()->table('agent_conversations')
+            ->whereIn('id', $staleIds)
+            ->delete();
+
+        return $staleIds->count();
     }
 }

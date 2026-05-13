@@ -5,67 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'Laravel') }} — AI Orbit</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/ai-orbit/logo/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('vendor/ai-orbit/logo/favicon-32.png') }}">
+
     <link rel="stylesheet" href="{{ asset('vendor/ai-orbit/css/orbit.css') }}">
 
     @livewireStyles
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
         [x-cloak] { display: none !important; }
-
-        .sidebar-transition {
-            transition: transform 0.2s ease-in-out;
-        }
     </style>
-</head>
-<body class="bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
 
-    <div class="flex min-h-screen">
+    <script>
+        (function() {
+            const stored = localStorage.getItem('orbit-theme');
+            if (stored === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else if (stored === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-[#111827] text-gray-900 dark:text-gray-100 min-h-screen font-['Inter',system-ui,sans-serif]">
+
+    <div class="flex min-h-screen p-3 gap-3 dark:bg-gradient-to-br dark:from-[#111827] dark:via-[#1e1b4b] dark:to-[#111827] bg-gradient-to-br from-slate-50 via-indigo-50 to-slate-50">
+
+        {{-- Ambient Glow Blobs --}}
+        <div class="fixed inset-0 overflow-hidden pointer-events-none">
+            <div class="ambient-glow-1"></div>
+            <div class="ambient-glow-2"></div>
+        </div>
 
         {{-- Sidebar --}}
         <x-ai-orbit::nav />
 
         {{-- Main Content --}}
-        <div class="flex-1 flex flex-col min-w-0">
+        <div class="flex-1 flex flex-col min-w-0 relative z-10">
 
             {{-- Top Bar --}}
-            <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center justify-between px-4 lg:px-6 flex-shrink-0">
+            <header class="glass-topbar h-[52px] flex items-center justify-between px-4 flex-shrink-0 mb-4">
                 <div class="flex items-center gap-3">
+                    {{-- Collapse Toggle --}}
                     <button
-                        onclick="document.querySelector('[data-sidebar]').classList.toggle('-translate-x-full'); document.querySelector('[data-sidebar]').classList.toggle('max-sm:translate-x-0')"
-                        class="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        id="sidebar-toggle"
+                        onclick="toggleSidebar()"
+                        class="w-8 h-8 glass-panel rounded-lg text-gray-400 dark:text-gray-400 hover:text-gray-200 dark:hover:text-gray-200 flex items-center justify-center transition-colors"
+                        title="Toggle sidebar"
                     >
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        <svg id="collapse-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 3v18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="m14 9 3 3-3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <svg id="expand-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 3v18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="m14 12-3-3 3-3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <h1 class="text-sm font-semibold text-gray-700 dark:text-gray-300 tracking-wide uppercase">
-                        AI Orbit
-                    </h1>
+                    <span id="breadcrumb" class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ $breadcrumb ?? 'Dashboard' }}</span>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
                     <a href="{{ config('ai-orbit.back_to_app_url', '/') }}"
-                       class="text-sm text-gray-400 hover:text-gray-200 transition-colors flex items-center gap-1"
+                       class="glass-panel rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:border-orbit-300 dark:hover:border-orbit-700 transition-all flex items-center gap-1.5"
                        title="Back to App"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
                         <span class="hidden sm:inline">Back to App</span>
                     </a>
+                    <div class="status-dot"></div>
                     <x-ai-orbit::theme-toggle />
                 </div>
             </header>
 
             {{-- Page Content --}}
-            <main class="flex-1 p-4 lg:p-6 overflow-x-hidden">
+            <main class="flex-1 pb-6 overflow-x-hidden">
 
                 {{-- Health Check Warnings --}}
                 @php $healthIssues = \Ashrafic\AiOrbit\Orbit::healthCheck(); @endphp
                 @if (!empty($healthIssues))
                     <div x-data="{ dismissed: false }" x-show="!dismissed" class="mb-6 space-y-3">
                         @foreach ($healthIssues as $issue)
-                            <div class="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg shadow-sm">
+                            <div class="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl shadow-sm">
                                 <div class="flex-shrink-0 mt-0.5">
                                     <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
@@ -97,7 +126,7 @@
     {{-- Livewire Scripts --}}
     @livewireScripts
 
-    {{-- Orbit Guard: Prevent rendering inside iframes or Livewire partial contexts --}}
+    {{-- Orbit Guard --}}
     <script>
         (function() {
             if (window.top !== window.self) {
@@ -120,14 +149,46 @@
         })();
     </script>
 
-    {{-- Theme Persistence --}}
+    {{-- Sidebar Collapse State --}}
     <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('[data-sidebar]');
+            const collapseIcon = document.getElementById('collapse-icon');
+            const expandIcon = document.getElementById('expand-icon');
+            if (!sidebar) return;
+
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+
+            if (isCollapsed) {
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.style.width = '';
+                collapseIcon.classList.remove('hidden');
+                expandIcon.classList.add('hidden');
+                localStorage.setItem('orbit-sidebar-collapsed', 'false');
+            } else {
+                sidebar.classList.add('sidebar-collapsed');
+                sidebar.style.width = '64px';
+                collapseIcon.classList.add('hidden');
+                expandIcon.classList.remove('hidden');
+                localStorage.setItem('orbit-sidebar-collapsed', 'true');
+            }
+        }
+
         (function() {
-            const stored = localStorage.getItem('orbit-theme');
-            if (stored === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else if (stored === 'dark') {
-                document.documentElement.classList.add('dark');
+            const sidebar = document.querySelector('[data-sidebar]');
+            const collapseIcon = document.getElementById('collapse-icon');
+            const expandIcon = document.getElementById('expand-icon');
+            if (!sidebar) return;
+
+            const collapsed = localStorage.getItem('orbit-sidebar-collapsed') === 'true';
+            if (collapsed) {
+                sidebar.classList.add('sidebar-collapsed');
+                sidebar.style.width = '64px';
+                collapseIcon.classList.add('hidden');
+                expandIcon.classList.remove('hidden');
+            } else {
+                collapseIcon.classList.remove('hidden');
+                expandIcon.classList.add('hidden');
             }
         })();
     </script>

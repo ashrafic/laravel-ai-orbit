@@ -29,7 +29,8 @@ class ConversationRepository
                 'agent_conversations.title',
                 'agent_conversations.created_at',
                 'agent_conversations.updated_at',
-            ]);
+            ])
+            ->where('agent_conversations.user_id', '>', 0);
 
         if ($this->hasTable('agent_conversation_messages')) {
             $query->selectRaw('COUNT(agent_conversation_messages.id) as message_count');

@@ -143,6 +143,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Sandbox Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Settings for the Agent Sandbox playground. Controls the number of
+    | records shown in Eloquent model picker dropdowns.
+    |
+    */
+
+    'sandbox' => [
+
+        'records_per_picker' => 20,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Export Configuration
     |--------------------------------------------------------------------------
     |

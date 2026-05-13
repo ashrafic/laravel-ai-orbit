@@ -1,24 +1,36 @@
-@props(['value' => 0, 'label' => '', 'icon' => null, 'color' => 'orbit'])
+@props(['value' => 0, 'label' => '', 'icon' => null, 'color' => 'orbit', 'trend' => null])
 
 @php
-    $colorClasses = [
-        'orbit' => 'text-orbit-500',
-        'blue' => 'text-blue-500',
-        'green' => 'text-green-500',
-        'red' => 'text-red-500',
-        'yellow' => 'text-yellow-500',
-        'purple' => 'text-purple-500',
-    ][$color] ?? 'text-orbit-500';
+    $accentClass = match($color) {
+        'orbit', 'blue' => 'accent-bar-indigo',
+        'green' => 'accent-bar-emerald',
+        'purple' => 'accent-bar-purple',
+        'yellow', 'orange' => 'accent-bar-amber',
+        default => 'accent-bar-indigo',
+    };
+
+    $iconClass = match($color) {
+        'orbit', 'blue' => 'icon-container-indigo',
+        'green' => 'icon-container-emerald',
+        'purple' => 'icon-container-purple',
+        'yellow', 'orange' => 'icon-container-amber',
+        default => 'icon-container-indigo',
+    };
 @endphp
 
-<div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 shadow-sm">
+<div {{ $attributes->merge(['class' => 'glass-card '.$accentClass.' relative overflow-hidden p-[18px]']) }}>
     <div class="flex items-start justify-between">
         <div>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ $label }}</p>
-            <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $value }}</p>
+            <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ $label }}</p>
+            <p class="mt-1.5 text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">{{ $value }}</p>
+            @if ($trend)
+                <p class="mt-1.5 text-xs font-medium {{ str_starts_with($trend, '↑') || str_starts_with($trend, '+') ? 'text-emerald-500' : 'text-red-500' }}">{{ $trend }}</p>
+            @endif
         </div>
         @if ($icon)
-            <span class="{{ $colorClasses }}">{{ $icon }}</span>
+            <div class="{{ $iconClass }}">
+                {{ $icon }}
+            </div>
         @endif
     </div>
 </div>

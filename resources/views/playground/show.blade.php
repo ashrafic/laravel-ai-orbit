@@ -1,4 +1,6 @@
 <x-ai-orbit::layout>
+    @slot('breadcrumb', 'Sandbox')
+
     <div class="space-y-6">
         <div class="flex items-center gap-3">
             <a href="{{ route('orbit.playground.index') }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -7,8 +9,8 @@
                 </svg>
             </a>
             <div>
-                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Sandbox</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 font-mono">{{ class_basename($agent) }}</p>
+                <h2 class="text-lg font-bold text-gray-900 dark:text-gray-50">Sandbox</h2>
+                <p class="text-xs text-gray-400 dark:text-gray-500 font-mono">{{ class_basename($agent) }}</p>
             </div>
         </div>
 

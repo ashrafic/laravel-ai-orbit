@@ -47,6 +47,7 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('ai-orbit.path', 'ai-orbit');
         $app['config']->set('ai-orbit.auth_guard', 'web');
         $app['config']->set('ai-orbit.middleware', ['web']);
+        $app['config']->set('cache.default', 'array');
     }
 
     /**

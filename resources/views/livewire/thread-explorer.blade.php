@@ -1,18 +1,18 @@
 <div>
     {{-- Filters --}}
-    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+    <div class="flex flex-col sm:flex-row gap-3 mb-5">
         <div class="flex-1">
             <input
                 wire:model.live.debounce.300ms="search"
                 type="text"
                 placeholder="Search conversations..."
-                class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500"
+                class="orbit-input"
             >
         </div>
 
         <select
             wire:model.live="agentClass"
-            class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500"
+            class="orbit-input sm:w-44"
         >
             <option value="">All Agents</option>
             @foreach ($this->availableAgents() as $agent)
@@ -22,7 +22,7 @@
 
         <select
             wire:model.live="dateRange"
-            class="px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500"
+            class="orbit-input sm:w-36"
         >
             <option value="">All Time</option>
             <option value="today">Today</option>
@@ -34,9 +34,9 @@
     {{-- Table --}}
     <x-ai-orbit::card padding="p-0">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="orbit-table w-full text-sm">
                 <thead>
-                    <tr class="border-b border-gray-200 dark:border-gray-800">
+                    <tr class="border-b border-gray-200/60 dark:border-white/8">
                         <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Conversation</th>
                         <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell">Agent</th>
                         <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden lg:table-cell">Messages</th>
@@ -45,9 +45,9 @@
                         <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <tbody class="divide-y divide-gray-100 dark:divide-white/4">
                     @forelse ($conversations as $conversation)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                             <td class="px-4 py-3">
                                 <a href="{{ route('orbit.conversations.show', $conversation->id) }}"
                                    class="text-orbit-500 hover:text-orbit-600 dark:text-orbit-400 dark:hover:text-orbit-300 font-medium">
@@ -56,17 +56,17 @@
                                 <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{{ \Illuminate\Support\Str::limit($conversation->id, 8, '') }}</p>
                             </td>
                             <td class="px-4 py-3 hidden md:table-cell">
-                                <span class="text-gray-600 dark:text-gray-400">
+                                <span class="text-gray-500 dark:text-gray-400">
                                     {{ $conversation->agent_class ?? '—' }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 hidden lg:table-cell">
-                                <span class="text-gray-600 dark:text-gray-400">
+                                <span class="text-gray-500 dark:text-gray-400">
                                     {{ $conversation->message_count ?? 0 }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 hidden lg:table-cell">
-                                <span class="text-gray-600 dark:text-gray-400">
+                                <span class="text-gray-500 dark:text-gray-400">
                                     {{ number_format(($conversation->total_input_tokens ?? 0) + ($conversation->total_output_tokens ?? 0)) }}
                                 </span>
                             </td>
@@ -107,7 +107,7 @@
         </div>
 
         @if ($conversations->hasPages())
-            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-800">
+            <div class="px-4 py-3 border-t border-gray-200/60 dark:border-white/8">
                 {{ $conversations->links() }}
             </div>
         @endif
