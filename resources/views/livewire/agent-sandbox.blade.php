@@ -114,9 +114,9 @@
             @elseif ($message['role'] === 'tool_call')
                 <div class="flex justify-start"
                      x-data="{ open: false }">
-                    <div class="max-w-[80%] bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl overflow-hidden">
+                    <div class="max-w-[80%] glass-card border border-purple-200/40 dark:border-purple-800/40 rounded-xl overflow-hidden">
                         <button @click="open = !open"
-                            class="w-full px-4 py-2 flex items-center gap-2 text-xs font-medium text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors">
+                            class="w-full px-4 py-2.5 flex items-center gap-2 text-xs font-medium text-purple-600 dark:text-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-900/30 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -127,9 +127,13 @@
                             </svg>
                         </button>
                         <div x-show="open" x-collapse>
-                            <div class="px-4 py-2 border-t border-purple-200 dark:border-purple-800">
-                                <p class="text-xs text-purple-500 dark:text-purple-400 font-medium mb-1">Arguments</p>
-                                <pre class="text-xs font-mono text-purple-800 dark:text-purple-200 whitespace-pre-wrap">{{ $message['arguments'] ?? '{}' }}</pre>
+                            <div class="px-4 py-3 border-t border-purple-200/30 dark:border-purple-800/30">
+                                <div class="rounded-lg bg-gray-900/50 dark:bg-black/40 border border-gray-700/30 dark:border-gray-600/20">
+                                    <div class="px-3 pt-2">
+                                        <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Arguments</span>
+                                    </div>
+                                    <pre class="p-3 text-xs font-mono text-gray-200 whitespace-pre-wrap overflow-x-auto">{{ $message['arguments'] ?? '{}' }}</pre>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -137,9 +141,9 @@
             @elseif ($message['role'] === 'tool_result')
                 <div class="flex justify-start"
                      x-data="{ open: false }">
-                    <div class="max-w-[80%] bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl overflow-hidden">
+                    <div class="max-w-[80%] glass-card border border-blue-200/40 dark:border-blue-800/40 rounded-xl overflow-hidden">
                         <button @click="open = !open"
-                            class="w-full px-4 py-2 flex items-center gap-2 text-xs font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors">
+                            class="w-full px-4 py-2.5 flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -153,8 +157,13 @@
                             </svg>
                         </button>
                         <div x-show="open" x-collapse>
-                            <div class="px-4 py-2 border-t border-blue-200 dark:border-blue-800">
-                                <pre class="text-xs font-mono text-blue-800 dark:text-blue-200 whitespace-pre-wrap">{{ $message['content'] }}</pre>
+                            <div class="px-4 py-3 border-t border-blue-200/30 dark:border-blue-800/30">
+                                <div class="rounded-lg bg-gray-900/50 dark:bg-black/40 border border-gray-700/30 dark:border-gray-600/20">
+                                    <div class="px-3 pt-2">
+                                        <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Output</span>
+                                    </div>
+                                    <pre class="p-3 text-xs font-mono text-gray-200 whitespace-pre-wrap overflow-x-auto">{{ $message['content'] }}</pre>
+                                </div>
                             </div>
                         </div>
                     </div>
