@@ -34,8 +34,6 @@ class PromptLab extends Component
 
     public array $configuredProviders = [];
 
-    public array $modelsForProvider = [];
-
     protected $rules = [
         'systemPrompt' => 'required|string',
         'prompt' => 'required|string|min:1',
@@ -56,20 +54,6 @@ class PromptLab extends Component
     public function mount(PromptLabService $service): void
     {
         $this->configuredProviders = $service->getConfiguredProviders();
-    }
-
-    public function updatedModelSlots(): void
-    {
-        foreach ($this->modelSlots as $index => $slot) {
-            if (! empty($slot['provider']) && empty($this->modelsForProvider[$index])) {
-                $service = app(PromptLabService::class);
-                $models = $service->getModelsForProvider($slot['provider']);
-
-                if (! empty($models)) {
-                    $this->modelsForProvider[$index] = $models;
-                }
-            }
-        }
     }
 
     public function runComparison(): void

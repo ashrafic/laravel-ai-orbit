@@ -70,22 +70,9 @@
                                 <option value="{{ $provider }}">{{ ucfirst($provider) }}</option>
                             @endforeach
                         </select>
-                        <select wire:model="modelSlots.{{ $index }}.model"
-                            class="orbit-input text-sm">
-                            <option value="">Model...</option>
-                            @if(isset($modelsForProvider[$index]))
-                                <option value="{{ $modelsForProvider[$index]['smartest'] }}">
-                                    {{ $modelsForProvider[$index]['smartest'] }} (smartest)
-                                </option>
-                                <option value="{{ $modelsForProvider[$index]['default'] }}">
-                                    {{ $modelsForProvider[$index]['default'] }} (default)
-                                </option>
-                                <option value="{{ $modelsForProvider[$index]['cheapest'] }}">
-                                    {{ $modelsForProvider[$index]['cheapest'] }} (cheapest)
-                                </option>
-                            @endif
-                            <option value="__custom__">Custom…</option>
-                        </select>
+                        <input type="text" wire:model="modelSlots.{{ $index }}.model"
+                            class="orbit-input text-sm"
+                            placeholder="e.g. gpt-5.4">
                     </div>
                 </div>
                 @endforeach
