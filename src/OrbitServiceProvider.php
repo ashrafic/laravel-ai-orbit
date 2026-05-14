@@ -5,7 +5,7 @@ namespace Ashrafic\AiOrbit;
 use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
 use Ashrafic\AiOrbit\Http\Livewire\AgentInspector;
 use Ashrafic\AiOrbit\Http\Livewire\AgentSandbox;
-use Ashrafic\AiOrbit\Http\Livewire\ArenaCompare;
+use Ashrafic\AiOrbit\Http\Livewire\PromptLab;
 use Ashrafic\AiOrbit\Http\Livewire\AuditDashboard;
 use Ashrafic\AiOrbit\Http\Livewire\BudgetAlerts;
 use Ashrafic\AiOrbit\Http\Livewire\CostDashboard;
@@ -141,7 +141,7 @@ class OrbitServiceProvider extends ServiceProvider
         Livewire::component('ai-orbit.message-timeline', MessageTimeline::class);
         Livewire::component('ai-orbit.agent-sandbox', AgentSandbox::class);
         Livewire::component('ai-orbit.agent-inspector', AgentInspector::class);
-        Livewire::component('ai-orbit.arena-compare', ArenaCompare::class);
+        Livewire::component('ai-orbit.prompt-lab', PromptLab::class);
         Livewire::component('ai-orbit.audit-dashboard', AuditDashboard::class);
         Livewire::component('ai-orbit.cost-dashboard', CostDashboard::class);
         Livewire::component('ai-orbit.pricing-matrix', PricingMatrix::class);
