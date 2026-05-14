@@ -59,18 +59,18 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Select up to 3 provider and model pairs.</p>
 
             <div class="space-y-3">
-                @foreach($slots as $index => $slot)
+                @foreach($modelSlots as $index => $slot)
                 <div class="flex items-center gap-3 p-3 rounded-xl border border-gray-200/60 dark:border-white/8 bg-gray-50/50 dark:bg-white/[0.02]">
                     <span class="text-xs font-semibold text-gray-400 dark:text-gray-500 w-5">{{ $index + 1 }}</span>
                     <div class="flex-1 grid grid-cols-2 gap-3">
-                        <select wire:model.live="slots.{{ $index }}.provider"
+                        <select wire:model.live="modelSlots.{{ $index }}.provider"
                             class="orbit-input text-sm">
                             <option value="">Provider...</option>
                             @foreach($configuredProviders as $provider)
                                 <option value="{{ $provider }}">{{ ucfirst($provider) }}</option>
                             @endforeach
                         </select>
-                        <select wire:model="slots.{{ $index }}.model"
+                        <select wire:model="modelSlots.{{ $index }}.model"
                             class="orbit-input text-sm">
                             <option value="">Model...</option>
                             @if(isset($modelsForProvider[$index]))
@@ -90,7 +90,7 @@
                 </div>
                 @endforeach
             </div>
-            @error('slots') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            @error('modelSlots') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
 
             <button wire:click="runComparison" wire:loading.attr="disabled"
                 class="orbit-btn-primary w-full sm:w-auto mt-4 disabled:opacity-50 disabled:cursor-not-allowed">

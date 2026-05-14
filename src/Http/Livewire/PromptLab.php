@@ -20,7 +20,7 @@ class PromptLab extends Component
 
     public string $context = '';
 
-    public array $slots = [
+    public array $modelSlots = [
         ['provider' => '', 'model' => ''],
         ['provider' => '', 'model' => ''],
         ['provider' => '', 'model' => ''],
@@ -41,16 +41,16 @@ class PromptLab extends Component
         'prompt' => 'required|string|min:1',
         'temperature' => 'numeric|min:0|max:2',
         'topP' => 'numeric|min:0|max:1',
-        'slots' => 'required|array|min:1',
-        'slots.*.provider' => 'required|string',
-        'slots.*.model' => 'required|string',
+        'modelSlots' => 'required|array|min:1',
+        'modelSlots.*.provider' => 'required|string',
+        'modelSlots.*.model' => 'required|string',
     ];
 
     protected $messages = [
         'systemPrompt.required' => 'System prompt is required.',
         'prompt.required' => 'Instruction is required.',
-        'slots.*.provider.required' => 'Provider is required for each slot.',
-        'slots.*.model.required' => 'Model is required for each slot.',
+        'modelSlots.*.provider.required' => 'Provider is required for each slot.',
+        'modelSlots.*.model.required' => 'Model is required for each slot.',
     ];
 
     public function mount(PromptLabService $service): void
@@ -58,13 +58,17 @@ class PromptLab extends Component
         $this->configuredProviders = $service->getConfiguredProviders();
     }
 
-    public function updatedSlots(int $index, string $key): void
+    public function updatedModelSlots(): void
     {
-        if ($key === 'provider' && ! empty($this->slots[$index]['provider'])) {
-            $service = app(PromptLabService::class);
-            $this->modelsForProvider[$index] = $service->getModelsForProvider(
-                $this->slots[$index]['provider']
-            );
+        foreach ($this->modelSlots as $index => $slot) {
+            if (! empty($slot['provider']) && empty($this->modelsForProvider[$index])) {
+                $service = app(PromptLabService::class);
+                $models = $service->getModelsForProvider($slot['provider']);
+
+                if (! empty($models)) {
+                    $this->modelsForProvider[$index] = $models;
+                }
+            }
         }
     }
 
@@ -85,7 +89,7 @@ class PromptLab extends Component
         $service = app(PromptLabService::class);
         $results = $service->runComparison(
             prompt: $this->prompt,
-            slots: $this->slots,
+            slots: $this->modelSlots,
             systemPrompt: $this->systemPrompt,
             temperature: $this->temperature,
             maxTokens: $this->maxTokens,
@@ -98,7 +102,7 @@ class PromptLab extends Component
 
         $service->saveSession(
             prompt: $this->prompt,
-            slots: $this->slots,
+            slots: $this->modelSlots,
             results: $results,
             systemPrompt: $this->systemPrompt,
             temperature: $this->temperature,
