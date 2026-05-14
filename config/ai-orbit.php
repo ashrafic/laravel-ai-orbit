@@ -159,6 +159,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Prompt Lab Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Settings for the Prompt Lab feature, which runs one prompt against
+    | multiple provider+model combinations for side-by-side comparison.
+    |
+    */
+
+    'prompt-lab' => [
+
+        'timeout_seconds' => (int) env('ORBIT_PROMPT_LAB_TIMEOUT', 120),
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Export Configuration
     |--------------------------------------------------------------------------
     |
