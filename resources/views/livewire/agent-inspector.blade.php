@@ -9,6 +9,41 @@
             <p class="text-sm font-mono text-gray-900 dark:text-gray-50 break-all">{{ $agentMeta['class'] }}</p>
         </div>
 
+        {{-- Provider & Model Overrides --}}
+        <div>
+            <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Overrides</h3>
+            <div class="space-y-2">
+                <select wire:model.live="overrideProvider"
+                    class="w-full px-2.5 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg
+                           bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                           focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500">
+                    <option value="">Provider (default)</option>
+                    @foreach($this->getConfiguredProviders() as $provider)
+                        <option value="{{ $provider }}">{{ ucfirst($provider) }}</option>
+                    @endforeach
+                </select>
+                <input type="text" wire:model.live="overrideModel"
+                    placeholder="Model (default)"
+                    class="w-full px-2.5 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg
+                           bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                           focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500
+                           placeholder-gray-400 dark:placeholder-gray-500">
+                <input type="number" wire:model.live="overrideTemperature"
+                    placeholder="Temperature (default)"
+                    step="0.1" min="0" max="2"
+                    class="w-full px-2.5 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg
+                           bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                           focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500
+                           placeholder-gray-400 dark:placeholder-gray-500">
+                @if ($overrideProvider || $overrideModel || $overrideTemperature)
+                    <button wire:click="clearOverrides" type="button"
+                        class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        Clear overrides
+                    </button>
+                @endif
+            </div>
+        </div>
+
         @if (!empty($agentMeta['instructions']))
             <div>
                 <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Instructions</h3>
@@ -32,19 +67,29 @@
 
         @if (!empty($agentMeta['tools']))
             <div>
-                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Tools ({{ count($agentMeta['tools']) }})</h3>
+                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                    Tools ({{ count($agentMeta['tools']) }})
+                </h3>
                 <div class="space-y-2">
                     @foreach ($agentMeta['tools'] as $tool)
                         @php
                             $toolName = is_array($tool) ? ($tool['name'] ?? '') : class_basename($tool);
                             $toolClass = is_array($tool) ? ($tool['class'] ?? $tool) : $tool;
                             $toolDesc = is_array($tool) ? ($tool['description'] ?? '') : '';
+                            $callCount = $toolCallCounts[$toolName] ?? 0;
                         @endphp
-                        <div class="p-2 glass-card rounded">
-                            <p class="text-sm font-medium text-gray-900 dark:text-gray-50">{{ $toolName }}</p>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{{ $toolClass }}</p>
-                            @if ($toolDesc)
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ $toolDesc }}</p>
+                        <div class="p-2 glass-card rounded flex items-start gap-2">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 dark:text-gray-50">{{ $toolName }}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 font-mono mt-0.5">{{ $toolClass }}</p>
+                                @if ($toolDesc)
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">{{ $toolDesc }}</p>
+                                @endif
+                            </div>
+                            @if ($callCount > 0)
+                                <span class="flex-shrink-0 px-1.5 py-0.5 text-[10px] font-semibold bg-orbit-500/10 text-orbit-600 dark:text-orbit-400 rounded-full">
+                                    {{ $callCount }}
+                                </span>
                             @endif
                         </div>
                     @endforeach
