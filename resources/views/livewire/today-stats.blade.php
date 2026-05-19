@@ -61,7 +61,7 @@
     @if ($breakdown->isNotEmpty())
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <x-ai-orbit::card title="Agent Token Breakdown" padding="p-4">
-                <div class="h-64"
+                <div class="h-64" wire:key="breakdown-chart-{{ $period }}"
                     x-data="{
                         chart: null,
                         labels: {{ json_encode($breakdown->map(fn($i) => class_basename($i->agent))) }},

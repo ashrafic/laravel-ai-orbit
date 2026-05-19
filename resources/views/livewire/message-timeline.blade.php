@@ -103,9 +103,33 @@
                         </div>
 
                         {{-- Message Content --}}
-                        <div class="text-sm whitespace-pre-wrap {{ $message->role === 'system' ? 'font-mono' : '' }}">
-                            {{ $message->content }}
-                        </div>
+                        @php
+                            $trimmed = preg_replace('/^\s+|\s+$/u', '', $message->content ?? '');
+                            $decodedContent = json_decode($trimmed, true);
+                            $isJson = json_last_error() === JSON_ERROR_NONE && (is_array($decodedContent) || is_object($decodedContent));
+                            if ($isJson) {
+                                $prettyContent = json_encode($decodedContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                            }
+                        @endphp
+
+                        @if ($isJson)
+                            <div x-data="{ open: true }">
+                                <button @click="open = !open"
+                                    class="flex items-center gap-2 text-xs font-medium text-green-600 dark:text-green-300 hover:text-green-700 dark:hover:text-green-200 transition-colors mb-2">
+                                    <svg class="w-3.5 h-3.5 transition-transform" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                    Structured Output (JSON)
+                                </button>
+                                <div x-show="open" x-collapse>
+                                    <pre class="text-xs font-mono text-gray-200 bg-gray-900/80 dark:bg-black/50 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap">{{ $prettyContent }}</pre>
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-sm whitespace-pre-wrap {{ $message->role === 'system' ? 'font-mono' : '' }}">
+                                {{ $trimmed }}
+                            </div>
+                        @endif
 
                         {{-- Tool Calls --}}
                         @if (!empty($message->tool_calls) && $message->tool_calls !== 'null')

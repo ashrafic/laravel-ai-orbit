@@ -2,8 +2,11 @@
 
 namespace Ashrafic\AiOrbit\Http\Livewire;
 
+use Ashrafic\AiOrbit\Models\SavedPrompt;
 use Ashrafic\AiOrbit\Services\PromptLabService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class PromptLab extends Component
@@ -19,6 +22,13 @@ class PromptLab extends Component
     public float $topP = 1.0;
 
     public string $context = '';
+
+    public string $saveName = '';
+
+    public bool $showSaveForm = false;
+
+    /** @var Collection<int, SavedPrompt> */
+    public Collection $recentPrompts;
 
     public array $modelSlots = [
         ['provider' => '', 'model' => ''],
@@ -42,6 +52,7 @@ class PromptLab extends Component
         'modelSlots' => 'required|array|min:1',
         'modelSlots.*.provider' => 'required|string',
         'modelSlots.*.model' => 'required|string',
+        'saveName' => 'required|string|max:255',
     ];
 
     protected $messages = [
@@ -54,6 +65,79 @@ class PromptLab extends Component
     public function mount(PromptLabService $service): void
     {
         $this->configuredProviders = $service->getConfiguredProviders();
+        $this->recentPrompts = SavedPrompt::orderBy('updated_at', 'desc')->limit(6)->get();
+    }
+
+    #[On('prompt-loaded')]
+    public function loadPrompt(array $prompt): void
+    {
+        $this->systemPrompt = $prompt['content'] ?? '';
+
+        if (! empty($prompt['instruction'])) {
+            $this->prompt = $prompt['instruction'];
+        }
+    }
+
+    public function loadFromLibrary(int $id): void
+    {
+        $saved = SavedPrompt::find($id);
+
+        if (! $saved) {
+            return;
+        }
+
+        $this->systemPrompt = $saved->content;
+
+        if (! empty($saved->instruction)) {
+            $this->prompt = $saved->instruction;
+        }
+
+        if (! empty($saved->meta)) {
+            $this->temperature = (float) ($saved->meta['temperature'] ?? $this->temperature);
+            $this->maxTokens = $saved->meta['max_tokens'] ?? $this->maxTokens;
+            $this->topP = (float) ($saved->meta['top_p'] ?? $this->topP);
+            $this->context = $saved->meta['context'] ?? $this->context;
+        }
+    }
+
+    public function startSave(): void
+    {
+        $this->saveName = '';
+        $this->showSaveForm = true;
+    }
+
+    public function cancelSave(): void
+    {
+        $this->showSaveForm = false;
+        $this->saveName = '';
+    }
+
+    public function saveToLibrary(): void
+    {
+        $this->validateOnly('saveName');
+
+        SavedPrompt::create([
+            'name' => $this->saveName,
+            'content' => $this->systemPrompt,
+            'instruction' => $this->prompt,
+            'meta' => [
+                'temperature' => $this->temperature,
+                'max_tokens' => $this->maxTokens,
+                'top_p' => $this->topP,
+                'context' => $this->context,
+            ],
+            'tags' => ['prompt-lab'],
+        ]);
+
+        $this->recentPrompts = SavedPrompt::orderBy('updated_at', 'desc')->limit(6)->get();
+        $this->showSaveForm = false;
+        $this->saveName = '';
+    }
+
+    public function deleteSaved(int $id): void
+    {
+        SavedPrompt::findOrFail($id)->delete();
+        $this->recentPrompts = SavedPrompt::orderBy('updated_at', 'desc')->limit(6)->get();
     }
 
     public function runComparison(): void

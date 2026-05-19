@@ -17,7 +17,15 @@ class PromptLibrary extends Component
 
     public string $content = '';
 
-    public ?string $agentClass = null;
+    public string $instruction = '';
+
+    public float $temperature = 1.0;
+
+    public ?int $maxTokens = null;
+
+    public float $topP = 1.0;
+
+    public string $context = '';
 
     public array $tags = [];
 
@@ -25,10 +33,14 @@ class PromptLibrary extends Component
 
     public ?int $editingId = null;
 
+    public bool $showForm = false;
+
     protected $rules = [
         'name' => 'required|string|max:255',
         'content' => 'required|string',
-        'agentClass' => 'nullable|string',
+        'instruction' => 'nullable|string',
+        'temperature' => 'numeric|min:0|max:2',
+        'topP' => 'numeric|min:0|max:1',
         'tags' => 'array',
     ];
 
@@ -66,9 +78,14 @@ class PromptLibrary extends Component
     {
         $prompt = SavedPrompt::findOrFail($id);
         $this->editingId = $id;
+        $this->showForm = true;
         $this->name = $prompt->name;
         $this->content = $prompt->content;
-        $this->agentClass = $prompt->agent_class;
+        $this->instruction = $prompt->instruction ?? '';
+        $this->temperature = (float) ($prompt->meta['temperature'] ?? 1.0);
+        $this->maxTokens = $prompt->meta['max_tokens'] ?? null;
+        $this->topP = (float) ($prompt->meta['top_p'] ?? 1.0);
+        $this->context = $prompt->meta['context'] ?? '';
         $this->tags = $prompt->tags ?? [];
     }
 
@@ -76,23 +93,28 @@ class PromptLibrary extends Component
     {
         $this->validate();
 
+        $data = [
+            'name' => $this->name,
+            'content' => $this->content,
+            'instruction' => $this->instruction,
+            'meta' => [
+                'temperature' => $this->temperature,
+                'max_tokens' => $this->maxTokens,
+                'top_p' => $this->topP,
+                'context' => $this->context,
+            ],
+            'tags' => $this->tags,
+        ];
+
         if ($this->editingId) {
-            SavedPrompt::findOrFail($this->editingId)->update([
-                'name' => $this->name,
-                'content' => $this->content,
-                'agent_class' => $this->agentClass,
-                'tags' => $this->tags,
-            ]);
+            SavedPrompt::findOrFail($this->editingId)->update($data);
         } else {
-            SavedPrompt::create([
-                'name' => $this->name,
-                'content' => $this->content,
-                'agent_class' => $this->agentClass,
-                'tags' => $this->tags,
-            ]);
+            SavedPrompt::create($data);
         }
 
-        $this->reset(['name', 'content', 'agentClass', 'tags', 'editingId']);
+        $this->reset(['showForm', 'name', 'content', 'instruction', 'temperature', 'maxTokens', 'topP', 'context', 'tags', 'editingId']);
+        $this->temperature = 1.0;
+        $this->topP = 1.0;
     }
 
     public function delete(int $id): void
@@ -102,7 +124,9 @@ class PromptLibrary extends Component
 
     public function cancelEdit(): void
     {
-        $this->reset(['name', 'content', 'agentClass', 'tags', 'editingId']);
+        $this->reset(['showForm', 'name', 'content', 'instruction', 'temperature', 'maxTokens', 'topP', 'context', 'tags', 'editingId']);
+        $this->temperature = 1.0;
+        $this->topP = 1.0;
     }
 
     public function render(): View

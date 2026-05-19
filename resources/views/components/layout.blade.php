@@ -7,6 +7,7 @@
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/ai-orbit/logo/favicon.svg') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('vendor/ai-orbit/logo/favicon-32.png') }}">
+    <link rel="apple-touch-icon" sizes="32x32" href="{{ asset('vendor/ai-orbit/logo/favicon-32.png') }}">
 
     <link rel="stylesheet" href="{{ asset('vendor/ai-orbit/css/orbit.css') }}">
 

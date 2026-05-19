@@ -185,43 +185,6 @@ class AgentIntrospector
     }
 
     /**
-     * Extract agent instructions without fully constructing the agent (fallback for Tier 3).
-     */
-    public function extractInstructionsFallback(string $agentClass): string
-    {
-        if (! class_exists($agentClass)) {
-            return '';
-        }
-
-        try {
-            $reflection = new ReflectionClass($agentClass);
-
-            if (! $reflection->isInstantiable()) {
-                return '';
-            }
-
-            $instance = $reflection->newInstanceWithoutConstructor();
-
-            if (method_exists($instance, 'instructions')) {
-                return (string) $instance->instructions();
-            }
-
-            $docComment = $reflection->getDocComment();
-
-            if (is_string($docComment) && $docComment !== '') {
-                $cleaned = preg_replace('/^\s*\* ?/m', '', substr($docComment, 3, -2));
-                if (is_string($cleaned)) {
-                    return trim($cleaned);
-                }
-            }
-
-            return '';
-        } catch (\Throwable) {
-            return '';
-        }
-    }
-
-    /**
      * Get display values for a model record for the picker option text.
      *
      * @return array<int, string>

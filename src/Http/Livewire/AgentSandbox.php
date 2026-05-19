@@ -64,7 +64,8 @@ class AgentSandbox extends Component
         $this->simulationMode = $analysis['needs_input'] ? 'pending' : 'ready';
 
         if (! $analysis['resolvable']) {
-            $this->simulationMode = 'prompt_only';
+            $this->simulationMode = 'unavailable';
+            $this->error = 'This agent has unresolvable constructor dependencies and cannot be simulated in the sandbox. Ensure all constructor parameters are container-resolvable, Eloquent models, or scalar types.';
         }
 
         $this->restoreSession();

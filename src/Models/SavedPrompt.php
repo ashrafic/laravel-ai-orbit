@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name
  * @property string $content
- * @property string|null $agent_class
+ * @property string|null $instruction
+ * @property array|null $meta
  * @property array|null $tags
  * @property string|null $user_id
  */
@@ -19,12 +20,14 @@ class SavedPrompt extends Model
     protected $fillable = [
         'name',
         'content',
-        'agent_class',
+        'instruction',
+        'meta',
         'tags',
         'user_id',
     ];
 
     protected $casts = [
+        'meta' => 'json',
         'tags' => 'json',
     ];
 }

@@ -6,6 +6,7 @@ use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
 use Ashrafic\AiOrbit\Support\OrbitConfig;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Contracts\HasTools;
@@ -77,6 +78,7 @@ class AgentRegistry implements AgentRegistryContract
             $hasSchema = is_subclass_of($class, HasStructuredOutput::class);
             $instructions = '';
             $tools = [];
+            $temperature = null;
 
             try {
                 $instance = app($class);
@@ -88,6 +90,27 @@ class AgentRegistry implements AgentRegistryContract
                 try {
                     $instructions = (string) $instance->instructions();
                 } catch (\Throwable) {
+                }
+
+                try {
+                    if (method_exists($instance, 'temperature') && is_object($instance)) {
+                        $temp = $instance->temperature();
+                        if (is_numeric($temp)) {
+                            $temperature = (float) $temp;
+                        }
+                    }
+                } catch (\Throwable) {
+                }
+
+                if ($temperature === null) {
+                    $reflection = new \ReflectionClass($class);
+                    $tempAttrs = $reflection->getAttributes(Temperature::class);
+                    if (count($tempAttrs) > 0) {
+                        $tempInstance = $tempAttrs[0]->newInstance();
+                        if (property_exists($tempInstance, 'temperature')) {
+                            $temperature = (float) $tempInstance->temperature;
+                        }
+                    }
                 }
 
                 if ($implementsHasTools && $instance instanceof HasTools) {
@@ -121,6 +144,7 @@ class AgentRegistry implements AgentRegistryContract
                 'instructions' => $instructions,
                 'tools' => $tools,
                 'has_schema' => $hasSchema,
+                'temperature' => $temperature,
             ];
 
             if ($cacheTtl > 0) {
@@ -134,6 +158,7 @@ class AgentRegistry implements AgentRegistryContract
                 'instructions' => '',
                 'tools' => [],
                 'has_schema' => false,
+                'temperature' => null,
             ];
         }
     }

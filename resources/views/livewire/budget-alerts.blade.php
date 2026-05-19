@@ -36,26 +36,47 @@
         </div>
 
         <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notification Channels</label>
-            <div class="flex gap-3">
-                <label wire:click="toggleChannel('mail')" class="flex items-center gap-1.5 cursor-pointer text-sm text-gray-700 dark:text-gray-300">
-                    <span class="w-4 h-4 rounded border flex items-center justify-center {{ in_array('mail', $channels) ? 'bg-orbit-500 border-orbit-500' : 'border-gray-300 dark:border-gray-600' }}">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notification Channels</label>
+            <div class="flex gap-4">
+                <button type="button" wire:click="toggleChannel('mail')"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all
+                           {{ in_array('mail', $channels)
+                               ? 'bg-orbit-50 dark:bg-orbit-900/20 border-orbit-300 dark:border-orbit-700 text-orbit-700 dark:text-orbit-300'
+                               : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500' }}">
+                    <span class="w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0
+                                 {{ in_array('mail', $channels)
+                                     ? 'bg-orbit-500 border-orbit-500'
+                                     : 'border-gray-300 dark:border-gray-500' }}">
                         @if(in_array('mail', $channels))
                         <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                         @endif
                     </span>
-                    Email
-                </label>
+                    <span class="flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Email
+                    </span>
+                </button>
             </div>
             @error('channels') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
-        <div class="mb-4">
-            <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-700 dark:text-gray-300">
-                <input wire:model="enabled" type="checkbox"
-                    class="rounded border-gray-300 dark:border-gray-600 text-orbit-500">
-                Enabled
-            </label>
+        <div class="mb-4 pt-2 border-t border-gray-100 dark:border-white/5">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Alert Status</label>
+            <button type="button" wire:click="$set('enabled', {{ $enabled ? 'false' : 'true' }})"
+                class="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all
+                       {{ $enabled
+                           ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300'
+                           : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-500' }}">
+                <span class="w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0
+                             {{ $enabled
+                                 ? 'bg-green-500 border-green-500'
+                                 : 'border-gray-300 dark:border-gray-500' }}">
+                    @if($enabled)
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    @endif
+                </span>
+                {{ $enabled ? 'Active' : 'Disabled' }}
+            </button>
         </div>
 
         <div class="flex gap-2">

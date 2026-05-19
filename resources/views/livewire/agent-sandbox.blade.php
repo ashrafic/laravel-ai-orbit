@@ -113,11 +113,11 @@
             <span class="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full font-medium">
                 Full Simulation
             </span>
-        @elseif ($simulationMode === 'prompt_only')
-            <span class="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full font-medium">
-                Prompt Only
+        @elseif ($simulationMode === 'unavailable')
+            <span class="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full font-medium">
+                Unavailable
             </span>
-            <span class="text-gray-500 dark:text-gray-400">Tools and structured output disabled</span>
+            <span class="text-gray-500 dark:text-gray-400">Agent cannot be simulated</span>
         @elseif ($simulationMode === 'pending')
             <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full font-medium">
                 Waiting for context
@@ -291,14 +291,14 @@
                 rows="1"
                 placeholder="Type a message..."
                 wire:loading.attr="disabled" wire:target="send"
-                :disabled="$wire.simulationMode === 'pending' && $wire.needsInput"
+                :disabled="($wire.simulationMode === 'pending' && $wire.needsInput) || $wire.simulationMode === 'unavailable'"
                 @keydown.enter="if (!$event.shiftKey) { $event.preventDefault(); optimisticMessage = $refs.promptInput.value; $wire.send(); }"
                 class="orbit-input flex-1 disabled:opacity-50 resize-none"
             ></textarea>
             <button
                 type="submit"
                 wire:loading.attr="disabled" wire:target="send"
-                :disabled="$wire.prompt === '' || ($wire.simulationMode === 'pending' && $wire.needsInput)"
+                :disabled="$wire.prompt === '' || ($wire.simulationMode === 'pending' && $wire.needsInput) || $wire.simulationMode === 'unavailable'"
                 class="orbit-btn-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors inline-flex items-center justify-center gap-1.5 flex-shrink-0 w-[115px]"
             >
                 <span wire:loading.remove wire:target="send" class="whitespace-nowrap">Send</span>

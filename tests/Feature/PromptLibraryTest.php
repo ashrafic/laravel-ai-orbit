@@ -8,7 +8,7 @@ test('SavedPrompt model can be created', function () {
     $prompt = SavedPrompt::create([
         'name' => 'Code Review Prompt',
         'content' => 'Review this code for security issues.',
-        'agent_class' => 'App\\Ai\\Agents\\CodeReviewer',
+        'instruction' => 'Review the following code for security issues',
         'tags' => ['review', 'security'],
     ]);
 

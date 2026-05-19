@@ -4,7 +4,6 @@ namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Support\SandboxResult;
 use Illuminate\Support\Facades\App;
-use Laravel\Ai\AnonymousAgent;
 use Laravel\Ai\Contracts\Agent;
 
 class SandboxRunner
@@ -27,18 +26,27 @@ class SandboxRunner
     ): SandboxResult {
         $analysis = $this->introspector->analyzeConstructor($agentClass);
 
-        if ($analysis['resolvable'] && $this->allRequiredInputsProvided($analysis['params'], $paramInputs)) {
-            return $this->executeFullAgent(
-                $agentClass,
-                $prompt,
-                $paramInputs,
-                $overrides,
-                $sdkConversationId,
-                $participant,
+        if (! $analysis['resolvable']) {
+            throw new \RuntimeException(
+                "Agent [{$agentClass}] has unresolvable constructor dependencies and cannot be simulated. ".
+                'Ensure all constructor parameters are either container-resolvable, Eloquent models, or scalar types.'
             );
         }
 
-        return $this->executePromptOnly($agentClass, $prompt, $overrides);
+        if (! $this->allRequiredInputsProvided($analysis['params'], $paramInputs)) {
+            throw new \RuntimeException(
+                'Required constructor parameters have not been provided. Fill in all required inputs before sending.'
+            );
+        }
+
+        return $this->executeFullAgent(
+            $agentClass,
+            $prompt,
+            $paramInputs,
+            $overrides,
+            $sdkConversationId,
+            $participant,
+        );
     }
 
     /**
@@ -101,44 +109,6 @@ class SandboxRunner
             ],
             toolCalls: $toolCalls,
             toolResults: $toolResults,
-        );
-    }
-
-    /**
-     * Execute the agent in prompt-only mode using AnonymousAgent with extracted instructions.
-     */
-    private function executePromptOnly(
-        string $agentClass,
-        string $prompt,
-        array $overrides,
-    ): SandboxResult {
-        $instructions = $this->introspector->extractInstructionsFallback($agentClass);
-
-        $agent = new AnonymousAgent(
-            instructions: $instructions,
-            messages: [],
-            tools: [],
-        );
-
-        $provider = $overrides['provider'] ?? null;
-        $model = $overrides['model'] ?? null;
-
-        $response = $agent->prompt(
-            $prompt,
-            provider: $provider,
-            model: $model,
-        );
-
-        return new SandboxResult(
-            content: (string) $response,
-            mode: 'prompt_only',
-            warning: $instructions
-                ? 'This agent has dependencies that cannot be resolved. Running with extracted instructions only — no tools or structured output are available.'
-                : 'This agent has dependencies that cannot be resolved and no instructions could be extracted. Running with empty instructions.',
-            metadata: [
-                'model' => $model,
-                'provider' => $provider,
-            ],
         );
     }
 

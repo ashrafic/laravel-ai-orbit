@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('content');
-            $table->string('agent_class')->nullable()->index();
+            $table->text('instruction')->nullable();
+            $table->json('meta')->nullable();
             $table->json('tags')->nullable();
             $table->string('user_id')->nullable()->index();
             $table->timestamps();

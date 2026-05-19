@@ -18,7 +18,7 @@ class AgentInspector extends Component
 
     public ?string $overrideModel = null;
 
-    public ?string $overrideTemperature = null;
+    public ?float $overrideTemperature = null;
 
     /** @var array<string, int> */
     public array $toolCallCounts = [];
@@ -27,6 +27,11 @@ class AgentInspector extends Component
     {
         $this->agentClass = $agentClass;
         $this->agentMeta = app(AgentRegistryContract::class)->find($agentClass);
+
+        if (isset($this->agentMeta['temperature'])) {
+            $this->overrideTemperature = (float) $this->agentMeta['temperature'];
+        }
+
         $this->dispatch('tool-counts-requested');
     }
 
@@ -49,7 +54,9 @@ class AgentInspector extends Component
     {
         $this->overrideProvider = null;
         $this->overrideModel = null;
-        $this->overrideTemperature = null;
+        $this->overrideTemperature = isset($this->agentMeta['temperature'])
+            ? (float) $this->agentMeta['temperature']
+            : null;
         $this->dispatch('overrides-cleared');
     }
 

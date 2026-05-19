@@ -28,14 +28,17 @@
                            bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
                            focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500
                            placeholder-gray-400 dark:placeholder-gray-500">
-                <input type="number" wire:model.live="overrideTemperature"
-                    placeholder="Temperature (default)"
-                    step="0.1" min="0" max="2"
-                    class="w-full px-2.5 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg
-                           bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-                           focus:ring-2 focus:ring-orbit-500 focus:border-orbit-500
-                           placeholder-gray-400 dark:placeholder-gray-500">
-                @if ($overrideProvider || $overrideModel || $overrideTemperature)
+                <label class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <span>Temperature</span>
+                    <span class="font-mono">{{ $overrideTemperature !== null ? number_format($overrideTemperature, 1) : 'default' }}</span>
+                </label>
+                <input type="range" wire:model.live="overrideTemperature"
+                    min="0" max="2" step="0.1"
+                    class="w-full accent-orbit-500">
+                <div class="flex justify-between text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+                    <span>0</span><span>1</span><span>2</span>
+                </div>
+                @if ($overrideProvider || $overrideModel || $overrideTemperature !== ($agentMeta['temperature'] ?? null))
                     <button wire:click="clearOverrides" type="button"
                         class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                         Clear overrides
