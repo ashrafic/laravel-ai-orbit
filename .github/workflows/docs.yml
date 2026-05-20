@@ -33,7 +33,7 @@ jobs:
           cache-dependency-path: docs/package.json
       - run: npm install
         working-directory: docs
-      - run: npm run build
+      - run: npm run docs:build
         working-directory: docs
       - uses: actions/upload-pages-artifact@v3
         with:
