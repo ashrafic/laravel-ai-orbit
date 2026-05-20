@@ -15,7 +15,7 @@ jobs:
         with:
           php-version: '8.3'
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - run: ./vendor/bin/pint --test
 
   static-analysis:
@@ -26,7 +26,7 @@ jobs:
         with:
           php-version: '8.3'
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
       - run: ./vendor/bin/phpstan analyse
 
   tests:
@@ -44,7 +44,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           coverage: none
-      - uses: ramsey/composer-install@v3
+      - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
       - run: composer test
