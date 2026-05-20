@@ -14,7 +14,8 @@
 <p align="center">
   <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/v/ashrafic/laravel-ai-orbit.svg?style=flat-square&color=6366f1" alt="Latest Version"></a>
   <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/dt/ashrafic/laravel-ai-orbit.svg?style=flat-square" alt="Total Downloads"></a>
-  <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/php-v/ashrafic/laravel-ai-orbit.svg?style=flat-square" alt="PHP Version"></a>
+  <a href="https://github.com/ashrafic/laravel-ai-orbit/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ashrafic/laravel-ai-orbit/ci.yml?style=flat-square&label=tests" alt="Tests"></a>
+  <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/php-v/ashrafic/laravel-ai-orbit.svg?style=flat-square&color=8b5cf6" alt="PHP Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
 </p>
 
@@ -22,7 +23,7 @@
 
 **Laravel AI Orbit** is a standalone observability dashboard and developer playground for the official [Laravel AI SDK](https://github.com/laravel/ai) (`laravel/ai` v0.6.x). Think of it as **Telescope for your AI agents** — a polished, real-time window into everything your agents are doing, with powerful tools to test, compare, and optimize them.
 
-Built for Laravel 11+ and PHP 8.2+, Orbit installs in seconds, requires zero frontend build steps, and ships with a gorgeous glassmorphism UI in both dark and light modes.
+Built for Laravel 11+ and PHP 8.3+, Orbit installs in seconds, requires **zero frontend build steps**, and ships with a gorgeous glassmorphism UI in both dark and light modes.
 
 ---
 
@@ -57,7 +58,7 @@ Built for Laravel 11+ and PHP 8.2+, Orbit installs in seconds, requires zero fro
 
 ## Installation
 
-Requires PHP 8.2+, Laravel 11+, and the [Laravel AI SDK](https://github.com/laravel/ai) installed with migrations run.
+Requires PHP 8.3+, Laravel 11+, and the [Laravel AI SDK](https://github.com/laravel/ai) installed with migrations run.
 
 ```bash
 composer require ashrafic/laravel-ai-orbit
@@ -144,7 +145,7 @@ Full documentation is available at **[ashrafic.github.io/laravel-ai-orbit](https
 
 ```bash
 composer test          # Pest test suite
-./vendor/bin/pint      # Code style
+./vendor/bin/pint      # Code style (PSR-12)
 ./vendor/bin/phpstan analyse  # Static analysis (level 8)
 ```
 
