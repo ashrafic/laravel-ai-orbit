@@ -26,9 +26,13 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Provider</label>
-                <input wire:model="provider" type="text"
-                    class="orbit-input w-full"
-                    placeholder="e.g. openai">
+                <select wire:model="provider"
+                    class="orbit-input w-full">
+                    <option value="">Any / Default</option>
+                    @foreach($this->getConfiguredProviders() as $p)
+                        <option value="{{ $p }}">{{ ucfirst($p) }}</option>
+                    @endforeach
+                </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Input Cost (per 1M tokens)</label>

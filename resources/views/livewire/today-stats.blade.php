@@ -61,8 +61,47 @@
     @if ($breakdown->isNotEmpty())
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <x-ai-orbit::card title="Agent Token Breakdown" padding="p-4">
-                <div class="h-64">
-                    <canvas id="agentBreakdownChart"></canvas>
+                <div class="h-64" wire:key="breakdown-chart-{{ $period }}"
+                    x-data="{
+                        chart: null,
+                        labels: {{ json_encode($breakdown->map(fn($i) => class_basename($i->agent))) }},
+                        data: {{ json_encode($breakdown->map(fn($i) => $i->input_tokens + $i->output_tokens)) }},
+                        init() {
+                            this.$nextTick(() => {
+                                if (this.chart) this.chart.destroy();
+                                const ctx = this.$refs.breakdownChart.getContext('2d');
+                                const isDark = document.documentElement.classList.contains('dark');
+                                this.chart = new Chart(ctx, {
+                                    type: 'doughnut',
+                                    data: {
+                                        labels: this.labels,
+                                        datasets: [{
+                                            data: this.data,
+                                            backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#8b5cf6', '#a78bfa', '#c4b5fd', '#10b981'],
+                                            borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+                                            borderWidth: 2,
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: {
+                                            legend: {
+                                                position: 'bottom',
+                                                labels: {
+                                                    color: isDark ? '#9ca3af' : '#64748b',
+                                                    padding: 16,
+                                                    font: { size: 12 }
+                                                }
+                                            }
+                                        },
+                                        cutout: '65%',
+                                    }
+                                });
+                            });
+                        }
+                    }">
+                    <canvas x-ref="breakdownChart"></canvas>
                 </div>
             </x-ai-orbit::card>
 
@@ -95,45 +134,6 @@
             </x-ai-orbit::card>
         </div>
 
-        @push('scripts')
-            <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-            <script>
-                document.addEventListener('livewire:navigated', function () {
-                    const ctx = document.getElementById('agentBreakdownChart');
-                    if (!ctx) return;
-
-                    const isDark = document.documentElement.classList.contains('dark');
-
-                    new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: {!! json_encode($breakdown->map(fn($i) => class_basename($i->agent))) !!},
-                            datasets: [{
-                                data: {!! json_encode($breakdown->map(fn($i) => $i->input_tokens + $i->output_tokens)) !!},
-                                backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#8b5cf6', '#a78bfa', '#c4b5fd', '#10b981'],
-                                borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-                                borderWidth: 2,
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        color: isDark ? '#9ca3af' : '#64748b',
-                                        padding: 16,
-                                        font: { size: 12 }
-                                    }
-                                }
-                            },
-                            cutout: '65%',
-                        }
-                    });
-                });
-            </script>
-        @endpush
     @else
         <x-ai-orbit::empty-state title="No data for {{ strtolower($periods[$period]) }}">
             <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">

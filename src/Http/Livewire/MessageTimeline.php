@@ -42,6 +42,45 @@ class MessageTimeline extends Component
         return Bookmark::where('conversation_id', $this->conversationId)->exists();
     }
 
+    public function highlightJson(mixed $data): string
+    {
+        if (is_string($data)) {
+            $data = json_decode($data, true) ?? $data;
+        }
+
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        if ($json === false) {
+            return '';
+        }
+
+        $result = preg_replace_callback(
+            '/("(\\\\u[a-zA-Z0-9]{4}|\\\\[^u]|[^\\\\"])*")(\s*:)?|\b(true|false|null)\b|-?\b\d+\.?\d*\b/',
+            function ($matches) {
+                if (isset($matches[1]) && $matches[1] !== '') {
+                    if (isset($matches[3]) && $matches[3] !== '') {
+                        return '<span class="text-purple-400 dark:text-purple-300">'.$matches[1].$matches[3].'</span>';
+                    }
+
+                    return '<span class="text-green-400 dark:text-green-300">'.$matches[1].'</span>';
+                }
+
+                if (isset($matches[4])) {
+                    return '<span class="text-blue-400 dark:text-blue-300">'.$matches[4].'</span>';
+                }
+
+                if (is_numeric($matches[0])) {
+                    return '<span class="text-amber-400 dark:text-amber-300">'.$matches[0].'</span>';
+                }
+
+                return (string) $matches[0];
+            },
+            $json
+        );
+
+        return $result ?? $json;
+    }
+
     public function render(): View
     {
         if ($this->conversation === null) {

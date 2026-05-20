@@ -21,6 +21,7 @@ interface AgentRegistryContract
      *     instructions: string,
      *     tools: array<int, array{class: string, name: string, description: string}>,
      *     has_schema: bool,
+     *     temperature?: float|null,
      *     provider?: string,
      *     model?: string
      * }|null

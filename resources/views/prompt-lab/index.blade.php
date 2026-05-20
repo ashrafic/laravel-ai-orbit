@@ -1,13 +1,13 @@
 <x-ai-orbit::layout>
-    @slot('breadcrumb', 'Arena')
+    @slot('breadcrumb', 'Prompt Lab')
 
     <div class="space-y-6">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Arena</h2>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Compare prompts across multiple AI models side-by-side.</p>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Prompt Lab</h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Configure an agent and compare responses across models side-by-side.</p>
         </div>
 
-        <livewire:ai-orbit.arena-compare />
+        <livewire:ai-orbit.prompt-lab />
 
         @if($sessions->isNotEmpty())
         <div class="mt-12">
@@ -26,9 +26,12 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-white/4">
                             @foreach($sessions as $session)
+                            @php
+                                $modelNames = collect($session->slots)->pluck('model')->implode(', ');
+                            @endphp
                             <tr class="hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                                 <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-50">#{{ $session->id }}</td>
-                                <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ implode(', ', $session->models) }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $modelNames }}</td>
                                 <td class="px-4 py-3">
                                     <x-ai-orbit::badge :variant="$session->status === 'completed' ? 'success' : 'warning'">
                                         {{ ucfirst($session->status) }}
@@ -36,7 +39,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $session->created_at->format('M d, Y H:i') }}</td>
                                 <td class="px-4 py-3 text-right">
-                                    <a href="{{ route('orbit.arena.show', $session->id) }}" class="text-orbit-500 hover:text-orbit-600 dark:text-orbit-400 dark:hover:text-orbit-300 text-sm font-medium">View</a>
+                                    <a href="{{ route('orbit.prompt-lab.show', $session->id) }}" class="text-orbit-500 hover:text-orbit-600 dark:text-orbit-400 dark:hover:text-orbit-300 text-sm font-medium">View</a>
                                 </td>
                             </tr>
                             @endforeach

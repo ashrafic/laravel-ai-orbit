@@ -12,7 +12,7 @@
 
 <div {{ $attributes->merge(['class' => 'glass-card '.$accentClasses.' relative overflow-hidden '.$class]) }}>
     @if ($title || $icon)
-        <div class="px-4 py-3 border-b border-gray-200/60 dark:border-white/8 flex items-center gap-2">
+        <div class="px-4 py-3 border-b border-gray-200/30 dark:border-white/5 flex items-center gap-2">
             @if ($icon)
                 <span class="text-orbit-500">{!! $icon !!}</span>
             @endif

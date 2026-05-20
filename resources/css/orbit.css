@@ -472,7 +472,7 @@
         text-transform: uppercase;
         letter-spacing: 0.05em;
         color: #6b7280;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
     html:not(.dark) .orbit-table th {
@@ -483,7 +483,7 @@
     .orbit-table td {
         padding: 12px 16px;
         font-size: 13px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
     }
 
     html:not(.dark) .orbit-table td {

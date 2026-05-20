@@ -7,6 +7,7 @@
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('vendor/ai-orbit/logo/favicon.svg') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('vendor/ai-orbit/logo/favicon-32.png') }}">
+    <link rel="apple-touch-icon" sizes="32x32" href="{{ asset('vendor/ai-orbit/logo/favicon-32.png') }}">
 
     <link rel="stylesheet" href="{{ asset('vendor/ai-orbit/css/orbit.css') }}">
 
@@ -194,5 +195,8 @@
     </script>
 
     @stack('scripts')
+    @once
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    @endonce
 </body>
 </html>

@@ -77,6 +77,14 @@ class PricingMatrix extends Component
         $this->reset(['editingId', 'showForm', 'model', 'provider', 'inputCost', 'outputCost', 'currency']);
     }
 
+    /**
+     * @return list<string>
+     */
+    public function getConfiguredProviders(): array
+    {
+        return array_map('strval', array_keys(config('ai.providers', [])));
+    }
+
     public function render(): View
     {
         $rules = PricingRule::orderBy('model')->get();

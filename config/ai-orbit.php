@@ -125,19 +125,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Arena Configuration
+    | Prompt Lab Configuration
     |--------------------------------------------------------------------------
     |
-    | Settings for the Arena feature, which runs one prompt against multiple
-    | models concurrently for side-by-side comparison.
+    | Settings for the Prompt Lab feature, which lets you configure an agent
+    | and compare responses across multiple provider+model pairs.
     |
     */
 
-    'arena' => [
+    'prompt-lab' => [
 
-        'max_concurrent_models' => (int) env('ORBIT_ARENA_MAX_MODELS', 3),
+        'max_slots' => (int) env('ORBIT_PROMPT_LAB_MAX_SLOTS', 3),
 
-        'timeout_seconds' => (int) env('ORBIT_ARENA_TIMEOUT', 120),
+        'timeout_seconds' => (int) env('ORBIT_PROMPT_LAB_TIMEOUT', 120),
 
     ],
 

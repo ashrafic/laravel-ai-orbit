@@ -1,12 +1,12 @@
 <?php
 
-use Ashrafic\AiOrbit\Http\Controllers\ArenaController;
 use Ashrafic\AiOrbit\Http\Controllers\AuditController;
 use Ashrafic\AiOrbit\Http\Controllers\ConversationController;
 use Ashrafic\AiOrbit\Http\Controllers\DashboardController;
 use Ashrafic\AiOrbit\Http\Controllers\ExportController;
 use Ashrafic\AiOrbit\Http\Controllers\PlaygroundController;
 use Ashrafic\AiOrbit\Http\Controllers\PromptController;
+use Ashrafic\AiOrbit\Http\Controllers\PromptLabController;
 use Ashrafic\AiOrbit\Http\Controllers\TraceController;
 use Ashrafic\AiOrbit\Http\Controllers\UsageController;
 use Illuminate\Support\Facades\Route;
@@ -19,8 +19,8 @@ Route::get('/playground/{agent}', [PlaygroundController::class, 'show'])->name('
 Route::get('/traces/{id}', [TraceController::class, 'show'])->name('orbit.traces.show');
 Route::get('/usage', [UsageController::class, 'index'])->name('orbit.usage.index');
 
-Route::get('/arena', [ArenaController::class, 'index'])->name('orbit.arena.index');
-Route::get('/arena/session/{id}', [ArenaController::class, 'show'])->name('orbit.arena.show');
+Route::get('/prompt-lab', [PromptLabController::class, 'index'])->name('orbit.prompt-lab.index');
+Route::get('/prompt-lab/session/{id}', [PromptLabController::class, 'show'])->name('orbit.prompt-lab.show');
 
 Route::get('/usage/dashboard', [UsageController::class, 'dashboard'])->name('orbit.usage.dashboard');
 Route::get('/usage/pricing', [UsageController::class, 'pricing'])->name('orbit.usage.pricing');

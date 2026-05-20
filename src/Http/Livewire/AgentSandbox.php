@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class AgentSandbox extends Component
@@ -63,7 +64,8 @@ class AgentSandbox extends Component
         $this->simulationMode = $analysis['needs_input'] ? 'pending' : 'ready';
 
         if (! $analysis['resolvable']) {
-            $this->simulationMode = 'prompt_only';
+            $this->simulationMode = 'unavailable';
+            $this->error = 'This agent has unresolvable constructor dependencies and cannot be simulated in the sandbox. Ensure all constructor parameters are container-resolvable, Eloquent models, or scalar types.';
         }
 
         $this->restoreSession();
@@ -102,6 +104,7 @@ class AgentSandbox extends Component
                 overrides: array_filter([
                     'model' => $this->overrideModel,
                     'provider' => $this->overrideProvider,
+                    'temperature' => $this->overrideTemperature,
                 ]),
                 sdkConversationId: $this->sdkConversationId,
                 participant: $participant,
@@ -139,6 +142,8 @@ class AgentSandbox extends Component
                 'role' => 'assistant',
                 'content' => $result->content,
             ];
+
+            $this->dispatchToolCallCounts();
         } catch (\Throwable $e) {
             $this->error = 'Agent execution failed: '.$e->getMessage();
             $this->history[] = [
@@ -170,6 +175,8 @@ class AgentSandbox extends Component
         $this->sandboxSessionId = 0;
 
         $this->forgetSession();
+
+        $this->dispatchToolCallCounts();
     }
 
     public function applyOverrides(): void
@@ -181,6 +188,34 @@ class AgentSandbox extends Component
             'temperature' => $this->overrideTemperature,
             'max_tokens' => $this->overrideMaxTokens,
         ]);
+    }
+
+    #[On('override-provider-updated')]
+    public function handleOverrideProviderUpdated(string $provider): void
+    {
+        $this->overrideProvider = $provider ?: null;
+    }
+
+    #[On('override-model-updated')]
+    public function handleOverrideModelUpdated(string $model): void
+    {
+        $this->overrideModel = $model ?: null;
+    }
+
+    #[On('override-temperature-updated')]
+    public function handleOverrideTemperatureUpdated(string $temperature): void
+    {
+        $this->overrideTemperature = is_numeric($temperature) ? (float) $temperature : null;
+    }
+
+    #[On('overrides-cleared')]
+    public function handleOverridesCleared(): void
+    {
+        $this->overrideSystemPrompt = null;
+        $this->overrideModel = null;
+        $this->overrideProvider = null;
+        $this->overrideTemperature = null;
+        $this->overrideMaxTokens = null;
     }
 
     public function clearOverrides(): void
@@ -211,6 +246,31 @@ class AgentSandbox extends Component
         return app(AgentIntrospector::class)->getDisplayValues($record);
     }
 
+    #[On('tool-counts-requested')]
+    public function dispatchToolCallCounts(): void
+    {
+        $counts = [];
+
+        foreach ($this->history as $message) {
+            if (($message['role'] ?? '') === 'tool_call') {
+                $toolName = $message['content'] ?? '';
+                if ($toolName !== '') {
+                    $counts[$toolName] = ($counts[$toolName] ?? 0) + 1;
+                }
+            }
+        }
+
+        $this->dispatch('tool-call-counts-updated', counts: $counts);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getConfiguredProviders(): array
+    {
+        return array_map('strval', array_keys(config('ai.providers', [])));
+    }
+
     public function render(): View
     {
         return view('ai-orbit::livewire.agent-sandbox');
@@ -218,21 +278,29 @@ class AgentSandbox extends Component
 
     private function persistSession(): void
     {
-        if ($this->sdkConversationId) {
-            session()->put(
-                $this->sessionKey(),
-                $this->sdkConversationId
-            );
-        }
+        session()->put($this->sessionKey(), [
+            'conversation_id' => $this->sdkConversationId,
+            'param_inputs' => $this->paramInputs,
+            'mode' => $this->simulationMode,
+        ]);
     }
 
     private function restoreSession(): void
     {
-        $conversationId = session()->get($this->sessionKey());
+        $data = session()->get($this->sessionKey());
 
-        if ($conversationId !== null) {
-            $this->sdkConversationId = $conversationId;
-            $this->simulationMode = 'full';
+        if ($data === null) {
+            return;
+        }
+
+        $this->sdkConversationId = $data['conversation_id'] ?? null;
+
+        if (! empty($data['param_inputs'] ?? [])) {
+            $this->paramInputs = $data['param_inputs'];
+        }
+
+        if ($this->allRequiredInputsProvided()) {
+            $this->simulationMode = 'ready';
         }
     }
 
