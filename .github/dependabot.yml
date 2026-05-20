@@ -3,15 +3,17 @@ updates:
   - package-ecosystem: composer
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     versioning-strategy: increase
     labels:
       - dependencies
     commit-message:
       prefix: chore
       include: scope
-    open-pull-requests-limit: 5
+    groups:
+      composer:
+        patterns:
+          - "*"
 
   - package-ecosystem: github-actions
     directory: /
@@ -23,3 +25,7 @@ updates:
     commit-message:
       prefix: chore
       include: scope
+    groups:
+      actions:
+        patterns:
+          - "*"
