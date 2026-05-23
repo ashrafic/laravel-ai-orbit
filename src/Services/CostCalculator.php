@@ -87,8 +87,8 @@ class CostCalculator
         $total = 0.0;
 
         foreach ($conversations as $conv) {
-            $inputTokens = (int) ($conv->total_input_tokens ?? 0);
-            $outputTokens = (int) ($conv->total_output_tokens ?? 0);
+            $inputTokens = (int) ($conv->input_tokens ?? 0);
+            $outputTokens = (int) ($conv->output_tokens ?? 0);
 
             if ($inputTokens > 0 || $outputTokens > 0) {
                 $model = $conv->model ?? null;

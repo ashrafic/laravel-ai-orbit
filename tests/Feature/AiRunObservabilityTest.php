@@ -107,7 +107,7 @@ it('respects payload capture settings and truncation', function () {
         ->not->toHaveKey('response');
 });
 
-it('uses run data for usage stats before falling back to conversation tables', function () {
+it('uses sdk tables for core metrics and runs for run metrics', function () {
     DB::table('agent_conversations')->insert([
         'id' => 'conversation-2',
         'user_id' => 5,
@@ -134,7 +134,9 @@ it('uses run data for usage stats before falling back to conversation tables', f
 
     $aggregator = app(TokenAggregator::class);
 
-    expect($aggregator->todayStats()['input_tokens'])->toBe(2);
+    expect($aggregator->periodStats()['input_tokens'])->toBe(2)
+        ->and($aggregator->periodStats()['total_conversations'])->toBe(1)
+        ->and($aggregator->periodStats()['total_runs'])->toBe(0);
 
     AiRun::query()->create([
         'operation' => 'agent_text',
@@ -147,8 +149,11 @@ it('uses run data for usage stats before falling back to conversation tables', f
         'started_at' => now(),
     ]);
 
-    expect($aggregator->todayStats()['input_tokens'])->toBe(10)
-        ->and($aggregator->agentBreakdown()->first()->total)->toBe(25);
+    // run has no conversation_id → treated as one-off, merged with SDK stats
+    expect($aggregator->periodStats()['input_tokens'])->toBe(12)
+        ->and($aggregator->periodStats()['total_runs'])->toBe(1)
+        ->and($aggregator->periodStats()['completed_runs'])->toBe(1)
+        ->and($aggregator->agentBreakdown()->first()->total)->toBe(30);
 });
 
 it('records failover events as failed runs', function () {

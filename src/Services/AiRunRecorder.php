@@ -44,10 +44,13 @@ class AiRunRecorder
         $usage = $this->usageFor($event);
         $model = $this->modelFor($event);
         $provider = $this->providerFor($event);
+        $promptTokens = (int) ($usage['prompt_tokens'] ?? $usage['input_tokens'] ?? $usage['promptTokens'] ?? $usage['inputTokens'] ?? 0);
+        $completionTokens = (int) ($usage['completion_tokens'] ?? $usage['output_tokens'] ?? $usage['completionTokens'] ?? $usage['outputTokens'] ?? 0);
+
         $cost = $model ? $this->costCalculator->calculate(
             $model,
-            (int) ($usage['prompt_tokens'] ?? 0),
-            (int) ($usage['completion_tokens'] ?? 0),
+            $promptTokens,
+            $completionTokens,
             $provider,
         ) : ['total' => 0, 'priced' => false, 'missing_pricing' => false];
 
@@ -57,8 +60,8 @@ class AiRunRecorder
         $this->upsertRun($event, [
             'operation' => $operation,
             'status' => 'completed',
-            'input_tokens' => (int) ($usage['prompt_tokens'] ?? 0),
-            'output_tokens' => (int) ($usage['completion_tokens'] ?? 0),
+            'input_tokens' => $promptTokens,
+            'output_tokens' => $completionTokens,
             'usage' => $usage,
             'cost' => $cost['total'],
             'priced' => $cost['priced'],
