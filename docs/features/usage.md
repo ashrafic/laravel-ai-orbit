@@ -64,7 +64,7 @@ use Ashrafic\AiOrbit\Services\TokenAggregator;
 $aggregator = app(TokenAggregator::class);
 
 // Get stats for a period
-$stats = $aggregator->todayStats('7d');
+$stats = $aggregator->periodStats('7d');
 // Returns: total_conversations, total_messages, input_tokens, output_tokens, provider_count, agent_count
 
 // Get breakdown by dimension

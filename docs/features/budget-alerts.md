@@ -57,7 +57,7 @@ Current spending is calculated by:
 
 ```php
 $aggregator = app(TokenAggregator::class);
-$stats = $aggregator->todayStats('month');
+$stats = $aggregator->periodStats('month');
 
 $calculator = app(CostCalculator::class);
 $cost = $calculator->calculate('gpt-4', $stats['input_tokens'], $stats['output_tokens']);
