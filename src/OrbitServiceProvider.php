@@ -13,6 +13,7 @@ use Ashrafic\AiOrbit\Http\Livewire\PricingMatrix;
 use Ashrafic\AiOrbit\Http\Livewire\PromptLab;
 use Ashrafic\AiOrbit\Http\Livewire\PromptLibrary;
 use Ashrafic\AiOrbit\Http\Livewire\ProviderHealth;
+use Ashrafic\AiOrbit\Http\Livewire\RunExplorer;
 use Ashrafic\AiOrbit\Http\Livewire\ThreadExplorer;
 use Ashrafic\AiOrbit\Http\Livewire\TodayStats;
 use Ashrafic\AiOrbit\Http\Middleware\Authorize;
@@ -170,6 +171,7 @@ class OrbitServiceProvider extends ServiceProvider
     {
         Livewire::component('ai-orbit.today-stats', TodayStats::class);
         Livewire::component('ai-orbit.thread-explorer', ThreadExplorer::class);
+        Livewire::component('ai-orbit.run-explorer', RunExplorer::class);
         Livewire::component('ai-orbit.message-timeline', MessageTimeline::class);
         Livewire::component('ai-orbit.agent-sandbox', AgentSandbox::class);
         Livewire::component('ai-orbit.agent-inspector', AgentInspector::class);

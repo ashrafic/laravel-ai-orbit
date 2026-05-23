@@ -16,7 +16,7 @@ class AiRunRepository
      */
     public function list(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        $query = AiRun::query()->latest('started_at')->latest('id');
+        $query = AiRun::query();
 
         foreach (['operation', 'status', 'provider', 'model', 'agent_class'] as $filter) {
             if (! empty($filters[$filter])) {
@@ -40,7 +40,31 @@ class AiRunRepository
             $query->where('started_at', '<=', $filters['date_to']);
         }
 
-        return $query->paginate($perPage)->withQueryString();
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('operation', 'like', "%{$search}%")
+                    ->orWhere('provider', 'like', "%{$search}%")
+                    ->orWhere('model', 'like', "%{$search}%")
+                    ->orWhere('agent_class', 'like', "%{$search}%")
+                    ->orWhere('invocation_id', 'like', "%{$search}%");
+            });
+        }
+
+        $sortField = $filters['sort_field'] ?? 'started_at';
+        $sortDirection = $filters['sort_direction'] ?? 'desc';
+
+        $allowedSorts = ['started_at', 'input_tokens', 'output_tokens', 'cost', 'latency_ms', 'operation', 'status'];
+
+        if (in_array($sortField, $allowedSorts, true)) {
+            $query->orderBy($sortField, $sortDirection === 'asc' ? 'asc' : 'desc');
+        }
+
+        if ($sortField !== 'id') {
+            $query->orderBy('id', $sortDirection === 'asc' ? 'asc' : 'desc');
+        }
+
+        return $query->paginate($perPage);
     }
 
     public function find(int|string $id): ?AiRun
