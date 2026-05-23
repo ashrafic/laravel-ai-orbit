@@ -45,6 +45,24 @@
                     <span class="text-gray-500 dark:text-gray-400">Errors</span>
                     <span class="font-medium {{ $metric['error_count'] > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-50' }}">{{ number_format($metric['error_count']) }}</span>
                 </div>
+                @if (!empty($metric['avg_latency_ms']))
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500 dark:text-gray-400">Avg Latency</span>
+                    <span class="font-medium text-gray-900 dark:text-gray-50">{{ number_format($metric['avg_latency_ms']) }}ms</span>
+                </div>
+                @endif
+                @if (!empty($metric['latency_p95']))
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500 dark:text-gray-400">P95 Latency</span>
+                    <span class="font-medium text-gray-900 dark:text-gray-50">{{ number_format($metric['latency_p95']) }}ms</span>
+                </div>
+                @endif
+                @if (!empty($metric['latency_p99']))
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500 dark:text-gray-400">P99 Latency</span>
+                    <span class="font-medium text-gray-900 dark:text-gray-50">{{ number_format($metric['latency_p99']) }}ms</span>
+                </div>
+                @endif
             </div>
 
             {{-- Progress bar --}}

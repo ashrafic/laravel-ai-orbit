@@ -40,7 +40,6 @@
 
                 $advancedLinks = [
                     ['route' => 'orbit.prompt-lab.index', 'label' => 'Prompt Lab', 'icon' => 'prompt-lab'],
-                    ['route' => 'orbit.usage.dashboard', 'label' => 'Analytics', 'icon' => 'chart'],
                     ['route' => 'orbit.usage.pricing', 'label' => 'Pricing', 'icon' => 'dollar'],
                     ['route' => 'orbit.usage.alerts', 'label' => 'Alerts', 'icon' => 'bell'],
                     ['route' => 'orbit.usage.health', 'label' => 'Health', 'icon' => 'heart'],

@@ -30,9 +30,10 @@
                     <thead>
                         <tr class="border-b border-gray-200/60 dark:border-white/8">
                             <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ ucfirst($groupBy) }}</th>
-                            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Messages</th>
+                            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Runs</th>
                             <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Input Tokens</th>
                             <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Output Tokens</th>
+                            <th class="text-right px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cost</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-white/4">
@@ -42,6 +43,7 @@
                             <td class="px-4 py-3 text-sm text-right text-gray-500 dark:text-gray-400">{{ number_format($row->message_count ?? 0) }}</td>
                             <td class="px-4 py-3 text-sm text-right text-gray-500 dark:text-gray-400">{{ number_format($row->input_tokens ?? 0) }}</td>
                             <td class="px-4 py-3 text-sm text-right text-gray-500 dark:text-gray-400">{{ number_format($row->output_tokens ?? 0) }}</td>
+                            <td class="px-4 py-3 text-sm text-right font-medium text-gray-700 dark:text-gray-200">{{ $currencySymbol }}{{ number_format($row->total_cost ?? 0, 4) }}</td>
                         </tr>
                         @endforeach
                     </tbody>

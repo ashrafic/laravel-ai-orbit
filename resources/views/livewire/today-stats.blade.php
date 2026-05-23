@@ -15,7 +15,18 @@
         @endforeach
     </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
+        <x-ai-orbit::stat
+            :value="$stats['total_runs']"
+            label="Runs"
+            color="cyan"
+            :trend="($stats['total_runs'] > 0 ? ($stats['failed_runs'] > 0 ? $stats['failed_runs'].' failed' : $stats['completed_runs'].' completed') : '')"
+        >
+            <x-slot:icon>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </x-slot:icon>
+        </x-ai-orbit::stat>
+
         <x-ai-orbit::stat
             :value="$stats['total_conversations']"
             label="Conversations"
@@ -36,9 +47,11 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
             </x-slot:icon>
         </x-ai-orbit::stat>
+    </div>
 
+    <div class="grid grid-cols-2 lg:grid-cols-2 gap-3 mb-6">
         <x-ai-orbit::stat
-            :value="number_format($stats['input_tokens'] / 1000000, 1) . 'M'"
+            :value="number_format($stats['input_tokens'])"
             label="Input Tokens"
             color="purple"
         >
@@ -48,7 +61,7 @@
         </x-ai-orbit::stat>
 
         <x-ai-orbit::stat
-            :value="number_format($stats['output_tokens'] / 1000, 0) . 'K'"
+            :value="number_format($stats['output_tokens'])"
             label="Output Tokens"
             color="orange"
         >
@@ -77,7 +90,7 @@
                                         labels: this.labels,
                                         datasets: [{
                                             data: this.data,
-                                            backgroundColor: ['#6366f1', '#818cf8', '#a5b4fc', '#8b5cf6', '#a78bfa', '#c4b5fd', '#10b981'],
+                                            backgroundColor: ['#06b6d4', '#f97316', '#84cc16', '#ec4899', '#f59e0b', '#14b8a6', '#d946ef', '#10b981', '#eab308', '#22d3ee', '#0284c7', '#a3e635', '#fb923c', '#38bdf8', '#4ade80'],
                                             borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
                                             borderWidth: 2,
                                         }]
@@ -101,15 +114,15 @@
                             });
                         }
                     }">
-                    <canvas x-ref="breakdownChart"></canvas>
+                    <canvas x-ref="breakdownChart" class="focus:outline-none"></canvas>
                 </div>
             </x-ai-orbit::card>
 
             <x-ai-orbit::card padding="p-0">
-                <div class="px-4 py-3 border-b border-gray-200/60 dark:border-white/8">
+                <div class="px-4 py-3 border-b border-gray-200/30 dark:border-white/5">
                     <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Agent Summary</h3>
                 </div>
-                <div class="divide-y divide-gray-200/60 dark:divide-white/8">
+                <div class="divide-y divide-gray-200/20 dark:divide-white/[0.03]">
                     @foreach ($breakdown as $item)
                         @php
                             $shortName = class_basename($item->agent);
