@@ -9,7 +9,7 @@
 
         <livewire:ai-orbit.cost-dashboard />
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="grid grid-cols-3 gap-3">
             <a href="{{ route('orbit.usage.pricing') }}"
                class="quick-link-emerald block p-4">
                 <div class="flex items-center gap-3">
