@@ -125,6 +125,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | SDK Observability
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, Orbit listens to official Laravel AI SDK events for features
+    | such as run storage and budget monitoring. Run storage can be disabled
+    | independently without disabling event-driven budget checks.
+    |
+    */
+
+    'observability' => [
+
+        'enabled' => env('AI_ORBIT_OBSERVABILITY_ENABLED', true),
+
+        'store_runs' => env('AI_ORBIT_STORE_RUNS', true),
+
+        'capture_text_payloads' => env('AI_ORBIT_CAPTURE_TEXT_PAYLOADS', true),
+
+        'max_payload_length' => (int) env('AI_ORBIT_MAX_PAYLOAD_LENGTH', 10000),
+
+        'excluded_operations' => [],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Prompt Lab Configuration
     |--------------------------------------------------------------------------
     |

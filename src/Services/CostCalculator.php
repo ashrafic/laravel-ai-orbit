@@ -10,25 +10,20 @@ class CostCalculator
     /**
      * Calculate cost for given model and token counts.
      *
-     * @return array{input_cost: float, output_cost: float, total: float, currency: string}
+     * @return array{input_cost: float, output_cost: float, total: float, currency: string, priced: bool, missing_pricing: bool}
      */
-    public function calculate(string $model, int $inputTokens, int $outputTokens): array
+    public function calculate(string $model, int $inputTokens, int $outputTokens, ?string $provider = null): array
     {
-        $rule = PricingRule::where('model', $model)->first();
-
-        if (! $rule) {
-            $rule = PricingRule::where(function ($q) use ($model) {
-                $q->where('model', $model)
-                    ->orWhere('model', 'like', '%'.$model.'%');
-            })->first();
-        }
+        $rule = $this->findRule($model, $provider);
 
         if (! $rule) {
             return [
-                'input_cost' => 0,
-                'output_cost' => 0,
-                'total' => 0,
+                'input_cost' => 0.0,
+                'output_cost' => 0.0,
+                'total' => 0.0,
                 'currency' => config('ai-orbit.currency', 'USD'),
+                'priced' => false,
+                'missing_pricing' => true,
             ];
         }
 
@@ -40,7 +35,46 @@ class CostCalculator
             'output_cost' => round($outputCost, 6),
             'total' => round($inputCost + $outputCost, 6),
             'currency' => $rule->currency,
+            'priced' => true,
+            'missing_pricing' => false,
         ];
+    }
+
+    private function findRule(string $model, ?string $provider = null): ?PricingRule
+    {
+        if ($provider) {
+            $rule = PricingRule::query()
+                ->where('model', $model)
+                ->where('provider', $provider)
+                ->first();
+
+            if ($rule) {
+                return $rule;
+            }
+        }
+
+        $rule = PricingRule::query()
+            ->where('model', $model)
+            ->whereNull('provider')
+            ->first();
+
+        if ($rule) {
+            return $rule;
+        }
+
+        return PricingRule::query()
+            ->where(function ($q) use ($model): void {
+                $q->where('model', $model)
+                    ->orWhere('model', 'like', '%'.$model.'%');
+            })
+            ->when($provider, function ($q) use ($provider): void {
+                $q->where(function ($q) use ($provider): void {
+                    $q->where('provider', $provider)
+                        ->orWhereNull('provider');
+                });
+            })
+            ->orderByRaw('provider is null')
+            ->first();
     }
 
     /**
@@ -57,9 +91,12 @@ class CostCalculator
             $outputTokens = (int) ($conv->total_output_tokens ?? 0);
 
             if ($inputTokens > 0 || $outputTokens > 0) {
-                $model = $conv->model ?? 'gpt-4';
-                $result = $this->calculate($model, $inputTokens, $outputTokens);
-                $total += $result['total'];
+                $model = $conv->model ?? null;
+
+                if ($model) {
+                    $result = $this->calculate($model, $inputTokens, $outputTokens, $conv->provider ?? null);
+                    $total += $result['total'];
+                }
             }
         }
 

@@ -13,6 +13,7 @@ return new class extends Migration
             $table->decimal('threshold_amount', 12, 2);
             $table->string('period')->default('monthly');
             $table->json('channels')->nullable();
+            $table->json('recipients')->nullable();
             $table->boolean('enabled')->default(true);
             $table->timestamp('last_triggered_at')->nullable();
             $table->timestamps();

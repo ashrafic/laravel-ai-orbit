@@ -3,6 +3,7 @@
 namespace Ashrafic\AiOrbit\Http\Livewire;
 
 use Ashrafic\AiOrbit\Models\Bookmark;
+use Ashrafic\AiOrbit\Services\AiRunRepository;
 use Ashrafic\AiOrbit\Services\ConversationRepository;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -95,6 +96,7 @@ class MessageTimeline extends Component
         return view('ai-orbit::livewire.message-timeline', [
             'conversation' => $this->conversation,
             'messages' => $this->conversation->messages ?? collect(),
+            'runs' => app(AiRunRepository::class)->forConversation($this->conversationId),
         ]);
     }
 }

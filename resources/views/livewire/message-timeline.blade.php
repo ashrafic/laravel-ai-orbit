@@ -198,4 +198,23 @@
             @endforeach
         </div>
     @endif
+
+    @if ($runs->isNotEmpty())
+        <x-ai-orbit::card title="Related Runs" padding="p-0">
+            <div class="divide-y divide-gray-200/60 dark:divide-white/8">
+                @foreach ($runs as $run)
+                    <a href="{{ route('orbit.runs.show', $run) }}" class="flex items-center justify-between gap-4 px-4 py-3 hover:bg-gray-50/80 dark:hover:bg-white/5">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ $run->operation }}</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-500">{{ $run->provider ?? 'unknown' }} / {{ $run->model ?? 'unknown' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm text-gray-700 dark:text-gray-200">{{ number_format($run->input_tokens + $run->output_tokens) }} tokens</p>
+                            <p class="text-xs text-gray-400 dark:text-gray-500">{{ $run->started_at?->diffForHumans() }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </x-ai-orbit::card>
+    @endif
 </div>

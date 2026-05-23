@@ -2,10 +2,13 @@
 
 namespace Ashrafic\AiOrbit\Services;
 
+use Ashrafic\AiOrbit\Models\AiRun;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 
 class TokenAggregator
 {
@@ -19,6 +22,10 @@ class TokenAggregator
     public function todayStats(string $period = 'today'): array
     {
         [$from, $to] = $this->resolveDateRange($period);
+
+        if ($this->hasRunData($from, $to)) {
+            return $this->runStats($from, $to);
+        }
 
         $totalConversations = 0;
         $totalMessages = 0;
@@ -100,6 +107,10 @@ class TokenAggregator
     {
         [$from, $to] = $this->resolveDateRange($period);
 
+        if ($this->hasRunData($from, $to)) {
+            return $this->runBreakdown($from, $to, $groupBy);
+        }
+
         if (! $this->hasTable('agent_conversation_messages')) {
             return collect();
         }
@@ -174,6 +185,86 @@ class TokenAggregator
 
         if ($from) {
             $query->where($column, '>=', $from);
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param  Carbon|string|null  $from
+     * @param  Carbon|string|null  $to
+     */
+    private function hasRunData($from = null, $to = null): bool
+    {
+        if (! config('ai-orbit.observability.enabled', true) || ! Schema::hasTable('orbit_ai_runs')) {
+            return false;
+        }
+
+        return $this->applyRunDateFilter(AiRun::query(), $from, $to)->exists();
+    }
+
+    /**
+     * @param  Carbon|string|null  $from
+     * @param  Carbon|string|null  $to
+     * @return array<string, int>
+     */
+    private function runStats($from = null, $to = null): array
+    {
+        $query = $this->applyRunDateFilter(AiRun::query(), $from, $to);
+        $tokenQuery = clone $query;
+        $conversationQuery = clone $query;
+        $providerQuery = clone $query;
+        $agentQuery = clone $query;
+
+        return [
+            'total_conversations' => $conversationQuery->whereNotNull('conversation_id')->distinct('conversation_id')->count('conversation_id'),
+            'total_messages' => $query->count(),
+            'input_tokens' => (int) $tokenQuery->sum('input_tokens'),
+            'output_tokens' => (int) $tokenQuery->sum('output_tokens'),
+            'provider_count' => $providerQuery->whereNotNull('provider')->distinct('provider')->count('provider'),
+            'agent_count' => $agentQuery->whereNotNull('agent_class')->distinct('agent_class')->count('agent_class'),
+        ];
+    }
+
+    /**
+     * @param  Carbon|string|null  $from
+     * @param  Carbon|string|null  $to
+     * @return Collection<int, object>
+     */
+    private function runBreakdown($from = null, $to = null, string $groupBy = 'agent'): Collection
+    {
+        $groupColumn = match ($groupBy) {
+            'model' => 'model',
+            'provider' => 'provider',
+            default => 'agent_class',
+        };
+
+        return $this->applyRunDateFilter(AiRun::query(), $from, $to)
+            ->selectRaw("COALESCE({$groupColumn}, 'unknown') as agent")
+            ->selectRaw('COUNT(*) as message_count')
+            ->selectRaw("COALESCE(MIN(model), 'unknown') as model")
+            ->selectRaw('COALESCE(SUM(input_tokens), 0) as input_tokens')
+            ->selectRaw('COALESCE(SUM(output_tokens), 0) as output_tokens')
+            ->selectRaw('COALESCE(SUM(input_tokens), 0) + COALESCE(SUM(output_tokens), 0) as total')
+            ->groupBy($groupColumn)
+            ->orderByDesc('total')
+            ->get();
+    }
+
+    /**
+     * @param  EloquentBuilder<AiRun>  $query
+     * @param  Carbon|string|null  $from
+     * @param  Carbon|string|null  $to
+     * @return EloquentBuilder<AiRun>
+     */
+    private function applyRunDateFilter(EloquentBuilder $query, $from = null, $to = null): EloquentBuilder
+    {
+        if ($from && $to && $from instanceof Carbon && $from->equalTo($to)) {
+            return $query->whereDate('started_at', $from);
+        }
+
+        if ($from) {
+            $query->where('started_at', '>=', $from);
         }
 
         return $query;
