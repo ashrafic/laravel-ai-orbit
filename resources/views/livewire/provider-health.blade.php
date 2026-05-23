@@ -3,7 +3,7 @@
     <div class="period-selector flex items-center gap-1 mb-6">
         @foreach ($periods as $value => $label)
             <button
-                wire:click="$set('period', '{{ $value }}')"
+                wire:click="selectPeriod('{{ $value }}')"
                 wire:key="period-{{ $value }}"
                 @class([
                     'period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
@@ -15,6 +15,10 @@
             </button>
         @endforeach
     </div>
+
+    <p class="mb-6 text-xs text-gray-400 dark:text-gray-500">
+        Showing data since {{ $dateFrom->format('M j, Y g:i A') }}
+    </p>
 
     @if($metrics->isNotEmpty())
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
