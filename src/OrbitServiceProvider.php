@@ -2,6 +2,7 @@
 
 namespace Ashrafic\AiOrbit;
 
+use Ashrafic\AiOrbit\Console\InstallCommand;
 use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
 use Ashrafic\AiOrbit\Http\Livewire\AgentInspector;
 use Ashrafic\AiOrbit\Http\Livewire\AgentSandbox;
@@ -80,11 +81,11 @@ class OrbitServiceProvider extends ServiceProvider
     {
         $this->loadRoutes();
         $this->loadViews();
-        $this->loadMigrations();
         $this->defineGate();
         $this->registerPublishables();
         $this->registerLivewireComponents();
         $this->registerAiEventListeners();
+        $this->registerCommands();
     }
 
     /**
@@ -125,14 +126,6 @@ class OrbitServiceProvider extends ServiceProvider
     }
 
     /**
-     * Load the package database migrations.
-     */
-    protected function loadMigrations(): void
-    {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-    }
-
-    /**
      * Define the access Gate for the Orbit dashboard.
      */
     protected function defineGate(): void
@@ -156,12 +149,27 @@ class OrbitServiceProvider extends ServiceProvider
         ], 'ai-orbit-config');
 
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/laravel-ai-orbit'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/ai-orbit'),
         ], 'ai-orbit-views');
 
         $this->publishes([
             __DIR__.'/../dist' => public_path('vendor/ai-orbit'),
         ], 'ai-orbit-assets');
+
+        $this->publishes([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'ai-orbit-migrations');
+    }
+
+    protected function registerCommands(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->commands([
+            InstallCommand::class,
+        ]);
     }
 
     /**
