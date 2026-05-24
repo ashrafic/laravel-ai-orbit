@@ -32,7 +32,7 @@ Break down data by different dimensions:
 
 ### Cost Calculation
 
-Costs are calculated using the Pricing Matrix (see [Pricing Matrix](/features/pricing-matrix)). If no pricing rule exists for a model, cost shows as $0.
+Costs are calculated using the Pricing Matrix (see [Pricing Matrix](/usage/pricing-matrix)). If no pricing rule exists for a model, cost shows as $0.
 
 The total cost is the sum of:
 

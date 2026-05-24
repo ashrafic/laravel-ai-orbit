@@ -23,17 +23,17 @@ const mainSidebar = [
   {
     text: 'Usage & Analytics',
     items: [
-      { text: 'Usage', link: '/features/usage' },
-      { text: 'Pricing Matrix', link: '/features/pricing-matrix' },
-      { text: 'Budget Alerts', link: '/features/budget-alerts' },
-      { text: 'Provider Health', link: '/features/provider-health' },
+      { text: 'Usage', link: '/usage/' },
+      { text: 'Pricing Matrix', link: '/usage/pricing-matrix' },
+      { text: 'Budget Alerts', link: '/usage/budget-alerts' },
+      { text: 'Provider Health', link: '/usage/provider-health' },
     ],
   },
   {
     text: 'Advanced',
     items: [
-      { text: 'Prompt Lab', link: '/features/prompt-lab' },
-      { text: 'Audit & Compliance', link: '/features/audit' },
+      { text: 'Prompt Lab', link: '/advanced/prompt-lab' },
+      { text: 'Audit & Compliance', link: '/advanced/audit' },
     ],
   },
   {
@@ -95,11 +95,33 @@ export default defineConfig({
 
     nav: [
       { text: 'Docs', link: '/getting-started/installation' },
+      { text: 'Features', link: '/features/dashboard' },
+      { 
+        text: 'Usage', 
+        items: [
+          { text: 'Analytics', link: '/usage/' },
+          { text: 'Pricing Matrix', link: '/usage/pricing-matrix' },
+          { text: 'Budget Alerts', link: '/usage/budget-alerts' },
+          { text: 'Provider Health', link: '/usage/provider-health' },
+        ],
+      },
+      {
+        text: 'Tools',
+        items: [
+          { text: 'Prompt Lab', link: '/advanced/prompt-lab' },
+          { text: 'Prompt Library', link: '/developer-tools/prompt-library' },
+          { text: 'Agent Health', link: '/developer-tools/agent-health' },
+          { text: 'Audit & Compliance', link: '/advanced/audit' },
+        ],
+      },
+      { text: 'Reference', link: '/reference/config' },
     ],
 
     sidebar: {
       '/getting-started/': mainSidebar,
       '/features/': mainSidebar,
+      '/usage/': mainSidebar,
+      '/advanced/': mainSidebar,
       '/developer-tools/': mainSidebar,
       '/customization/': mainSidebar,
       '/reference/': mainSidebar,

@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/v/ashrafic/laravel-ai-orbit.svg?style=flat-square&color=6366f1" alt="Latest Version"></a>
-  <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/dt/ashrafic/laravel-ai-orbit.svg?style=flat-square" alt="Total Downloads"></a>
+  
   <a href="https://github.com/ashrafic/laravel-ai-orbit/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ashrafic/laravel-ai-orbit/ci.yml?style=flat-square&label=tests" alt="Tests"></a>
   <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/php-v/ashrafic/laravel-ai-orbit.svg?style=flat-square&color=8b5cf6" alt="PHP Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
