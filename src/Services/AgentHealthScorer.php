@@ -53,7 +53,7 @@ class AgentHealthScorer
             $tokenData = $this->connection()->table('agent_conversation_messages')
                 ->where('agent', $agentClass)
                 ->where('created_at', '>=', $dateFrom)
-                ->selectRaw('AVG(JSON_EXTRACT(usage, "$.prompt_tokens") + JSON_EXTRACT(usage, "$.completion_tokens")) as avg')
+                ->selectRaw('AVG(JSON_EXTRACT(`usage`, "$.prompt_tokens") + JSON_EXTRACT(`usage`, "$.completion_tokens")) as avg')
                 ->first();
 
             $avgTokens = (int) ($tokenData->avg ?? 0);

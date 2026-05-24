@@ -52,7 +52,7 @@ class BudgetExceeded extends Notification implements ShouldQueue
                 'alert' => $this->alert,
                 'currentSpend' => $this->currentSpend,
                 'currencySymbol' => $symbol,
-                'dashboardUrl' => url(config('ai-orbit.path', 'ai-orbit').'/usage/dashboard'),
+                'dashboardUrl' => url(config('ai-orbit.path', 'ai-orbit').'/usage'),
                 'hasUnpricedUsage' => $this->hasUnpricedUsage,
                 'test' => $this->test,
             ]);
