@@ -16,6 +16,18 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
+                    <form method="POST" action="{{ route('orbit.export.pest', $conversationId) }}" class="inline">
+                        @csrf
+                        <button type="submit" class="orbit-btn-secondary text-xs px-2.5 py-1.5" title="Export to Pest test">
+                            Pest
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ route('orbit.export.json', $conversationId) }}" class="inline">
+                        @csrf
+                        <button type="submit" class="orbit-btn-secondary text-xs px-2.5 py-1.5" title="Export to JSONL">
+                            JSONL
+                        </button>
+                    </form>
                     <button
                         wire:click="toggleRawPayload"
                         class="orbit-btn-secondary"
