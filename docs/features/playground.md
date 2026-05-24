@@ -2,6 +2,8 @@
 
 The Agent Playground is an interactive sandbox where you can chat with any discovered agent in real time. Test prompts, debug behavior, and experiment with parameters — all without writing a single line of code.
 
+![Agent Playground](/screenshots/playground.png)
+
 ## Agent List
 
 Access at `/ai-orbit/playground`. The playground lists all agents discovered by scanning your configured directories.
@@ -33,6 +35,8 @@ Click any agent card to enter the sandbox.
 ## Agent Sandbox
 
 Access at `/ai-orbit/playground/{agent}`. The sandbox provides a fully functional chat interface for the selected agent.
+
+![Agent Sandbox](/screenshots/sandbox.png)
 
 ### Intelligent Dependency Resolution
 

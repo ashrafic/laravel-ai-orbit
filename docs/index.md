@@ -51,6 +51,33 @@ features:
 }
 </style>
 
+<div style="margin-top: 3rem;">
+
+## See It In Action
+
+<p align="center">
+  <img src="/screenshots/dashboard.png" alt="Dashboard Overview" style="border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); max-width: 100%;">
+</p>
+<p align="center"><strong>Dashboard</strong> — Real-time stats, token analytics, and agent breakdowns</p>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+  <div>
+    <img src="/screenshots/playground.png" alt="Agent Playground" style="border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); width: 100%;">
+    <p align="center"><strong>Playground</strong> — Discover and test agents</p>
+  </div>
+  <div>
+    <img src="/screenshots/sandbox.png" alt="Agent Sandbox" style="border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); width: 100%;">
+    <p align="center"><strong>Sandbox</strong> — Interactive chat with overrides</p>
+  </div>
+</div>
+
+<p align="center" style="margin-top: 2rem;">
+  <img src="/screenshots/prompt-lab.png" alt="Prompt Lab" style="border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); max-width: 100%;">
+</p>
+<p align="center"><strong>Prompt Lab</strong> — Side-by-side model comparison</p>
+
+</div>
+
 <div style="margin-top: 3rem; text-align: center;">
 
 ## Why Laravel AI Orbit?
