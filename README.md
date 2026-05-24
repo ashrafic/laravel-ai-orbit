@@ -96,13 +96,22 @@ Requires PHP 8.3+, Laravel 12+, and the [Laravel AI SDK](https://github.com/lara
 composer require ashrafic/laravel-ai-orbit
 ```
 
-The package auto-discovers. Visit `/ai-orbit` in your browser.
+After installing Orbit, publish its assets, configuration, and migrations using the `ai-orbit:install` Artisan command. After installing Orbit, you should also run the `migrate` command to create the tables needed to store Orbit's data:
+
+```bash
+php artisan ai-orbit:install
+php artisan migrate
+```
+
+Visit `/ai-orbit` in your browser.
 
 > Orbit reads directly from the SDK's `agent_conversations` and `agent_conversation_messages` tables, and also captures one-off SDK runs to its own `orbit_ai_runs` table. If SDK tables don't exist yet, you'll see a friendly setup banner.
 
 ---
 
 ## Configuration
+
+The `ai-orbit:install` command publishes the configuration file for you. To publish only the configuration file:
 
 ```bash
 php artisan vendor:publish --tag=ai-orbit-config
@@ -164,11 +173,11 @@ php artisan vendor:publish --tag=ai-orbit-views
 # Override config
 php artisan vendor:publish --tag=ai-orbit-config
 
-# Override compiled assets
+# Publish compiled assets
 php artisan vendor:publish --tag=ai-orbit-assets
 ```
 
-Published views land in `resources/views/vendor/laravel-ai-orbit/`.
+Published views land in `resources/views/vendor/ai-orbit/`.
 
 ---
 

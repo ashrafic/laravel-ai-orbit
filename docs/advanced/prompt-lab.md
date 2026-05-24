@@ -208,6 +208,6 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/prompt-lab/index.blade.php` — Session list
-- `resources/views/vendor/laravel-ai-orbit/prompt-lab/compare.blade.php` — Comparison interface
-- `resources/views/vendor/laravel-ai-orbit/prompt-lab/show.blade.php` — Session detail
+- `resources/views/vendor/ai-orbit/prompt-lab/index.blade.php` — Session list
+- `resources/views/vendor/ai-orbit/prompt-lab/compare.blade.php` — Comparison interface
+- `resources/views/vendor/ai-orbit/prompt-lab/show.blade.php` — Session detail

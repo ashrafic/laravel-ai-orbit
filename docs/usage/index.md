@@ -127,5 +127,5 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/usage/index.blade.php` — Usage dashboard
-- `resources/views/vendor/laravel-ai-orbit/usage/dashboard-livewire.blade.php` — Livewire CostDashboard component
+- `resources/views/vendor/ai-orbit/usage/index.blade.php` — Usage dashboard
+- `resources/views/vendor/ai-orbit/usage/dashboard-livewire.blade.php` — Livewire CostDashboard component

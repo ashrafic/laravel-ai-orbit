@@ -122,6 +122,6 @@ The dashboard view is a standard Blade template. You can override it by publishi
 php artisan vendor:publish --tag=ai-orbit-views
 ```
 
-Then edit `resources/views/vendor/laravel-ai-orbit/dashboard.blade.php`.
+Then edit `resources/views/vendor/ai-orbit/dashboard.blade.php`.
 
 The Livewire component can also be extended — see [Extending Orbit](/customization/extending-orbit).

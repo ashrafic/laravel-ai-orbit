@@ -148,7 +148,7 @@ Override the provider health view:
 php artisan vendor:publish --tag=ai-orbit-views
 ```
 
-Then edit `resources/views/vendor/laravel-ai-orbit/livewire/provider-health.blade.php`.
+Then edit `resources/views/vendor/ai-orbit/livewire/provider-health.blade.php`.
 
 ## Best Practices
 

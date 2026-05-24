@@ -111,7 +111,7 @@ Override the trace view:
 php artisan vendor:publish --tag=ai-orbit-views
 ```
 
-Then edit `resources/views/vendor/laravel-ai-orbit/traces/show.blade.php`.
+Then edit `resources/views/vendor/ai-orbit/traces/show.blade.php`.
 
 ## Comparison with Conversations
 

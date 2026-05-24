@@ -186,5 +186,5 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/audit/index.blade.php` — Audit layout
-- `resources/views/vendor/laravel-ai-orbit/livewire/audit-dashboard.blade.php` — Audit dashboard component
+- `resources/views/vendor/ai-orbit/audit/index.blade.php` — Audit layout
+- `resources/views/vendor/ai-orbit/livewire/audit-dashboard.blade.php` — Audit dashboard component

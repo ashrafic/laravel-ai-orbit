@@ -140,7 +140,7 @@ Override the budget alerts view:
 php artisan vendor:publish --tag=ai-orbit-views
 ```
 
-Then edit `resources/views/vendor/laravel-ai-orbit/livewire/budget-alerts.blade.php`.
+Then edit `resources/views/vendor/ai-orbit/livewire/budget-alerts.blade.php`.
 
 To customize the notification email, extend the `BudgetExceeded` notification class:
 
@@ -164,5 +164,5 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/emails/budget-exceeded.blade.php` — HTML email
-- `resources/views/vendor/laravel-ai-orbit/emails/budget-exceeded-text.blade.php` — Plain-text email
+- `resources/views/vendor/ai-orbit/emails/budget-exceeded.blade.php` — HTML email
+- `resources/views/vendor/ai-orbit/emails/budget-exceeded-text.blade.php` — Plain-text email

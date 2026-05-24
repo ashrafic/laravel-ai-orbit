@@ -138,7 +138,7 @@ Override the Prompt Library view:
 php artisan vendor:publish --tag=ai-orbit-views
 ```
 
-Then edit `resources/views/vendor/laravel-ai-orbit/livewire/prompt-library.blade.php`.
+Then edit `resources/views/vendor/ai-orbit/livewire/prompt-library.blade.php`.
 
 ## Best Practices
 

@@ -4,6 +4,8 @@ Orbit works out of the box with sensible defaults, but every aspect can be custo
 
 ## Publish the Config
 
+The `ai-orbit:install` command publishes the configuration file for you. To publish only the configuration file:
+
 ```bash
 php artisan vendor:publish --tag=ai-orbit-config
 ```

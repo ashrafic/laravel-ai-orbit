@@ -186,7 +186,7 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/playground/index.blade.php` — Agent list
-- `resources/views/vendor/laravel-ai-orbit/playground/show.blade.php` — Sandbox layout
-- `resources/views/vendor/laravel-ai-orbit/livewire/agent-sandbox.blade.php` — Sandbox component
-- `resources/views/vendor/laravel-ai-orbit/livewire/agent-inspector.blade.php` — Inspector panel
+- `resources/views/vendor/ai-orbit/playground/index.blade.php` — Agent list
+- `resources/views/vendor/ai-orbit/playground/show.blade.php` — Sandbox layout
+- `resources/views/vendor/ai-orbit/livewire/agent-sandbox.blade.php` — Sandbox component
+- `resources/views/vendor/ai-orbit/livewire/agent-inspector.blade.php` — Inspector panel

@@ -28,7 +28,7 @@ Orbit follows [Semantic Versioning](https://semver.org/). Upgrades within the sa
 
 | Orbit Version | Laravel | PHP | Laravel AI SDK |
 |:---|:---|:---|:---|
-| `^1.0` | `^11.0 \| ^12.0 \| ^13.0` | `^8.2` | `^0.6` |
+| `^1.0` | `^12.0 \| ^13.0` | `^8.3` | `^0.6` |
 
 ## From 0.x to 1.0
 
