@@ -12,11 +12,12 @@
 </p>
 
 <p align="center">
-  <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/v/ashrafic/laravel-ai-orbit.svg?style=flat-square&color=6366f1" alt="Latest Version"></a>
-  
-  <a href="https://github.com/ashrafic/laravel-ai-orbit/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ashrafic/laravel-ai-orbit/ci.yml?style=flat-square&label=tests" alt="Tests"></a>
-  <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/php-v/ashrafic/laravel-ai-orbit.svg?style=flat-square&color=8b5cf6" alt="PHP Version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="License"></a>
+  <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/v/ashrafic/laravel-ai-orbit.svg?style=flat-square&logo=packagist&color=6366f1" alt="Latest Version"></a>
+  <a href="https://github.com/ashrafic/laravel-ai-orbit/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ashrafic/laravel-ai-orbit/ci.yml?style=flat-square&logo=githubactions&label=Tests" alt="Tests"></a>
+  <a href="https://ashrafic.github.io/laravel-ai-orbit/"><img src="https://img.shields.io/badge/Docs-Online-10b981.svg?style=flat-square&logo=readthedocs" alt="Docs"></a>
+  <a href="https://packagist.org/packages/ashrafic/laravel-ai-orbit"><img src="https://img.shields.io/packagist/php-v/ashrafic/laravel-ai-orbit.svg?style=flat-square&logo=php&color=8b5cf6" alt="PHP Version"></a>
+  <a href="https://github.com/laravel/framework"><img src="https://img.shields.io/badge/Laravel-11%2B-FF2D20.svg?style=flat-square&logo=laravel" alt="Laravel Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-brightgreen.svg?style=flat-square&logo=opensourceinitiative" alt="License"></a>
 </p>
 
 ---
@@ -54,6 +55,36 @@ Built for Laravel 11+ and PHP 8.3+, Orbit installs in seconds, requires **zero f
 | | Prompt Library | Save, tag, and reuse prompts with full-text search |
 | | Global Search | Search across all conversations, prompts, and bookmarks |
 | | Agent Health | Score agents by response quality, tool usage, and error rates |
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ashrafic/laravel-ai-orbit/main/art/screenshots/dashboard.png" alt="Dashboard Overview" width="100%">
+</p>
+<p align="center"><em>Dashboard — Real-time stats, token breakdowns, and agent analytics</em></p>
+
+<br>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ashrafic/laravel-ai-orbit/main/art/screenshots/playground.png" alt="Agent Playground" width="100%">
+</p>
+<p align="center"><em>Playground — Discover and test all your agents in one place</em></p>
+
+<br>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ashrafic/laravel-ai-orbit/main/art/screenshots/sandbox.png" alt="Agent Sandbox" width="100%">
+</p>
+<p align="center"><em>Sandbox — Interactive chat with live parameter overrides and tool inspection</em></p>
+
+<br>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ashrafic/laravel-ai-orbit/main/art/screenshots/prompt-lab.png" alt="Prompt Lab" width="100%">
+</p>
+<p align="center"><em>Prompt Lab — Compare models side-by-side on the same prompt</em></p>
 
 ---
 

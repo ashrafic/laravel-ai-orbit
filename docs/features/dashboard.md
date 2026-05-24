@@ -2,6 +2,8 @@
 
 The Orbit Dashboard is your mission control for AI operations. It provides at-a-glance visibility into everything your agents are doing, updated in real time via Livewire.
 
+![Dashboard Overview](/screenshots/dashboard.png)
+
 ## What You'll See
 
 When you open `/ai-orbit`, the dashboard presents a comprehensive overview:

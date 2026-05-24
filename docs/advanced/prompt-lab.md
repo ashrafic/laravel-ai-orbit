@@ -2,6 +2,8 @@
 
 The Prompt Lab is a side-by-side model comparison tool. Send the same prompt to up to 3 different provider+model combinations and compare responses, latency, tokens, and cost — all in one view.
 
+![Prompt Lab](/screenshots/prompt-lab.png)
+
 ## Access
 
 Navigate to `/ai-orbit/prompt-lab`.
