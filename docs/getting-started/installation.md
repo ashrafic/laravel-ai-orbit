@@ -38,7 +38,7 @@ The following tables are created (all prefixed with `orbit_`):
 | `orbit_pricing_rules` | Editable cost per token per model |
 | `orbit_saved_prompts` | Prompt library with tags and metadata |
 | `orbit_bookmarks` | Starred conversations |
-| `orbit_arena_sessions` | Prompt Lab comparison history |
+| `orbit_prompt_lab_sessions` | Prompt Lab comparison history |
 | `orbit_budget_alerts` | Budget thresholds and notifications |
 
 ## Access the Dashboard

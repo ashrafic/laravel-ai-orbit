@@ -17,6 +17,7 @@ For each provider, Orbit displays:
 | **Error Count** | Total failed requests | 0 ideal |
 | **Rate Limit Count** | 429 / rate limit errors | 0 ideal |
 | **Avg Latency** | Mean response time in milliseconds | < 2000ms |
+| **P50 / P95 / P99** | Latency percentiles | < 2000ms |
 | **Status** | Overall health badge | Healthy / Degraded / Unhealthy |
 
 ### Status Levels
@@ -39,7 +40,14 @@ Switch between analysis windows:
 
 ### Data Source
 
-Provider Health reads from the `agent_conversation_messages` table, extracting provider information from the `meta` JSON column:
+Provider Health merges data from two sources for complete coverage:
+
+1. **`orbit_ai_runs`** — One-off SDK calls with provider, model, latency, and status stored directly in typed columns
+2. **`agent_conversation_messages`** — Multi-turn conversation data with provider information extracted from the `meta` JSON column
+
+Both sources store identical provider values (e.g., `'openai'`). Runs store the provider in a `VARCHAR` column, while conversations store it as a JSON string inside the `meta` `TEXT` column.
+
+Example conversation metadata:
 
 ```json
 {
@@ -60,21 +68,21 @@ Errors are detected by:
 
 ### Latency Calculation
 
-Average latency is calculated from the `meta.latency_ms` field:
+Average latency and percentiles are calculated from both data sources:
 
-```sql
-AVG(JSON_EXTRACT(meta, '$.latency_ms'))
-```
+- **From runs**: Direct `latency_ms` column on `orbit_ai_runs`
+- **From conversations**: `JSON_EXTRACT(meta, '$.latency_ms')` on `agent_conversation_messages`
 
-If latency data is not available, it shows as 0.
+Percentiles (P50, P95, P99) are computed from the merged latency distribution. If latency data is not available, it shows as 0.
 
 ### Provider Extraction
 
-The provider name is extracted from metadata:
+Provider names are extracted from both sources:
 
-```sql
-REPLACE(JSON_EXTRACT(meta, '$.provider'), '"', '')
-```
+- **Runs**: Direct `provider` column
+- **Conversations**: `REPLACE(JSON_EXTRACT(meta, '$.provider'), '"', '')`
+
+NULL or empty providers are filtered out to ensure clean aggregation.
 
 ## Programmatic Access
 

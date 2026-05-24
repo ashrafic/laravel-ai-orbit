@@ -2,13 +2,13 @@
 
 Orbit's Usage & Analytics section gives you complete visibility into your AI spending, token consumption, and operational trends. Make data-driven decisions about model selection, agent optimization, and budget planning.
 
-## Today's Stats
+## Usage Dashboard
 
-Access at `/ai-orbit/usage`. A quick overview of today's activity with the same stats cards as the dashboard.
+Access at `/ai-orbit/usage`. This unified page combines today's stats with full analytics:
 
-## Full Analytics Dashboard
-
-Access at `/ai-orbit/usage/dashboard`. The full analytics dashboard provides:
+- Quick stat cards for the selected period
+- Interactive cost charts and breakdowns
+- Navigation link cards to Pricing, Alerts, Health, and Prompts
 
 ### Time Period Selection
 
@@ -28,6 +28,7 @@ Break down data by different dimensions:
 | **Model** | Token and cost breakdown per AI model |
 | **Provider** | Usage split across AI providers (OpenAI, Anthropic, etc.) |
 | **Agent** | Per-agent consumption and cost |
+| **Operation** | Per-SDK-operation consumption (e.g., `chat`, `embed`) |
 
 ### Cost Calculation
 
@@ -69,7 +70,7 @@ $stats = $aggregator->periodStats('7d');
 
 // Get breakdown by dimension
 $breakdown = $aggregator->agentBreakdown('30d', groupBy: 'model');
-// Returns collection of: agent, message_count, model, input_tokens, output_tokens, total
+// Returns collection of: agent, message_count, model, input_tokens, output_tokens, total, cost
 ```
 
 ### CostCalculator
@@ -95,6 +96,7 @@ Orbit safely checks for table and column existence:
 
 - If `agent_conversations` doesn't exist, conversation count returns 0
 - If `agent_conversation_messages` doesn't exist, message count returns 0
+- If `orbit_ai_runs` doesn't exist, one-off run data is omitted
 - If the `usage` column doesn't exist, token counts return 0
 - If the `agent` column doesn't exist, agent breakdown returns empty
 - If the `meta` column doesn't exist, provider count returns 0
@@ -125,6 +127,5 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/usage/index.blade.php` — Today's stats
-- `resources/views/vendor/laravel-ai-orbit/usage/dashboard.blade.php` — Full analytics
-- `resources/views/vendor/laravel-ai-orbit/usage/dashboard-livewire.blade.php` — Livewire component
+- `resources/views/vendor/laravel-ai-orbit/usage/index.blade.php` — Usage dashboard
+- `resources/views/vendor/laravel-ai-orbit/usage/dashboard-livewire.blade.php` — Livewire CostDashboard component

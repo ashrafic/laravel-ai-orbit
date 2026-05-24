@@ -14,7 +14,8 @@ Click **"New Alert"** and configure:
 |:---|:---|:---|
 | **Threshold Amount** | The spending limit that triggers the alert | Any positive number |
 | **Period** | The time window for measuring spending | Daily, Weekly, Monthly |
-| **Channels** | How you want to be notified | Mail (Slack, etc. configurable) |
+| **Channels** | How you want to be notified | Mail |
+| **Recipients** | Email addresses for this specific alert | Comma-separated list |
 | **Enabled** | Whether the alert is active | On/Off |
 
 ### Example Alert
@@ -51,8 +52,8 @@ This means if your spending stays above the threshold, you'll get one notificati
 
 Current spending is calculated by:
 
-1. Aggregating token usage for the period via `TokenAggregator`
-2. Applying pricing rules via `CostCalculator`
+1. Aggregating token usage for the period via `TokenAggregator` from both SDK conversations and `orbit_ai_runs`
+2. Applying provider+model-specific pricing rules via `CostCalculator`
 3. Summing total costs
 
 ```php
@@ -65,14 +66,16 @@ $cost = $calculator->calculate('gpt-4', $stats['input_tokens'], $stats['output_t
 $currentSpend = $cost['total'];
 ```
 
+If no pricing rule exists for a specific provider+model combination, cost is tracked as missing pricing so you can identify gaps in your pricing matrix.
+
 ## Notification Channels
 
 ### Mail
 
-By default, notifications are sent to the configured mail from address:
+Notifications are sent to the alert's configured recipients (or the default mail from address if none are set):
 
 ```php
-Notification::route('mail', config('mail.from.address'))
+Notification::route('mail', $alert->recipients ?? config('mail.from.address'))
     ->notify(new BudgetExceeded($alert, $currentSpend));
 ```
 
@@ -82,18 +85,7 @@ The email includes:
 - The threshold amount
 - A link to the Orbit dashboard
 
-### Custom Channels
-
-Configure additional channels in `config/ai-orbit.php`:
-
-```php
-'budget' => [
-    'enabled' => true,
-    'notification_channels' => ['mail', 'slack'],
-],
-```
-
-To add Slack support, create a custom notification channel or use Laravel's Slack notification routing.
+Orbit ships with both HTML and plain-text email templates for budget alerts. You can test delivery for any alert directly from the dashboard using the **"Test Email"** action.
 
 ## Programmatic Access
 
@@ -164,3 +156,13 @@ class CustomBudgetExceeded extends BudgetExceeded
     }
 }
 ```
+
+You can also override the built-in email templates by publishing views:
+
+```bash
+php artisan vendor:publish --tag=ai-orbit-views
+```
+
+Then edit:
+- `resources/views/vendor/laravel-ai-orbit/emails/budget-exceeded.blade.php` — HTML email
+- `resources/views/vendor/laravel-ai-orbit/emails/budget-exceeded-text.blade.php` — Plain-text email

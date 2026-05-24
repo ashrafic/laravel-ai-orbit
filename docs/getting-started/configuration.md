@@ -121,6 +121,28 @@ The default currency and symbol used for cost calculations and display throughou
 
 Configure the budget alert system. Notifications are dispatched via Laravel's queue system (non-blocking) so they never slow down requests.
 
+### SDK Observability
+
+```php
+'observability' => [
+    'enabled' => env('AI_ORBIT_OBSERVABILITY_ENABLED', true),
+    'store_runs' => env('AI_ORBIT_STORE_RUNS', true),
+    'capture_text_payloads' => env('AI_ORBIT_CAPTURE_TEXT_PAYLOADS', true),
+    'max_payload_length' => (int) env('AI_ORBIT_MAX_PAYLOAD_LENGTH', 10000),
+    'excluded_operations' => [],
+],
+```
+
+Control how Orbit listens to Laravel AI SDK events:
+
+| Option | Default | Description |
+|:---|:---|:---|
+| `enabled` | `true` | Master toggle for SDK event listening |
+| `store_runs` | `true` | Persist one-off runs to `orbit_ai_runs` |
+| `capture_text_payloads` | `true` | Store prompt/response text |
+| `max_payload_length` | `10000` | Character limit for stored text |
+| `excluded_operations` | `[]` | Operation names to ignore |
+
 ### Prompt Lab
 
 ```php
@@ -189,6 +211,11 @@ ORBIT_CURRENCY_SYMBOL=$
 ORBIT_BUDGET_ENABLED=true
 ORBIT_PROMPT_LAB_MAX_SLOTS=3
 ORBIT_PROMPT_LAB_TIMEOUT=120
+
+AI_ORBIT_OBSERVABILITY_ENABLED=true
+AI_ORBIT_STORE_RUNS=true
+AI_ORBIT_CAPTURE_TEXT_PAYLOADS=true
+AI_ORBIT_MAX_PAYLOAD_LENGTH=10000
 
 ORBIT_PEST_NAMESPACE="Tests\\Feature\\AI"
 ORBIT_JSON_FORMAT=openai

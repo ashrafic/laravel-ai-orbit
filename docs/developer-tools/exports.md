@@ -1,6 +1,6 @@
 # Export Formats
 
-Orbit can export any conversation to three formats: Pest PHP tests, OpenAI JSONL fine-tuning format, and CSV. Export directly from the Message Timeline or programmatically via the API.
+Orbit can export any conversation to two formats: Pest PHP tests and OpenAI JSONL fine-tuning format. Export from the Message Timeline or programmatically via the API.
 
 ## Export from the UI
 
@@ -47,20 +47,6 @@ Exports in OpenAI fine-tuning format:
 - Training data extraction
 - Dataset preparation
 
-### CSV Export
-
-Exports conversation metadata:
-
-```csv
-ID,Title,Agent,User,Created At,Tokens Input,Tokens Output
-1,"Support Chat","App\AI\Agents\SupportAgent",7,"2025-01-15",156,89
-```
-
-**Use this for:**
-- Spreadsheet analysis
-- Cost reporting
-- Data science workflows
-
 ## Programmatic Export
 
 ### Pest Export
@@ -82,15 +68,6 @@ $content = $export->toJson('conversation-id-123');
 
 // Save to file
 file_put_contents('training_data.jsonl', $content);
-```
-
-### CSV Export
-
-```php
-$content = $export->toCsv(['conversation-id-123', 'conversation-id-456']);
-
-// Save to file
-file_put_contents('conversations.csv', $content);
 ```
 
 ## Configuration
@@ -125,18 +102,7 @@ The JSON export format is currently fixed to OpenAI's fine-tuning format:
 
 ## Bulk Export
 
-Export multiple conversations at once:
-
-```php
-// Export multiple conversations to CSV
-$content = $export->toCsv([
-    'conversation-1',
-    'conversation-2',
-    'conversation-3',
-]);
-```
-
-For Pest and JSONL, loop through conversations:
+Loop through conversation IDs for batch exports:
 
 ```php
 $ids = ['conversation-1', 'conversation-2'];
@@ -144,6 +110,11 @@ $ids = ['conversation-1', 'conversation-2'];
 foreach ($ids as $id) {
     $pest = $export->toPest($id);
     file_put_contents("tests/Feature/AI/{$id}_test.php", $pest);
+}
+
+foreach ($ids as $id) {
+    $jsonl = $export->toJson($id);
+    file_put_contents("training_data_{$id}.jsonl", $jsonl);
 }
 ```
 
@@ -156,7 +127,7 @@ The export controller provides HTTP endpoints:
 | POST | `/ai-orbit/export/pest/{id}` | Download Pest test file |
 | POST | `/ai-orbit/export/json/{id}` | Download JSONL file |
 
-Note: CSV export is available programmatically but not exposed as a standalone endpoint (use the bulk action in the Thread Explorer).
+Export endpoints return downloadable files with appropriate `Content-Disposition` headers.
 
 ## Best Practices
 
