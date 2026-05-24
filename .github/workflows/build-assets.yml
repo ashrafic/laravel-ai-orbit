@@ -9,18 +9,21 @@ on:
       - 'tailwind.config.js'
       - 'postcss.config.js'
       - 'vite.config.js'
+  pull_request:
+    paths:
+      - 'resources/views/**'
+      - 'resources/css/**'
+      - 'tailwind.config.js'
+      - 'postcss.config.js'
+      - 'vite.config.js'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.head_ref }}
 
       - uses: actions/setup-node@v6
         with:
@@ -30,7 +33,11 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - uses: stefanzweifel/git-auto-commit-action@v7
-        with:
-          commit_message: 'chore: build assets'
-          file_pattern: 'dist/'
+      - name: Ensure dist/ is up to date
+        run: |
+          if [[ -n $(git status --porcelain dist/) ]]; then
+            echo "::error::Built assets in dist/ are out of date. Please run 'npm run build' and commit the changes."
+            git status dist/
+            git diff dist/
+            exit 1
+          fi
