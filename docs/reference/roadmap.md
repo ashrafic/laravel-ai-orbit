@@ -64,7 +64,7 @@ Have an idea for the roadmap? Open an issue or pull request on [GitHub](https://
 
 | Version | Status | PHP | Laravel |
 |:---|:---|:---|:---|
-| 1.x | Active development | 8.2+ | 11+, 12+, 13+ |
+| 1.x | Active development | 8.2+ | 12+, 13+ |
 
 ## Release Schedule
 

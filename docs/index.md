@@ -84,7 +84,7 @@ features:
 
 **Laravel AI Orbit** is a standalone observability dashboard and developer playground for the official [Laravel AI SDK](https://github.com/laravel/ai). Think of it as **Telescope for your AI agents** — a polished, real-time window into everything your agents are doing, with powerful tools to test, compare, and optimize them.
 
-Built for **Laravel 11+** and **PHP 8.2+**, Orbit installs in seconds, requires **zero frontend build steps**, and ships with a gorgeous glassmorphism UI in both dark and light modes.
+Built for **Laravel 12+** and **PHP 8.3+**, Orbit installs in seconds, requires **zero frontend build steps**, and ships with a gorgeous glassmorphism UI in both dark and light modes.
 
 ```bash
 composer require ashrafic/laravel-ai-orbit
