@@ -9,7 +9,7 @@ export default defineConfig({
             },
         },
         outDir: 'dist',
-        emptyOutDir: true,
+        emptyOutDir: false,
         manifest: false,
     },
 });
