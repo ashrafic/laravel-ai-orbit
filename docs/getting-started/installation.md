@@ -8,8 +8,8 @@ Before installing, make sure your environment meets the following:
 
 | Requirement | Version | Notes |
 |:---|:---|:---|
-| PHP | `^8.2` | Required by the Laravel AI SDK |
-| Laravel | `^11.0 \| ^12.0 \| ^13.0` | Framework version |
+| PHP | `^8.3` | Required by the Laravel AI SDK |
+| Laravel | `^12.0 \| ^13.0` | Framework version |
 | Laravel AI SDK | `^0.6` | `laravel/ai` package with migrations run |
 | Livewire | `^4.0` | Auto-installed as a dependency |
 
@@ -21,17 +21,14 @@ Before installing, make sure your environment meets the following:
 composer require ashrafic/laravel-ai-orbit
 ```
 
-That's it. The package auto-registers via Laravel's package discovery. No service provider to add, no config to publish unless you want to customize.
-
-## Run Migrations
-
-Orbit creates its own tables for features like pricing rules, saved prompts, bookmarks, and budget alerts:
+After installing Orbit, publish its assets and configuration using the `ai-orbit:install` Artisan command. After installing Orbit, you should also run the `migrate` command to create the tables needed to store Orbit's data:
 
 ```bash
+php artisan ai-orbit:install
 php artisan migrate
 ```
 
-The following tables are created (all prefixed with `orbit_`):
+Orbit creates the following tables (all prefixed with `orbit_`):
 
 | Table | Purpose |
 |:---|:---|
@@ -40,6 +37,7 @@ The following tables are created (all prefixed with `orbit_`):
 | `orbit_bookmarks` | Starred conversations |
 | `orbit_prompt_lab_sessions` | Prompt Lab comparison history |
 | `orbit_budget_alerts` | Budget thresholds and notifications |
+| `orbit_ai_runs` | One-off SDK run observability |
 
 ## Access the Dashboard
 

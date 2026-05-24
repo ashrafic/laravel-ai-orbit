@@ -11,13 +11,13 @@ php artisan vendor:publish --tag=ai-orbit-views
 Published views are copied to:
 
 ```
-resources/views/vendor/laravel-ai-orbit/
+resources/views/vendor/ai-orbit/
 ```
 
 ## View Structure
 
 ```
-resources/views/vendor/laravel-ai-orbit/
+resources/views/vendor/ai-orbit/
 ├── components/
 │   ├── layout.blade.php          # Main dashboard layout
 │   ├── nav.blade.php             # Navigation sidebar
@@ -122,7 +122,7 @@ Livewire::component('ai-orbit.thread-explorer', CustomThreadExplorer::class);
 To revert to the package's default views, delete the published views:
 
 ```bash
-rm -rf resources/views/vendor/laravel-ai-orbit
+rm -rf resources/views/vendor/ai-orbit
 ```
 
 Or re-publish with the `--force` flag to overwrite your changes:

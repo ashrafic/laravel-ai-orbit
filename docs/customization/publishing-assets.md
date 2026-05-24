@@ -1,8 +1,6 @@
 # Publishing Assets
 
-Orbit ships with compiled CSS assets. You can publish and override these to customize the visual appearance of the dashboard.
-
-## Publish Assets
+Orbit ships with compiled CSS assets. These are published as part of the `ai-orbit:install` command. To publish only the assets:
 
 ```bash
 php artisan vendor:publish --tag=ai-orbit-assets

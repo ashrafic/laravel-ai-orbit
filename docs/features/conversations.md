@@ -177,7 +177,7 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/conversations/index.blade.php` — Thread Explorer layout
-- `resources/views/vendor/laravel-ai-orbit/conversations/show.blade.php` — Message Timeline layout
-- `resources/views/vendor/laravel-ai-orbit/livewire/thread-explorer.blade.php` — Thread Explorer Livewire component
-- `resources/views/vendor/laravel-ai-orbit/livewire/message-timeline.blade.php` — Message Timeline Livewire component
+- `resources/views/vendor/ai-orbit/conversations/index.blade.php` — Thread Explorer layout
+- `resources/views/vendor/ai-orbit/conversations/show.blade.php` — Message Timeline layout
+- `resources/views/vendor/ai-orbit/livewire/thread-explorer.blade.php` — Thread Explorer Livewire component
+- `resources/views/vendor/ai-orbit/livewire/message-timeline.blade.php` — Message Timeline Livewire component

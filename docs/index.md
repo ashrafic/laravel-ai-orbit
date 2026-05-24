@@ -88,6 +88,8 @@ Built for **Laravel 12+** and **PHP 8.3+**, Orbit installs in seconds, requires 
 
 ```bash
 composer require ashrafic/laravel-ai-orbit
+php artisan ai-orbit:install
+php artisan migrate
 ```
 
 </div>

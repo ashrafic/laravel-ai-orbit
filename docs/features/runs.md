@@ -165,6 +165,6 @@ php artisan vendor:publish --tag=ai-orbit-views
 ```
 
 Then edit:
-- `resources/views/vendor/laravel-ai-orbit/runs/index.blade.php` — Run Explorer layout
-- `resources/views/vendor/laravel-ai-orbit/runs/show.blade.php` — Run detail layout
-- `resources/views/vendor/laravel-ai-orbit/livewire/run-explorer.blade.php` — Livewire filter component
+- `resources/views/vendor/ai-orbit/runs/index.blade.php` — Run Explorer layout
+- `resources/views/vendor/ai-orbit/runs/show.blade.php` — Run detail layout
+- `resources/views/vendor/ai-orbit/livewire/run-explorer.blade.php` — Livewire filter component
