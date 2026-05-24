@@ -31,8 +31,9 @@ Built for Laravel 11+ and PHP 8.3+, Orbit installs in seconds, requires **zero f
 
 | Category | Feature | Description |
 |----------|---------|-------------|
-| **Observability** | Dashboard | At-a-glance stats for conversations, messages, tokens, and agent breakdowns with configurable time periods |
+| **Observability** | Dashboard | At-a-glance stats for conversations, runs, messages, tokens, and agent breakdowns with configurable time periods |
 | | Conversations | Searchable thread list with advanced filters, bookmarks, and chat-style message timeline with raw JSON inspector |
+| | Runs | Observability for one-off SDK prompts and non-conversation AI operations with search, filters, and detail views |
 | | Traces | Visual execution timeline with per-step latency and expandable tool call details |
 | **Playground** | Agent Sandbox | Interactive chat with any discovered agent. Intelligent dependency resolution auto-detects Eloquent models, container bindings, and scalars |
 | | Live Overrides | Override system prompt, model, provider, temperature, and max tokens on the fly |
@@ -42,8 +43,8 @@ Built for Laravel 11+ and PHP 8.3+, Orbit installs in seconds, requires **zero f
 | | Session History | Browse and revisit all past comparison sessions |
 | **Usage & Cost** | Pricing Matrix | Editable per-model pricing rules with token cost configuration |
 | | Analytics | Historical cost breakdowns by agent, model, and provider with interactive charts |
-| | Budget Alerts | Configurable thresholds with queued email/slack notifications |
-| | Provider Health | Monitor success rates, latency, and error counts per AI provider |
+| | Budget Alerts | Configurable thresholds with per-alert recipient lists, provider-specific pricing, and queued email notifications |
+| | Provider Health | Monitor success rates, latency (with P50/P95/P99 percentiles), and error counts per AI provider from merged conversation + run data |
 | **Security** | PII Detection | Built-in scanner detects emails, phones, SSNs, credit cards, and API keys in message payloads |
 | | Data Retention | Configurable retention policies with dry-run previews and auto-cleanup of stale conversations |
 | | Access Audit | Full activity log of dashboard access attempts |
@@ -66,7 +67,7 @@ composer require ashrafic/laravel-ai-orbit
 
 The package auto-discovers. Visit `/ai-orbit` in your browser.
 
-> Orbit reads directly from the SDK's `agent_conversations` and `agent_conversation_messages` tables. If they don't exist yet, you'll see a friendly setup banner.
+> Orbit reads directly from the SDK's `agent_conversations` and `agent_conversation_messages` tables, and also captures one-off SDK runs to its own `orbit_ai_runs` table. If SDK tables don't exist yet, you'll see a friendly setup banner.
 
 ---
 
@@ -89,6 +90,11 @@ php artisan vendor:publish --tag=ai-orbit-config
 | `prompt-lab.timeout_seconds` | `120` | Request timeout per comparison slot |
 | `budget.enabled` | `true` | Budget alert system toggle |
 | `budget.notification_channels` | `['mail']` | Alert notification channels |
+| `observability.enabled` | `true` | Listen to Laravel AI SDK events for run capture and budget monitoring |
+| `observability.store_runs` | `true` | Persist one-off SDK runs to `orbit_ai_runs` |
+| `observability.capture_text_payloads` | `true` | Capture prompt/response text in run records |
+| `observability.max_payload_length` | `10000` | Max characters for stored text payloads |
+| `observability.excluded_operations` | `[]` | Operation names to exclude from observability |
 | `audit.enabled` | `true` | Audit & PII scanning toggle |
 | `audit.retention_days` | `90` | Default data retention period |
 

@@ -224,6 +224,24 @@
         color: #d97706;
     }
 
+    .icon-container-cyan {
+        width: 36px;
+        height: 36px;
+        background: rgba(6, 182, 212, 0.15);
+        border: 1px solid rgba(6, 182, 212, 0.25);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #22d3ee;
+    }
+
+    html:not(.dark) .icon-container-cyan {
+        background: rgba(6, 182, 212, 0.1);
+        border-color: rgba(6, 182, 212, 0.15);
+        color: #0891b2;
+    }
+
     .nav-link-active {
         background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.15));
         border: 1px solid rgba(99, 102, 241, 0.3);
@@ -365,6 +383,29 @@
     html:not(.dark) .quick-link-purple {
         background: rgba(255, 255, 255, 0.7);
         border-color: rgba(139, 92, 246, 0.15);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .quick-link-cyan {
+        background: rgba(6, 182, 212, 0.08);
+        border: 1px solid rgba(6, 182, 212, 0.2);
+        border-radius: 14px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .quick-link-cyan:hover {
+        border-color: rgba(6, 182, 212, 0.35);
+        background: rgba(6, 182, 212, 0.12);
+    }
+
+    html:not(.dark) .quick-link-cyan {
+        background: rgba(255, 255, 255, 0.7);
+        border-color: rgba(6, 182, 212, 0.15);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
 

@@ -37,7 +37,7 @@ features:
     details: Built-in PII detection scanner, configurable data retention policies with dry-run previews, and full access audit logs.
   - icon: 🛠️
     title: Developer Tools
-    details: Export conversations to Pest tests, JSONL fine-tuning format, or CSV. Save and reuse prompts in the Prompt Library with full-text search and tags.
+    details: Export conversations to Pest tests and JSONL fine-tuning format. Save and reuse prompts in the Prompt Library with full-text search and tags.
 ---
 
 <style>
@@ -71,15 +71,17 @@ composer require ashrafic/laravel-ai-orbit
 
 | Capability | What It Means For You |
 |:---|:---|
-| **Real-Time Dashboard** | At-a-glance stats for conversations, messages, tokens, and agent breakdowns with configurable time periods |
+| **Real-Time Dashboard** | At-a-glance stats for conversations, runs, messages, tokens, and agent breakdowns with configurable time periods |
 | **Thread Explorer** | Searchable conversation list with advanced filters, bookmarks, and chat-style message timelines |
+| **Run Observability** | Capture and inspect one-off SDK calls with search, filters, and full payload detail views |
 | **Agent Sandbox** | Test any agent interactively with auto-detected dependencies, live overrides, and multi-turn sessions |
 | **Prompt Lab** | Side-by-side model comparison with auto-tagged winners — fastest, cheapest, most concise, best value |
-| **Cost Analytics** | Historical breakdowns by agent, model, and provider with interactive charts |
-| **Budget Alerts** | Configurable thresholds with queued email/Slack notifications that never block requests |
+| **Cost Analytics** | Historical breakdowns by agent, model, provider, and operation with interactive charts |
+| **Budget Alerts** | Configurable thresholds with per-alert recipients, provider-specific pricing, and queued notifications |
+| **Provider Health** | Monitor success rates, latency percentiles, and errors from merged conversation + run data |
 | **PII Detection** | Automatic scanning for emails, phones, SSNs, credit cards, and API keys in message payloads |
 | **Data Retention** | Configurable cleanup policies with dry-run previews and automatic stale conversation purging |
-| **Export Tools** | One-click export to Pest PHP tests, OpenAI JSONL fine-tuning format, or CSV |
+| **Export Tools** | Export conversations to Pest PHP tests or OpenAI JSONL fine-tuning format |
 | **Prompt Library** | Save, tag, and reuse prompts with full-text search and metadata |
 
 </div>

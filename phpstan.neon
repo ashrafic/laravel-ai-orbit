@@ -12,3 +12,4 @@ parameters:
         - '#Cannot call method [a-zA-Z]+\(\) on string#'
         - '#no value type specified in iterable type#'
         - '#has no type specified#'
+        - '#does not specify its types: TKey, TValue#'

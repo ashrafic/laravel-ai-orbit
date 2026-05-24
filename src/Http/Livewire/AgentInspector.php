@@ -3,6 +3,7 @@
 namespace Ashrafic\AiOrbit\Http\Livewire;
 
 use Ashrafic\AiOrbit\Contracts\AgentRegistryContract;
+use Ashrafic\AiOrbit\Services\AgentHealthScorer;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -23,6 +24,9 @@ class AgentInspector extends Component
     /** @var array<string, int> */
     public array $toolCallCounts = [];
 
+    /** @var array{score: int, total_requests: int, error_rate: float, avg_tokens: int, status: string}|null */
+    public ?array $healthScore = null;
+
     public function mount(string $agentClass): void
     {
         $this->agentClass = $agentClass;
@@ -31,6 +35,8 @@ class AgentInspector extends Component
         if (isset($this->agentMeta['temperature'])) {
             $this->overrideTemperature = (float) $this->agentMeta['temperature'];
         }
+
+        $this->healthScore = app(AgentHealthScorer::class)->score($agentClass);
 
         $this->dispatch('tool-counts-requested');
     }

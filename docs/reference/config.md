@@ -86,6 +86,26 @@ Default currency for cost calculations and display.
 | `enabled` | bool | `true` | Toggle budget alert system |
 | `notification_channels` | array | `['mail']` | Channels for budget notifications |
 
+## SDK Observability
+
+```php
+'observability' => [
+    'enabled' => env('AI_ORBIT_OBSERVABILITY_ENABLED', true),
+    'store_runs' => env('AI_ORBIT_STORE_RUNS', true),
+    'capture_text_payloads' => env('AI_ORBIT_CAPTURE_TEXT_PAYLOADS', true),
+    'max_payload_length' => (int) env('AI_ORBIT_MAX_PAYLOAD_LENGTH', 10000),
+    'excluded_operations' => [],
+],
+```
+
+| Option | Type | Default | Description |
+|:---|:---|:---|:---|
+| `enabled` | bool | `true` | Toggle SDK event listening |
+| `store_runs` | bool | `true` | Persist runs to `orbit_ai_runs` |
+| `capture_text_payloads` | bool | `true` | Store prompt/response text |
+| `max_payload_length` | int | `10000` | Character limit for stored text |
+| `excluded_operations` | array | `[]` | Operation names to ignore |
+
 ## Prompt Lab
 
 ```php
@@ -153,7 +173,11 @@ Default currency for cost calculations and display.
 | `ORBIT_BUDGET_ENABLED` | `budget.enabled` | `true` | Budget alerts toggle |
 | `ORBIT_PROMPT_LAB_MAX_SLOTS` | `prompt-lab.max_slots` | `3` | Max comparison slots |
 | `ORBIT_PROMPT_LAB_TIMEOUT` | `prompt-lab.timeout_seconds` | `120` | Slot timeout |
-| `ORBIT_PEST_NAMESPACE` | `export.pest_namespace` | `Tests\\Feature\\AI` | Pest namespace |
+| `AI_ORBIT_OBSERVABILITY_ENABLED` | `observability.enabled` | `true` | SDK event listening toggle |
+| `AI_ORBIT_STORE_RUNS` | `observability.store_runs` | `true` | Persist runs toggle |
+| `AI_ORBIT_CAPTURE_TEXT_PAYLOADS` | `observability.capture_text_payloads` | `true` | Text capture toggle |
+| `AI_ORBIT_MAX_PAYLOAD_LENGTH` | `observability.max_payload_length` | `10000` | Max payload length |
+| `ORBIT_PEST_NAMESPACE` | `export.pest_namespace` | `Tests\Feature\AI` | Pest namespace |
 | `ORBIT_JSON_FORMAT` | `export.json_format` | `openai` | JSON export format |
 | `ORBIT_AUDIT_ENABLED` | `audit.enabled` | `true` | Audit toggle |
 | `ORBIT_RETENTION_DAYS` | `audit.retention_days` | `90` | Retention period |
@@ -183,6 +207,14 @@ return [
     'budget' => [
         'enabled' => env('ORBIT_BUDGET_ENABLED', true),
         'notification_channels' => ['mail'],
+    ],
+    
+    'observability' => [
+        'enabled' => env('AI_ORBIT_OBSERVABILITY_ENABLED', true),
+        'store_runs' => env('AI_ORBIT_STORE_RUNS', true),
+        'capture_text_payloads' => env('AI_ORBIT_CAPTURE_TEXT_PAYLOADS', true),
+        'max_payload_length' => (int) env('AI_ORBIT_MAX_PAYLOAD_LENGTH', 10000),
+        'excluded_operations' => [],
     ],
     
     'prompt-lab' => [

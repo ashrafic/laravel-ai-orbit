@@ -1,5 +1,68 @@
 import { defineConfig } from 'vitepress'
 
+const mainSidebar = [
+  {
+    text: 'Getting Started',
+    items: [
+      { text: 'Installation', link: '/getting-started/installation' },
+      { text: 'Configuration', link: '/getting-started/configuration' },
+      { text: 'Authorization', link: '/getting-started/authorization' },
+      { text: 'Upgrading', link: '/getting-started/upgrading' },
+    ],
+  },
+  {
+    text: 'Core Features',
+    items: [
+      { text: 'Dashboard', link: '/features/dashboard' },
+      { text: 'Conversations', link: '/features/conversations' },
+      { text: 'Runs', link: '/features/runs' },
+      { text: 'Playground', link: '/features/playground' },
+      { text: 'Traces', link: '/features/traces' },
+    ],
+  },
+  {
+    text: 'Usage & Analytics',
+    items: [
+      { text: 'Usage', link: '/features/usage' },
+      { text: 'Pricing Matrix', link: '/features/pricing-matrix' },
+      { text: 'Budget Alerts', link: '/features/budget-alerts' },
+      { text: 'Provider Health', link: '/features/provider-health' },
+    ],
+  },
+  {
+    text: 'Advanced',
+    items: [
+      { text: 'Prompt Lab', link: '/features/prompt-lab' },
+      { text: 'Audit & Compliance', link: '/features/audit' },
+    ],
+  },
+  {
+    text: 'Developer Tools',
+    items: [
+      { text: 'Prompt Library', link: '/developer-tools/prompt-library' },
+      { text: 'Agent Health Score', link: '/developer-tools/agent-health' },
+    ],
+  },
+  {
+    text: 'Customization',
+    items: [
+      { text: 'Publishing Views', link: '/customization/publishing-views' },
+      { text: 'Publishing Assets', link: '/customization/publishing-assets' },
+      { text: 'Extending Orbit', link: '/customization/extending-orbit' },
+    ],
+  },
+  {
+    text: 'Reference',
+    items: [
+      { text: 'Config Options', link: '/reference/config' },
+      { text: 'Routes', link: '/reference/routes' },
+      { text: 'Export Formats', link: '/developer-tools/exports' },
+      { text: 'Changelog', link: '/reference/changelog' },
+      { text: 'Roadmap', link: '/reference/roadmap' },
+    ],
+  },
+]
+
 export default defineConfig({
   title: 'Laravel AI Orbit',
   titleTemplate: ':title — AI Orbit',
@@ -35,110 +98,11 @@ export default defineConfig({
     ],
 
     sidebar: {
-      '/getting-started/': [
-        {
-          text: 'Getting Started',
-          items: [
-            { text: 'Installation', link: '/getting-started/installation' },
-            { text: 'Configuration', link: '/getting-started/configuration' },
-            { text: 'Authorization', link: '/getting-started/authorization' },
-            { text: 'Upgrading', link: '/getting-started/upgrading' },
-          ],
-        },
-        {
-          text: 'Core Features',
-          items: [
-            { text: 'Dashboard', link: '/features/dashboard' },
-            { text: 'Conversations', link: '/features/conversations' },
-            { text: 'Playground', link: '/features/playground' },
-            { text: 'Traces', link: '/features/traces' },
-          ],
-        },
-        {
-          text: 'Usage & Analytics',
-          items: [
-            { text: 'Usage', link: '/features/usage' },
-            { text: 'Pricing Matrix', link: '/features/pricing-matrix' },
-            { text: 'Budget Alerts', link: '/features/budget-alerts' },
-            { text: 'Provider Health', link: '/features/provider-health' },
-          ],
-        },
-        {
-          text: 'Advanced',
-          items: [
-            { text: 'Prompt Lab', link: '/features/prompt-lab' },
-            { text: 'Audit & Compliance', link: '/features/audit' },
-          ],
-        },
-      ],
-      '/features/': [
-        {
-          text: 'Getting Started',
-          items: [
-            { text: 'Installation', link: '/getting-started/installation' },
-            { text: 'Configuration', link: '/getting-started/configuration' },
-            { text: 'Authorization', link: '/getting-started/authorization' },
-            { text: 'Upgrading', link: '/getting-started/upgrading' },
-          ],
-        },
-        {
-          text: 'Core Features',
-          items: [
-            { text: 'Dashboard', link: '/features/dashboard' },
-            { text: 'Conversations', link: '/features/conversations' },
-            { text: 'Playground', link: '/features/playground' },
-            { text: 'Traces', link: '/features/traces' },
-          ],
-        },
-        {
-          text: 'Usage & Analytics',
-          items: [
-            { text: 'Usage', link: '/features/usage' },
-            { text: 'Pricing Matrix', link: '/features/pricing-matrix' },
-            { text: 'Budget Alerts', link: '/features/budget-alerts' },
-            { text: 'Provider Health', link: '/features/provider-health' },
-          ],
-        },
-        {
-          text: 'Advanced',
-          items: [
-            { text: 'Prompt Lab', link: '/features/prompt-lab' },
-            { text: 'Audit & Compliance', link: '/features/audit' },
-          ],
-        },
-      ],
-      '/developer-tools/': [
-        {
-          text: 'Developer Tools',
-          items: [
-            { text: 'Export Formats', link: '/developer-tools/exports' },
-            { text: 'Prompt Library', link: '/developer-tools/prompt-library' },
-            { text: 'Agent Health Score', link: '/developer-tools/agent-health' },
-            { text: 'Global Search', link: '/developer-tools/global-search' },
-          ],
-        },
-      ],
-      '/customization/': [
-        {
-          text: 'Customization',
-          items: [
-            { text: 'Publishing Views', link: '/customization/publishing-views' },
-            { text: 'Publishing Assets', link: '/customization/publishing-assets' },
-            { text: 'Extending Orbit', link: '/customization/extending-orbit' },
-          ],
-        },
-      ],
-      '/reference/': [
-        {
-          text: 'Reference',
-          items: [
-            { text: 'Config Options', link: '/reference/config' },
-            { text: 'Routes', link: '/reference/routes' },
-            { text: 'Changelog', link: '/reference/changelog' },
-            { text: 'Roadmap', link: '/reference/roadmap' },
-          ],
-        },
-      ],
+      '/getting-started/': mainSidebar,
+      '/features/': mainSidebar,
+      '/developer-tools/': mainSidebar,
+      '/customization/': mainSidebar,
+      '/reference/': mainSidebar,
     },
 
     socialLinks: [

@@ -9,6 +9,41 @@
             <p class="text-sm font-mono text-gray-900 dark:text-gray-50 break-all">{{ $agentMeta['class'] }}</p>
         </div>
 
+        {{-- Health Score --}}
+        @if ($healthScore !== null)
+            <div>
+                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Health</h3>
+                <div class="p-3 glass-card rounded-lg">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="text-2xl font-bold
+                            {{ $healthScore['status'] === 'healthy' ? 'text-green-600 dark:text-green-400' : '' }}
+                            {{ $healthScore['status'] === 'warning' ? 'text-yellow-600 dark:text-yellow-400' : '' }}
+                            {{ $healthScore['status'] === 'critical' ? 'text-red-600 dark:text-red-400' : '' }}">
+                            {{ $healthScore['score'] }}/100
+                        </div>
+                        <x-ai-orbit::badge
+                            label="{{ ucfirst($healthScore['status']) }}"
+                            color="{{ $healthScore['status'] === 'healthy' ? 'green' : ($healthScore['status'] === 'warning' ? 'yellow' : 'red') }}"
+                        />
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Requests</p>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-50">{{ number_format($healthScore['total_requests']) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Error Rate</p>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-50">{{ $healthScore['error_rate'] }}%</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Avg Tokens</p>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-50">{{ number_format($healthScore['avg_tokens']) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         {{-- Provider & Model Overrides --}}
         <div>
             <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Overrides</h3>

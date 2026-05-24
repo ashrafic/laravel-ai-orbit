@@ -8,19 +8,11 @@ use Illuminate\Routing\Controller;
 class UsageController extends Controller
 {
     /**
-     * Display the usage statistics page.
+     * Display the usage page.
      */
     public function index(): View
     {
         return view('ai-orbit::usage.index');
-    }
-
-    /**
-     * Display the full analytics dashboard.
-     */
-    public function dashboard(): View
-    {
-        return view('ai-orbit::usage.dashboard');
     }
 
     /**

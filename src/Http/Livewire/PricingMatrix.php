@@ -4,6 +4,7 @@ namespace Ashrafic\AiOrbit\Http\Livewire;
 
 use Ashrafic\AiOrbit\Models\PricingRule;
 use Illuminate\Contracts\View\View;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class PricingMatrix extends Component
@@ -22,13 +23,30 @@ class PricingMatrix extends Component
 
     public bool $showForm = false;
 
-    protected $rules = [
-        'model' => 'required|string|max:255',
-        'provider' => 'nullable|string|max:255',
-        'inputCost' => 'required|numeric|min:0',
-        'outputCost' => 'required|numeric|min:0',
-        'currency' => 'required|string|max:3',
-    ];
+    /**
+     * @return array<string, mixed>
+     */
+    protected function rules(): array
+    {
+        $provider = $this->normalizedProvider();
+
+        return [
+            'model' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('orbit_pricing_rules', 'model')
+                    ->ignore($this->editingId)
+                    ->where(fn ($query) => $provider === null
+                        ? $query->whereNull('provider')
+                        : $query->where('provider', $provider)),
+            ],
+            'provider' => 'nullable|string|max:255',
+            'inputCost' => 'required|numeric|min:0',
+            'outputCost' => 'required|numeric|min:0',
+            'currency' => 'required|string|max:3',
+        ];
+    }
 
     public function edit(?int $id = null): void
     {
@@ -52,7 +70,7 @@ class PricingMatrix extends Component
 
         $data = [
             'model' => $this->model,
-            'provider' => $this->provider,
+            'provider' => $this->normalizedProvider(),
             'input_cost_per_1m' => $this->inputCost,
             'output_cost_per_1m' => $this->outputCost,
             'currency' => $this->currency,
@@ -92,5 +110,12 @@ class PricingMatrix extends Component
         return view('ai-orbit::livewire.pricing-matrix', [
             'rules' => $rules,
         ]);
+    }
+
+    private function normalizedProvider(): ?string
+    {
+        return $this->provider !== null && trim($this->provider) !== ''
+            ? trim($this->provider)
+            : null;
     }
 }

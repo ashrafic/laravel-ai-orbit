@@ -3,7 +3,7 @@
     <div class="period-selector flex items-center gap-1 mb-6">
         @foreach ($periods as $value => $label)
             <button
-                wire:click="$set('period', '{{ $value }}')"
+                wire:click="selectPeriod('{{ $value }}')"
                 wire:key="period-{{ $value }}"
                 @class([
                     'period-btn px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
@@ -15,6 +15,10 @@
             </button>
         @endforeach
     </div>
+
+    <p class="mb-6 text-xs text-gray-400 dark:text-gray-500">
+        Showing data since {{ $dateFrom->format('M j, Y g:i A') }}
+    </p>
 
     @if($metrics->isNotEmpty())
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
@@ -45,6 +49,24 @@
                     <span class="text-gray-500 dark:text-gray-400">Errors</span>
                     <span class="font-medium {{ $metric['error_count'] > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-50' }}">{{ number_format($metric['error_count']) }}</span>
                 </div>
+                @if (!empty($metric['avg_latency_ms']))
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500 dark:text-gray-400">Avg Latency</span>
+                    <span class="font-medium text-gray-900 dark:text-gray-50">{{ number_format($metric['avg_latency_ms']) }}ms</span>
+                </div>
+                @endif
+                @if (!empty($metric['latency_p95']))
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500 dark:text-gray-400">P95 Latency</span>
+                    <span class="font-medium text-gray-900 dark:text-gray-50">{{ number_format($metric['latency_p95']) }}ms</span>
+                </div>
+                @endif
+                @if (!empty($metric['latency_p99']))
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-500 dark:text-gray-400">P99 Latency</span>
+                    <span class="font-medium text-gray-900 dark:text-gray-50">{{ number_format($metric['latency_p99']) }}ms</span>
+                </div>
+                @endif
             </div>
 
             {{-- Progress bar --}}

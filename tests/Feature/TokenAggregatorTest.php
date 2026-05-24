@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 it('returns zero stats when no data exists', function () {
     $aggregator = app(TokenAggregator::class);
 
-    $stats = $aggregator->todayStats();
+    $stats = $aggregator->periodStats();
 
     expect($stats)->toBeArray();
     expect($stats['total_conversations'])->toBe(0);

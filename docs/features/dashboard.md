@@ -39,12 +39,25 @@ A detailed table showing activity per agent class:
 | Input Tokens | Prompt tokens for this agent |
 | Output Tokens | Completion tokens for this agent |
 | Total | Combined token count |
+| Cost | Estimated cost using the Pricing Matrix |
+
+Token values are displayed as raw counts for precision — no M/K masking.
 
 This helps you identify which agents are consuming the most tokens and which models they're using.
 
 ### Provider Count
 
 The dashboard also tracks how many distinct AI providers are active, giving you visibility into provider diversification.
+
+### Quick Navigation Cards
+
+Below the stats, you'll find link cards for jumping to related sections:
+
+- **Usage** — Full analytics and cost breakdowns
+- **Pricing** — Edit per-model pricing rules
+- **Alerts** — Budget threshold configuration
+- **Health** — Provider reliability monitoring
+- **Prompts** — Saved prompt library
 
 ## How It Works
 

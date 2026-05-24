@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $threshold_amount
  * @property string $period
  * @property array|null $channels
+ * @property array|null $recipients
  * @property bool $enabled
  * @property string|null $last_triggered_at
  */
@@ -20,11 +21,13 @@ class BudgetAlert extends Model
         'threshold_amount',
         'period',
         'channels',
+        'recipients',
         'enabled',
     ];
 
     protected $casts = [
         'channels' => 'json',
+        'recipients' => 'json',
         'enabled' => 'boolean',
         'last_triggered_at' => 'datetime',
     ];

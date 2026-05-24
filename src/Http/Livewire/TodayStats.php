@@ -15,7 +15,7 @@ class TodayStats extends Component
         $aggregator = app(TokenAggregator::class);
 
         return view('ai-orbit::livewire.today-stats', [
-            'stats' => $aggregator->todayStats($this->period),
+            'stats' => $aggregator->periodStats($this->period),
             'breakdown' => $aggregator->agentBreakdown($this->period),
             'periods' => [
                 'today' => 'Today',

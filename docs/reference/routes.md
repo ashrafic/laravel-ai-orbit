@@ -44,12 +44,18 @@ Route::group([
 |:---|:---|:---|:---|
 | GET | `/traces/{id}` | `orbit.traces.show` | Execution trace for a conversation |
 
+### Runs
+
+| Method | URI | Name | Description |
+|:---|:---|:---|:---|
+| GET | `/runs` | `orbit.runs.index` | Run Explorer with search, filters, and pagination |
+| GET | `/runs/{id}` | `orbit.runs.show` | Run detail view with metadata and payload inspector |
+
 ### Usage & Analytics
 
 | Method | URI | Name | Description |
 |:---|:---|:---|:---|
-| GET | `/usage` | `orbit.usage.index` | Today's stats overview |
-| GET | `/usage/dashboard` | `orbit.usage.dashboard` | Full analytics with charts |
+| GET | `/usage` | `orbit.usage.index` | Unified usage dashboard with stats, charts, and links |
 | GET | `/usage/pricing` | `orbit.usage.pricing` | Pricing matrix management |
 | GET | `/usage/alerts` | `orbit.usage.alerts` | Budget alert configuration |
 | GET | `/usage/health` | `orbit.usage.health` | Provider health monitoring |

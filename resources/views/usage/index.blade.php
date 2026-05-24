@@ -4,29 +4,12 @@
     <div class="space-y-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">Usage</h2>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Token consumption and agent activity analytics.</p>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Track token consumption, costs, and provider health.</p>
         </div>
 
-        {{-- Today's Stats --}}
-        <livewire:ai-orbit.today-stats />
+        <livewire:ai-orbit.cost-dashboard />
 
-        {{-- Advanced Feature Links --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <a href="{{ route('orbit.usage.dashboard') }}"
-               class="quick-link-indigo block p-4">
-                <div class="flex items-center gap-3">
-                    <span class="icon-container-indigo">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </span>
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-50">Full Analytics</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Historical token usage trends</p>
-                    </div>
-                </div>
-            </a>
-
+        <div class="grid grid-cols-3 gap-3">
             <a href="{{ route('orbit.usage.pricing') }}"
                class="quick-link-emerald block p-4">
                 <div class="flex items-center gap-3">
@@ -37,7 +20,7 @@
                     </span>
                     <div>
                         <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-50">Pricing Matrix</h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Editable per-model costs</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Editable per-model token costs</p>
                     </div>
                 </div>
             </a>
