@@ -298,8 +298,20 @@ html:not(.dark) .orbit-hero-orbit {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Remove VitePress duplicate divider line below navbar */
+.VPNavBar .divider {
+  display: none;
+}
+
+/* Remove border-bottom from the title element inside navbar */
+.VPNavBar .title {
+  border-bottom: none !important;
+}
+
 /* ===== SIDEBAR — glass sidebar matching portal ===== */
 .VPSidebar {
+  top: var(--vp-nav-height);
+  padding-top: 12px;
   background: var(--vp-sidebar-bg-color) !important;
   border-right: 1px solid var(--vp-c-border);
 }
@@ -446,73 +458,75 @@ html:not(.dark) .orbit-hero-orbit {
   border-left-width: 3px;
 }
 
-/* ===== SEARCH — centered in navbar ===== */
-.VPNavBar .container {
-  position: relative;
-}
+/* ===== NAVBAR SEARCH: compact icon button ===== */
+/* Remove absolute positioning */
 .VPNavBarSearch {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   padding-left: 0;
   padding-right: 0;
-  z-index: 10;
 }
+
+/* Compact elegant search pill — icon + label + shortcut */
 .DocSearch-Button,
 .VPLocalSearchBox > .search,
 #local-search .DocSearch-Button {
-  width: 240px;
-  height: 38px;
-  border-radius: 10px;
+  width: auto;
+  min-width: 140px;
+  height: 34px;
+  border-radius: 8px;
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-border);
   transition: all 0.2s ease;
-  padding: 0 12px;
+  padding: 0 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
 }
-.DocSearch-Button:hover,
-.VPLocalSearchBox > .search:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  background: var(--vp-c-bg-elv);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.08);
+
+/* Icon + text layout */
+.DocSearch-Button .DocSearch-Button-Container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
 }
-.dark .DocSearch-Button,
-.dark .VPLocalSearchBox > .search {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-.dark .DocSearch-Button:hover,
-.dark .VPLocalSearchBox > .search:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  background: rgba(255, 255, 255, 0.06);
-}
-.DocSearch-Button-Placeholder,
-.VPLocalSearchBox > .search .placeholder {
-  font-size: 0.85rem;
+
+/* Magnifying glass icon */
+.DocSearch-Button .DocSearch-Search-Icon,
+.VPLocalSearchBox .search .vp-icon {
+  width: 14px;
+  height: 14px;
   color: var(--vp-c-text-3);
   flex-shrink: 0;
 }
-.DocSearch-Button-Keys,
-.VPLocalSearchBox > .search .keys {
+
+/* "Search" label */
+.DocSearch-Button .DocSearch-Button-Placeholder,
+.VPLocalSearchBox .search .placeholder {
+  font-size: 0.8rem;
+  color: var(--vp-c-text-3);
+  flex-shrink: 0;
+}
+
+/* Keyboard shortcut badge */
+.DocSearch-Button .DocSearch-Button-Keys,
+.VPLocalSearchBox .search .keys {
   display: flex;
   align-items: center;
   gap: 2px;
   margin-left: auto;
   flex-shrink: 0;
 }
-.DocSearch-Button-Key,
-.VPLocalSearchBox > .search kbd {
+
+.DocSearch-Button .DocSearch-Button-Key,
+.VPLocalSearchBox .search kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 4px;
-  font-size: 0.7rem;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 3px;
+  font-size: 0.65rem;
   font-family: inherit;
   border-radius: 4px;
   background: var(--vp-c-bg-elv);
@@ -520,13 +534,76 @@ html:not(.dark) .orbit-hero-orbit {
   color: var(--vp-c-text-3);
   font-weight: 600;
 }
-.dark .DocSearch-Button-Key,
-.dark .VPLocalSearchBox > .search kbd {
+
+/* Hover state */
+.DocSearch-Button:hover,
+.VPLocalSearchBox > .search:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: var(--vp-c-bg-elv);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.dark .DocSearch-Button,
+.dark .VPLocalSearchBox > .search {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark .DocSearch-Button:hover,
+.dark .VPLocalSearchBox > .search:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dark .DocSearch-Button .DocSearch-Button-Key,
+.dark .VPLocalSearchBox .search kbd {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.1);
-  color: var(--vp-c-text-3);
 }
-.VPLocalSearchBox .backdrop { backdrop-filter: blur(12px); }
+
+/* ===== NAVBAR LAYOUT: logo left, everything right ===== */
+.VPNavBar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.VPNavBar .title {
+  flex: 0 0 auto;
+}
+
+.VPNavBar .content {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Reorder: Menu → Search → Social/Appearance */
+/* VitePress DOM inside .content-body: Search → Menu → Social → Appearance */
+/* We want: Menu → Search → Social → Appearance */
+.VPNavBar .content-body {
+  display: flex;
+  align-items: center;
+}
+
+.VPNavBarMenu {
+  order: 1;
+}
+
+.VPNavBarSearch {
+  order: 2;
+  margin-left: 8px;
+}
+
+.VPNavBarSocialLinks,
+.VPNavBarAppearance,
+.VPNavBarExtra {
+  order: 3;
+}
+
+/* ===== SEARCH MODAL ===== */
+.VPLocalSearchBox .backdrop {
+  backdrop-filter: blur(12px);
+}
 .VPLocalSearchBox .shell {
   border-radius: 16px;
   border: 1px solid var(--vp-c-border);
