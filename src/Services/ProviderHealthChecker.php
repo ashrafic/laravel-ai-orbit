@@ -182,8 +182,6 @@ class ProviderHealthChecker
      * weighted averages for latencies. Percentile latencies come from AiRuns
      * only (conversations only store averages, not individual data points).
      *
-     * @param  Collection  $fromRuns
-     * @param  Collection  $fromConversations
      * @return Collection<int, array{provider: string, success_rate: float, error_count: int, rate_limit_count: int, avg_latency_ms: float}>
      */
     private function mergeMetrics(Collection $fromRuns, Collection $fromConversations): Collection
