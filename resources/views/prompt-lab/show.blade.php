@@ -25,10 +25,17 @@
             <p class="text-sm text-gray-500 dark:text-gray-400 whitespace-pre-wrap">{{ $session->prompt }}</p>
         </x-ai-orbit::card>
 
+        @if($session->context)
+        <x-ai-orbit::card>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-50 mb-2">Context / History</h3>
+            <pre class="text-sm text-gray-500 dark:text-gray-400 whitespace-pre-wrap font-mono">{{ is_array($session->context) ? json_encode($session->context, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : $session->context }}</pre>
+        </x-ai-orbit::card>
+        @endif
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             @foreach($session->results as $index => $result)
             <x-ai-orbit::card padding="p-0" class="{{ !$result['success'] ? '!border-red-300/50 dark:!border-red-700/50' : '' }}">
-                <div class="px-4 py-3 border-b border-gray-200/60 dark:border-white/8 flex items-center justify-between">
+                <div class="px-4 py-3 border-b border-gray-200/30 dark:border-white/5 flex items-center gap-2">
                     <div>
                         <span class="text-sm font-semibold text-gray-900 dark:text-gray-50">{{ $result['model'] }}</span>
                         <span class="ml-1.5 text-xs text-gray-400 dark:text-gray-500">{{ $result['provider'] ?? '' }}</span>
