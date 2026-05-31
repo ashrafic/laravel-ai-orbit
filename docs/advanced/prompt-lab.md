@@ -41,6 +41,8 @@ Click **"Run Comparison"**. Orbit sends the prompt to all configured slots simul
 
 ## Results View
 
+![Prompt Lab Comparison Results](/screenshots/prompt-lab-response.png)
+
 Each slot shows:
 
 | Metric | Description |
