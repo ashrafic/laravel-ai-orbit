@@ -50,9 +50,8 @@ class PromptLab extends Component
         'temperature' => 'numeric|min:0|max:2',
         'topP' => 'numeric|min:0|max:1',
         'modelSlots' => 'required|array|min:1',
-        'modelSlots.*.provider' => 'required|string',
-        'modelSlots.*.model' => 'required|string',
-        'saveName' => 'required|string|max:255',
+        'modelSlots.*.provider' => 'nullable|string',
+        'modelSlots.*.model' => 'nullable|string',
     ];
 
     protected $messages = [
@@ -114,7 +113,7 @@ class PromptLab extends Component
 
     public function saveToLibrary(): void
     {
-        $this->validateOnly('saveName');
+        $this->validate(['saveName' => 'required|string|max:255']);
 
         SavedPrompt::create([
             'name' => $this->saveName,
@@ -144,6 +143,24 @@ class PromptLab extends Component
     {
         $this->validate();
 
+        $filledSlots = array_values(array_filter($this->modelSlots, fn ($s) => ! empty($s['provider']) && ! empty($s['model'])));
+
+        if (empty($filledSlots)) {
+            $this->addError('modelSlots', 'Please fill at least one provider and model pair.');
+
+            return;
+        }
+
+        foreach ($this->modelSlots as $slot) {
+            $hasProvider = ! empty($slot['provider']);
+            $hasModel = ! empty($slot['model']);
+            if ($hasProvider !== $hasModel) {
+                $this->addError('modelSlots', 'Both provider and model are required for each filled slot.');
+
+                return;
+            }
+        }
+
         $this->running = true;
         $this->results = null;
         $this->autoTags = null;
@@ -151,13 +168,13 @@ class PromptLab extends Component
         $context = null;
         if (! empty($this->context)) {
             $decoded = json_decode($this->context, true);
-            $context = is_array($decoded) ? $decoded : null;
+            $context = is_array($decoded) ? $decoded : ['context' => $this->context];
         }
 
         $service = app(PromptLabService::class);
         $results = $service->runComparison(
             prompt: $this->prompt,
-            slots: $this->modelSlots,
+            slots: $filledSlots,
             systemPrompt: $this->systemPrompt,
             temperature: $this->temperature,
             maxTokens: $this->maxTokens,
@@ -170,7 +187,7 @@ class PromptLab extends Component
 
         $service->saveSession(
             prompt: $this->prompt,
-            slots: $this->modelSlots,
+            slots: $filledSlots,
             results: $results,
             systemPrompt: $this->systemPrompt,
             temperature: $this->temperature,

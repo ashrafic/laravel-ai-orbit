@@ -144,7 +144,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             @foreach($results as $index => $result)
             <x-ai-orbit::card padding="p-0" class="{{ !$result['success'] ? '!border-red-300/50 dark:!border-red-700/50' : '' }}">
-                <div class="px-4 py-3 border-b border-gray-200/60 dark:border-white/8 flex items-center justify-between">
+                <div class="px-4 py-3 border-b border-gray-200/30 dark:border-white/5 flex items-center justify-between">
                     <div>
                         <span class="text-sm font-semibold text-gray-900 dark:text-gray-50">{{ $result['model'] }}</span>
                         <span class="ml-1.5 text-xs text-gray-400 dark:text-gray-500">{{ $result['provider'] }}</span>

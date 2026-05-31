@@ -142,7 +142,7 @@ test('PromptLab component validates modelSlots have provider and model', functio
         ->set('systemPrompt', 'Test system')
         ->set('prompt', 'Test prompt')
         ->call('runComparison')
-        ->assertHasErrors(['modelSlots.0.provider', 'modelSlots.0.model']);
+        ->assertHasErrors(['modelSlots']);
 });
 
 test('PromptLab component loads configured providers on mount', function () {

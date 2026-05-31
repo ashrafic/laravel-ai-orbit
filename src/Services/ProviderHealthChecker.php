@@ -4,7 +4,7 @@ namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Models\AiRun;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -39,7 +39,7 @@ class ProviderHealthChecker
      *
      * @return Collection<int, array{provider: string, total_requests: int, error_count: int, rate_limit_count: int, avg_latency_ms: float, latency_p50: float, latency_p95: float, latency_p99: float}>
      */
-    private function metricsFromRuns(string $period, Carbon $dateFrom): Collection
+    private function metricsFromRuns(string $period, CarbonInterface $dateFrom): Collection
     {
         if (! Schema::hasTable('orbit_ai_runs')) {
             return collect();
@@ -105,7 +105,7 @@ class ProviderHealthChecker
      *
      * @return Collection<int, array{provider: string, total_requests: int, error_count: int, rate_limit_count: int, avg_latency_ms: float}>
      */
-    private function metricsFromConversations(string $period, Carbon $dateFrom): Collection
+    private function metricsFromConversations(string $period, CarbonInterface $dateFrom): Collection
     {
         if (! $this->hasTable('agent_conversation_messages')) {
             return collect();
@@ -268,7 +268,7 @@ class ProviderHealthChecker
         return $results;
     }
 
-    private function latencyPercentile(string $provider, Carbon|string $dateFrom, float $percentile): float
+    private function latencyPercentile(string $provider, CarbonInterface|string $dateFrom, float $percentile): float
     {
         $latencies = AiRun::query()
             ->where('started_at', '>=', $dateFrom)

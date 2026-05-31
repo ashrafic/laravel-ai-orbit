@@ -25,7 +25,11 @@ class OrbitPromptLabAgent implements Agent
         $instructions = $this->systemPrompt;
 
         if ($this->labContext) {
-            $instructions .= "\n\nPrevious conversation:\n".json_encode($this->labContext);
+            $contextText = (count($this->labContext) === 1 && array_key_exists('context', $this->labContext))
+                ? $this->labContext['context']
+                : json_encode($this->labContext);
+
+            $instructions .= "\n\nPrevious conversation:\n".$contextText;
         }
 
         return $instructions;

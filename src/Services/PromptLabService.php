@@ -80,7 +80,7 @@ class PromptLabService
             $response = $agent->prompt($prompt, timeout: $timeout);
 
             return [
-                'content' => $response->text,
+                'content' => (string) $response->text,
                 'latency_ms' => (int) ((microtime(true) - $start) * 1000),
                 'tokens' => $response->usage->promptTokens + $response->usage->completionTokens,
                 'cost' => 0,
