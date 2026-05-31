@@ -5,7 +5,6 @@ namespace Ashrafic\AiOrbit\Services;
 use Ashrafic\AiOrbit\Models\AiRun;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use JsonSerializable;
 use Laravel\Ai\Events\AgentFailedOver;

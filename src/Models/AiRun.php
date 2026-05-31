@@ -2,6 +2,7 @@
 
 namespace Ashrafic\AiOrbit\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,8 +25,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property array<string, mixed>|null $usage
  * @property array<int, array<string, mixed>>|null $events
  * @property string|null $error
- * @property \Carbon\CarbonInterface|null $started_at
- * @property \Carbon\CarbonInterface|null $completed_at
+ * @property CarbonInterface|null $started_at
+ * @property CarbonInterface|null $completed_at
  */
 class AiRun extends Model
 {

@@ -8,7 +8,6 @@ use Ashrafic\AiOrbit\Notifications\BudgetExceeded;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schema;
 

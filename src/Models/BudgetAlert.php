@@ -2,6 +2,7 @@
 
 namespace Ashrafic\AiOrbit\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $channels
  * @property array|null $recipients
  * @property bool $enabled
- * @property \Carbon\CarbonInterface|null $last_triggered_at
+ * @property CarbonInterface|null $last_triggered_at
  */
 class BudgetAlert extends Model
 {
