@@ -4,6 +4,7 @@ namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Models\AiRun;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
@@ -100,7 +101,7 @@ class TokenAggregator
      */
     private function applyDateFilter($query, string $column, $from = null, $to = null): mixed
     {
-        if ($from && $to && $from instanceof Carbon && $from->equalTo($to)) {
+        if ($from && $to && $from instanceof CarbonInterface && $from->equalTo($to)) {
             return $query->whereDate($column, $from);
         }
 
@@ -427,7 +428,7 @@ class TokenAggregator
      */
     private function applyRunDateFilter(EloquentBuilder $query, $from = null, $to = null): EloquentBuilder
     {
-        if ($from && $to && $from instanceof Carbon && $from->equalTo($to)) {
+        if ($from && $to && $from instanceof CarbonInterface && $from->equalTo($to)) {
             return $query->whereDate('started_at', $from);
         }
 

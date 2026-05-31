@@ -6,6 +6,7 @@ use Ashrafic\AiOrbit\Models\AiRun;
 use Ashrafic\AiOrbit\Models\BudgetAlert;
 use Ashrafic\AiOrbit\Notifications\BudgetExceeded;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
@@ -202,7 +203,7 @@ class BudgetMonitor
         });
     }
 
-    private function periodStart(string $period): Carbon
+    private function periodStart(string $period): CarbonInterface
     {
         return match ($period) {
             'daily' => today(),

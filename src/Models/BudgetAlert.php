@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array|null $channels
  * @property array|null $recipients
  * @property bool $enabled
- * @property string|null $last_triggered_at
+ * @property \Carbon\CarbonInterface|null $last_triggered_at
  */
 class BudgetAlert extends Model
 {

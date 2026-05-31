@@ -3,6 +3,7 @@
 namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Models\AiRun;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
@@ -318,7 +319,7 @@ class AiRunRecorder
         return array_filter($payload, fn ($value) => $value !== null);
     }
 
-    private function existingStartedAt(?string $invocationId): ?Carbon
+    private function existingStartedAt(?string $invocationId): ?CarbonInterface
     {
         if (! $invocationId) {
             return null;
