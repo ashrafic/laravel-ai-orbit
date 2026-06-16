@@ -53,7 +53,7 @@ After every update, **always republish assets** with `--force`. Orbit ships comp
    - **Agent Health Score UI** — Visual health indicators and export buttons
    - **Usage Dashboard merged** — The usage index and dashboard are now a single page
 
-4. **Laravel AI SDK compatibility** — The package now also supports `laravel/ai` `^0.7`.
+4. **Laravel AI SDK compatibility** — The package now also supports `laravel/ai` `^0.7|^0.8`.
 
 ## From 0.x to 1.0
 
