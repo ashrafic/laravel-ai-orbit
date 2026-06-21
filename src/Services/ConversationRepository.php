@@ -3,12 +3,14 @@
 namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Ashrafic\AiOrbit\Services\Concerns\UsesJsonQueries;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class ConversationRepository
 {
     use UsesAiConnection;
+    use UsesJsonQueries;
 
     /**
      * Get a paginated list of conversations with optional filters.
@@ -30,7 +32,7 @@ class ConversationRepository
                 'agent_conversations.created_at',
                 'agent_conversations.updated_at',
             ])
-            ->where('agent_conversations.user_id', '>', 0);
+            ->where('agent_conversations.user_id', '>=', 0);
 
         if ($this->hasTable('agent_conversation_messages')) {
             $query->selectRaw('COUNT(agent_conversation_messages.id) as message_count');
@@ -43,10 +45,10 @@ class ConversationRepository
 
             if ($this->hasColumn('agent_conversation_messages', 'usage')) {
                 $query->addSelect(
-                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.prompt_tokens')), 0) as total_input_tokens")
+                    $this->jsonSum('agent_conversation_messages.usage', 'prompt_tokens', 'total_input_tokens')
                 );
                 $query->addSelect(
-                    $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(agent_conversation_messages.usage, '$.completion_tokens')), 0) as total_output_tokens")
+                    $this->jsonSum('agent_conversation_messages.usage', 'completion_tokens', 'total_output_tokens')
                 );
             }
 
