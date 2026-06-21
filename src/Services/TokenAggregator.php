@@ -4,6 +4,7 @@ namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Models\AiRun;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Ashrafic\AiOrbit\Services\Concerns\UsesJsonQueries;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Schema;
 class TokenAggregator
 {
     use UsesAiConnection;
+    use UsesJsonQueries;
 
     /**
      * Get token usage statistics for a given time period.
@@ -139,8 +141,8 @@ class TokenAggregator
 
         if ($this->hasTable('agent_conversation_messages') && $this->hasColumn('agent_conversation_messages', 'usage')) {
             $selects = [
-                $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) as input_tokens"),
-                $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.completion_tokens')), 0) as output_tokens"),
+                $this->jsonSum('usage', 'prompt_tokens', 'input_tokens'),
+                $this->jsonSum('usage', 'completion_tokens', 'output_tokens'),
             ];
 
             $tokenData = $this->applyDateFilter(
@@ -172,7 +174,7 @@ class TokenAggregator
                     $this->connection()->table('agent_conversation_messages'), 'created_at', $from, $to
                 )
                     ->select($this->connection()->raw(
-                        "COUNT(DISTINCT JSON_EXTRACT(meta, '$.provider')) as provider_count"
+                        'COUNT(DISTINCT '.$this->jsonExpr('meta', 'provider').') as provider_count'
                     ))
                     ->first();
 
@@ -336,11 +338,11 @@ class TokenAggregator
         $hasAgent = $this->hasColumn('agent_conversation_messages', 'agent');
         $hasMeta = $this->hasColumn('agent_conversation_messages', 'meta');
 
-        $jsonVal = fn (string $path): string => "REPLACE(JSON_EXTRACT(meta, '{$path}'), '\"', '')";
+        $jsonVal = fn (string $key): string => $this->jsonExpr('meta', $key);
 
         $groupColumn = match ($groupBy) {
-            'model' => $hasMeta ? $jsonVal('$.model') : null,
-            'provider' => $hasMeta ? $jsonVal('$.provider') : null,
+            'model' => $hasMeta ? $jsonVal('model') : null,
+            'provider' => $hasMeta ? $jsonVal('provider') : null,
             default => $hasAgent ? 'agent' : null,
         };
 
@@ -354,14 +356,16 @@ class TokenAggregator
         ];
 
         if ($hasMeta) {
-            $selects[] = $this->connection()->raw("COALESCE(MIN({$jsonVal('$.model')}), 'unknown') as model");
-            $selects[] = $this->connection()->raw("COALESCE(MIN({$jsonVal('$.provider')}), 'unknown') as provider");
+            $selects[] = $this->connection()->raw("COALESCE(MIN({$jsonVal('model')}), 'unknown') as model");
+            $selects[] = $this->connection()->raw("COALESCE(MIN({$jsonVal('provider')}), 'unknown') as provider");
         }
 
         if ($this->hasColumn('agent_conversation_messages', 'usage')) {
-            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) as input_tokens");
-            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.completion_tokens')), 0) as output_tokens");
-            $selects[] = $this->connection()->raw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) + COALESCE(SUM(JSON_EXTRACT(`usage`, '$.completion_tokens')), 0) as total");
+            $selects[] = $this->jsonSum('usage', 'prompt_tokens', 'input_tokens');
+            $selects[] = $this->jsonSum('usage', 'completion_tokens', 'output_tokens');
+            $selects[] = $this->connection()->raw(
+                'COALESCE(SUM('.$this->jsonExprNumeric('usage', 'prompt_tokens').'), 0) + COALESCE(SUM('.$this->jsonExprNumeric('usage', 'completion_tokens').'), 0) as total'
+            );
         }
 
         $result = $this->applyDateFilter(
