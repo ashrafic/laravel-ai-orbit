@@ -6,6 +6,7 @@ use Ashrafic\AiOrbit\Models\AiRun;
 use Ashrafic\AiOrbit\Models\BudgetAlert;
 use Ashrafic\AiOrbit\Notifications\BudgetExceeded;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Ashrafic\AiOrbit\Services\Concerns\UsesJsonQueries;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Notification;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Schema;
 class BudgetMonitor
 {
     use UsesAiConnection;
+    use UsesJsonQueries;
 
     public function __construct(
         private readonly CostCalculator $costCalculator,
@@ -175,17 +177,17 @@ class BudgetMonitor
             return 0.0;
         }
 
-        $jsonProvider = "REPLACE(JSON_EXTRACT(meta, '$.provider'), '\"', '')";
-        $jsonModel = "REPLACE(JSON_EXTRACT(meta, '$.model'), '\"', '')";
+        $provider = $this->jsonExpr('meta', 'provider');
+        $model = $this->jsonExpr('meta', 'model');
 
         $rows = $this->connection()->table('agent_conversation_messages')
             ->where('created_at', '>=', $this->periodStart($period))
-            ->selectRaw("{$jsonProvider} as provider")
-            ->selectRaw("{$jsonModel} as model")
-            ->selectRaw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.prompt_tokens')), 0) as input_tokens")
-            ->selectRaw("COALESCE(SUM(JSON_EXTRACT(`usage`, '$.completion_tokens')), 0) as output_tokens")
-            ->groupByRaw($jsonProvider)
-            ->groupByRaw($jsonModel)
+            ->selectRaw("{$provider} as provider")
+            ->selectRaw("{$model} as model")
+            ->addSelect($this->jsonSum('usage', 'prompt_tokens', 'input_tokens'))
+            ->addSelect($this->jsonSum('usage', 'completion_tokens', 'output_tokens'))
+            ->groupByRaw($provider)
+            ->groupByRaw($model)
             ->get();
 
         return (float) $rows->sum(function (object $row): float {

@@ -4,6 +4,7 @@ namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Models\AiRun;
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Ashrafic\AiOrbit\Services\Concerns\UsesJsonQueries;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Schema;
 class ProviderHealthChecker
 {
     use UsesAiConnection;
+    use UsesJsonQueries;
 
     /**
      * Get health metrics per provider, merging data from both AiRuns
@@ -111,16 +113,18 @@ class ProviderHealthChecker
             return collect();
         }
 
-        $jsonProvider = "REPLACE(JSON_EXTRACT(meta, '\$.provider'), '\"', '')";
+        $providerExpr = $this->jsonExpr('meta', 'provider');
+        $errorExpr = $this->jsonExpr('meta', 'error');
+        $latencyExpr = $this->jsonExpr('meta', 'latency_ms');
 
         $providers = $this->connection()->table('agent_conversation_messages')
             ->where('created_at', '>=', $dateFrom)
             ->whereNotNull('meta')
-            ->whereRaw($jsonProvider.' IS NOT NULL')
-            ->whereRaw($jsonProvider." != ''")
-            ->selectRaw($jsonProvider.' as provider')
+            ->whereRaw("{$providerExpr} IS NOT NULL")
+            ->whereRaw("{$providerExpr} != ''")
+            ->selectRaw("{$providerExpr} as provider")
             ->selectRaw('COUNT(*) as total')
-            ->groupBy($this->connection()->raw($jsonProvider))
+            ->groupByRaw($providerExpr)
             ->get();
 
         $results = collect();
@@ -136,29 +140,29 @@ class ProviderHealthChecker
 
             $errorCount = $this->connection()->table('agent_conversation_messages')
                 ->where('created_at', '>=', $dateFrom)
-                ->whereRaw($jsonProvider.' = ?', [$provider])
-                ->where(function ($q) {
+                ->whereRaw("{$providerExpr} = ?", [$provider])
+                ->where(function ($q) use ($errorExpr) {
                     $q->where('role', 'tool')
-                        ->orWhereRaw("JSON_EXTRACT(meta, '$.error') IS NOT NULL");
+                        ->orWhereRaw("{$errorExpr} IS NOT NULL");
                 })
                 ->count();
 
             $rateLimitCount = $this->connection()->table('agent_conversation_messages')
                 ->where('created_at', '>=', $dateFrom)
-                ->whereRaw($jsonProvider.' = ?', [$provider])
-                ->where(function ($q) {
-                    $q->whereRaw("JSON_EXTRACT(meta, '$.error') LIKE '%rate limit%'")
-                        ->orWhereRaw("JSON_EXTRACT(meta, '$.error') LIKE '%429%'")
-                        ->orWhereRaw("JSON_EXTRACT(meta, '$.error') LIKE '%too many%'");
+                ->whereRaw("{$providerExpr} = ?", [$provider])
+                ->where(function ($q) use ($errorExpr) {
+                    $q->whereRaw("{$errorExpr} LIKE '%rate limit%'")
+                        ->orWhereRaw("{$errorExpr} LIKE '%429%'")
+                        ->orWhereRaw("{$errorExpr} LIKE '%too many%'");
                 })
                 ->count();
 
             $avgLatency = 0;
             $latencyData = $this->connection()->table('agent_conversation_messages')
                 ->where('created_at', '>=', $dateFrom)
-                ->whereRaw($jsonProvider.' = ?', [$provider])
-                ->whereRaw("JSON_EXTRACT(meta, '$.latency_ms') IS NOT NULL")
-                ->selectRaw("AVG(JSON_EXTRACT(meta, '$.latency_ms')) as avg_ms")
+                ->whereRaw("{$providerExpr} = ?", [$provider])
+                ->whereRaw("{$latencyExpr} IS NOT NULL")
+                ->select($this->jsonAvg('meta', 'latency_ms', 'avg_ms'))
                 ->first();
 
             if ($latencyData && isset($latencyData->avg_ms)) {

@@ -3,11 +3,13 @@
 namespace Ashrafic\AiOrbit\Services;
 
 use Ashrafic\AiOrbit\Services\Concerns\UsesAiConnection;
+use Ashrafic\AiOrbit\Services\Concerns\UsesJsonQueries;
 use Illuminate\Support\Collection;
 
 class AgentHealthScorer
 {
     use UsesAiConnection;
+    use UsesJsonQueries;
 
     /**
      * Calculate health score (0-100) for a given agent.
@@ -41,7 +43,7 @@ class AgentHealthScorer
             ->where('created_at', '>=', $dateFrom)
             ->where(function ($q) {
                 $q->where('role', 'tool')
-                    ->orWhereRaw("JSON_EXTRACT(meta, '$.error') IS NOT NULL");
+                    ->orWhereRaw($this->jsonExpr('meta', 'error').' IS NOT NULL');
             })
             ->count();
 
@@ -53,7 +55,7 @@ class AgentHealthScorer
             $tokenData = $this->connection()->table('agent_conversation_messages')
                 ->where('agent', $agentClass)
                 ->where('created_at', '>=', $dateFrom)
-                ->selectRaw('AVG(JSON_EXTRACT(`usage`, "$.prompt_tokens") + JSON_EXTRACT(`usage`, "$.completion_tokens")) as avg')
+                ->selectRaw('AVG('.$this->jsonExprNumeric('usage', 'prompt_tokens').' + '.$this->jsonExprNumeric('usage', 'completion_tokens').') as avg')
                 ->first();
 
             $avgTokens = (int) ($tokenData->avg ?? 0);
