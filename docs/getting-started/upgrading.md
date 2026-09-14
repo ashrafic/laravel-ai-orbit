@@ -31,8 +31,17 @@ After every update, **always republish assets** with `--force`. Orbit ships comp
 
 | Orbit Version | Laravel | PHP | Laravel AI SDK |
 |:---|:---|:---|:---|
+| `^1.2` | `^12.0 \| ^13.0` | `^8.3` | `^0.6 \| ^0.7 \| ^0.8 \| ^0.9` |
 | `^1.1` | `^12.0 \| ^13.0` | `^8.3` | `^0.6 \| ^0.7` |
 | `^1.0` | `^12.0 \| ^13.0` | `^8.3` | `^0.6` |
+
+## From 1.2.1 to 1.2.2
+
+1. **Laravel AI SDK compatibility** — The composer constraint now includes `laravel/ai` `^0.9`. No code changes or migrations are required, just update:
+
+   ```bash
+   composer update ashrafic/laravel-ai-orbit
+   ```
 
 ## From 1.0.x to 1.1.0
 
@@ -53,7 +62,7 @@ After every update, **always republish assets** with `--force`. Orbit ships comp
    - **Agent Health Score UI** — Visual health indicators and export buttons
    - **Usage Dashboard merged** — The usage index and dashboard are now a single page
 
-4. **Laravel AI SDK compatibility** — The package supports `laravel/ai` `^0.6|^0.7|^0.8`.
+4. **Laravel AI SDK compatibility** — The package supports `laravel/ai` `^0.6|^0.7|^0.8|^0.9`.
 
 ## From 0.x to 1.0
 

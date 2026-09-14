@@ -123,9 +123,7 @@ class AiRunRecorder
             'provider' => $this->providerName($event->provider ?? null),
             'model' => $event->model ?? null,
             'agent_class' => $agent,
-            'error' => $event->exception instanceof Throwable
-                ? $event->exception->getMessage()
-                : $event->exception::class,
+            'error' => $event->exception->getMessage(),
             'recorded_at' => now()->toISOString(),
         ];
 

@@ -2,6 +2,14 @@
 
 All notable changes to Laravel AI Orbit are documented in this file.
 
+## [1.2.2]
+
+### Changed
+- **Laravel AI SDK Compatibility** — Composer constraint widened to include `laravel/ai` `^0.9`. No code changes or migrations are required.
+
+### Fixed
+- **PHPStan** — Simplified failover error extraction in `AiRunRecorder` to match the SDK's widened `FailoverableException` contract.
+
 ## [1.0.0]
 
 ### Added
