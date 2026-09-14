@@ -7,6 +7,7 @@ parameters:
         - src/
     ignoreErrors:
         - '#Parameter \#1 \$view of function view expects view-string\|null, string given#'
+        - '#Parameter \#1 \$view of method Illuminate\\Notifications\\Messages\\MailMessage::view\(\) expects array<view-string>\|view-string#'
         - '#should return Illuminate\\Support\\Collection#'
         - '#Using nullsafe property access#'
 
