@@ -104,6 +104,10 @@ From the message timeline, you can export the conversation:
 
 Toggle the bookmark star directly from the message timeline view. The bookmark state syncs with the Thread Explorer.
 
+### Approval Badge
+
+For agents using the SDK's human-in-the-loop tool approval (SDK 0.11+), messages paused while awaiting a tool decision show an **"Awaiting tool approval"** badge. Orbit reads the SDK's `approval_state` column on the message — no configuration needed.
+
 ## How It Works
 
 ### Data Source

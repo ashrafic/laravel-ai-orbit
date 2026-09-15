@@ -16,10 +16,11 @@ Each run record includes:
 
 | Field | Description |
 |:---|:---|
-| **Operation** | The SDK operation name (e.g., `chat`, `embed`) |
+| **Operation** | The SDK operation name (e.g., `agent_text`, `agent_stream`, `image`, `embeddings`, `failover`) |
 | **Provider** | The AI provider (e.g., `openai`, `anthropic`) |
 | **Model** | The model identifier (e.g., `gpt-4`, `claude-3-opus`) |
-| **Status** | `success`, `failed`, or `streaming` |
+| **Status** | `running`, `pending_approval`, `completed`, or `failed` |
+| **Participant** | Who the run belongs to (`participant_type` + `participant_id`, falling back to the authenticated principal) |
 | **Input Tokens** | Prompt tokens consumed |
 | **Output Tokens** | Completion tokens generated |
 | **Cost** | Calculated cost using the Pricing Matrix |
@@ -28,6 +29,21 @@ Each run record includes:
 | **Response** | The response text (if text capture is enabled) |
 | **Conversation Link** | Associated SDK conversation ID, if the run belongs to a thread |
 | **Created At** | Timestamp of the SDK event |
+
+### SDK Events Captured
+
+Orbit listens to the SDK's full event surface. Starting, completed, failover, and failure events exist since SDK 0.10; the step, tool timing, and approval events require **SDK 0.11+** (on 0.10 those listeners stay dormant — they simply never fire).
+
+| SDK Events | What Orbit Records |
+|:---|:---|
+| `PromptingAgent`, `StreamingAgent`, `GeneratingImage`, `GeneratingAudio`, `GeneratingTranscription`, `GeneratingEmbeddings`, `Reranking`, `StoringFile`, `CreatingStore`, `AddingFileToStore`, `RemovingFileFromStore` | Run starts (`running`) with operation, provider, model, agent class, participant, and prompt payload |
+| `AgentPrompted`, `AgentStreamed`, `ImageGenerated`, `AudioGenerated`, `TranscriptionGenerated`, `EmbeddingsGenerated`, `Reranked`, `FileStored`, `FileDeleted`, `StoreCreated`, `StoreDeleted`, `FileAddedToStore`, `FileRemovedFromStore` | Run completes: tokens, cost, latency, response payload, conversation link — budget alerts are checked here too |
+| `AgentFailed`, `StepFailed` (final step) | Run marked `failed` with the error message |
+| `StartingStep`, `StepCompleted` | Step timeline entries in the run trace, including per-provider-call wall time (`time_ms`) |
+| `InvokingTool`, `ToolInvoked` | Tool invocation trace entries, including wall time |
+| `ToolFailed` | Tool failure trace entries with the error and wall time |
+| `ToolApprovalRequested`, `ToolApprovalResolved` | Human-in-the-loop approval pauses: run status moves `running` → `pending_approval` → `running`, with the pending tool names recorded |
+| `ProviderFailedOver`, `AgentFailedOver` | Failover entries appended to the run trace; failed failovers create `failover` runs |
 
 ### Configuration
 
