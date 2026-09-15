@@ -2,6 +2,11 @@
 
 All notable changes to Laravel AI Orbit are documented in this file.
 
+## [1.3.2]
+
+### Fixed
+- **Compiled CSS** — `dist/css/orbit.css` now includes the approval badge styles introduced in 1.3.1 (the badge previously rendered without its amber styling in the published artifact).
+
 ## [1.3.1]
 
 ### Added
