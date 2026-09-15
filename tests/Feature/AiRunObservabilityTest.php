@@ -12,19 +12,26 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Ai\AnonymousAgent;
+use Laravel\Ai\Approvals\PendingApproval;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Events\AgentFailed;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\PromptingAgent;
 use Laravel\Ai\Events\ProviderFailedOver;
+use Laravel\Ai\Events\StartingStep;
+use Laravel\Ai\Events\StepCompleted;
 use Laravel\Ai\Events\StepFailed;
+use Laravel\Ai\Events\ToolApprovalRequested;
+use Laravel\Ai\Events\ToolApprovalResolved;
 use Laravel\Ai\Events\ToolFailed;
 use Laravel\Ai\Events\ToolInvoked;
 use Laravel\Ai\Exceptions\FailoverableException;
 use Laravel\Ai\Gateway\OpenAi\OpenAiGateway;
+use Laravel\Ai\Gateway\StepResponse;
 use Laravel\Ai\Prompts\AgentPrompt;
 use Laravel\Ai\Providers\OpenAiProvider;
 use Laravel\Ai\Responses\AgentResponse;
+use Laravel\Ai\Responses\Data\FinishReason;
 use Laravel\Ai\Responses\Data\Meta;
 use Laravel\Ai\Responses\Data\Usage;
 use Laravel\Ai\Tools\Request;
@@ -363,6 +370,58 @@ it('records the participant type and id on runs', function () {
         ->and($run->user_id)->toBe('7');
 });
 
+it('records step starts and completions in the run trace', function () {
+    $invocationId = '018f0000-0000-7000-8000-000000000109';
+    [$prompt, $response] = makeRunFixtures(invocationId: $invocationId);
+    $provider = makeOpenAiProvider();
+    $agent = new AnonymousAgent('Be concise.', [], []);
+
+    event(new PromptingAgent($invocationId, $prompt));
+    event(new StartingStep($invocationId, 1, $agent, $provider, 'gpt-test', false, [], null));
+    event(new StepCompleted($invocationId, 1, $agent, $provider, 'gpt-test', false, makeStepResponse(), 340.5));
+
+    $run = AiRun::query()->first();
+
+    expect($run->events)->toHaveCount(2)
+        ->and($run->events[0])->toMatchArray(['type' => 'step_started', 'step_number' => 1])
+        ->and($run->events[1])->toMatchArray(['type' => 'step_completed', 'time_ms' => 340.5]);
+})->skip(! class_exists(StartingStep::class), 'Requires laravel/ai ^0.11');
+
+it('marks runs pending approval and resumes them when approval resolves', function () {
+    $invocationId = '018f0000-0000-7000-8000-000000000109';
+    [$prompt, $response] = makeRunFixtures(invocationId: $invocationId);
+
+    event(new PromptingAgent($invocationId, $prompt));
+    event(new ToolApprovalRequested($invocationId, new AnonymousAgent('Be concise.', [], []), collect([
+        new PendingApproval(id: 'call_1', tool: 'search', arguments: ['q' => 'x']),
+    ])));
+
+    $run = AiRun::query()->first();
+
+    expect($run->status)->toBe('pending_approval')
+        ->and($run->events[0]['type'])->toBe('approval_requested')
+        ->and($run->events[0]['approvals'][0]['tool'])->toBe('search');
+
+    event(new ToolApprovalResolved($invocationId, new AnonymousAgent('Be concise.', [], []), collect()));
+
+    $run->refresh();
+
+    expect($run->status)->toBe('running')
+        ->and($run->events[1]['type'])->toBe('approval_resolved');
+})->skip(! class_exists(PendingApproval::class), 'Requires laravel/ai ^0.11');
+
+it('creates a pending-approval run when no run exists yet', function () {
+    $invocationId = '018f0000-0000-7000-8000-000000000110';
+
+    event(new ToolApprovalRequested($invocationId, new AnonymousAgent('Be concise.', [], []), collect(), 'conversation-9', (object) ['id' => 3]));
+
+    $run = AiRun::query()->first();
+
+    expect($run->status)->toBe('pending_approval')
+        ->and($run->conversation_id)->toBe('conversation-9')
+        ->and($run->participant_id)->toBe(3);
+})->skip(! class_exists(PendingApproval::class), 'Requires laravel/ai ^0.11');
+
 it('adds participant columns and backfills them from user_id', function () {
     Schema::drop('orbit_ai_runs');
     Schema::create('orbit_ai_runs', function (Blueprint $table) {
@@ -454,6 +513,17 @@ function makeTestTool(): Tool
             return [];
         }
     };
+}
+
+function makeStepResponse(): StepResponse
+{
+    return new StepResponse(
+        'step text',
+        [],
+        FinishReason::Stop,
+        new Usage(promptTokens: 3, completionTokens: 2),
+        new Meta('openai', 'gpt-test'),
+    );
 }
 
 function makeRunFixtures(

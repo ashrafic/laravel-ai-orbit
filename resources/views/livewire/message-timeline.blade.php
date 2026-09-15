@@ -143,6 +143,16 @@
                             </div>
                         @endif
 
+                        {{-- Pending Tool Approval --}}
+                        @if (!empty($message->approval_state))
+                            <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-full">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Awaiting tool approval</span>
+                            </div>
+                        @endif
+
                         {{-- Tool Calls --}}
                         @if (!empty($message->tool_calls) && $message->tool_calls !== 'null')
                             @php

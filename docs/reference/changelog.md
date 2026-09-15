@@ -2,6 +2,12 @@
 
 All notable changes to Laravel AI Orbit are documented in this file.
 
+## [1.3.1]
+
+### Added
+- **Step Timeline** — Records the SDK's `StartingStep` and `StepCompleted` events (SDK 0.11+): run traces now include each generation step with its provider call wall time (`time_ms`).
+- **Approval Visibility** — Records the SDK's `ToolApprovalRequested` and `ToolApprovalResolved` events: runs paused for human-in-the-loop tool approval are marked `pending_approval` (a new Run Explorer status filter), and paused messages show an approval badge in the Message Timeline via the SDK's `approval_state` column.
+
 ## [1.3.0]
 
 ### Changed

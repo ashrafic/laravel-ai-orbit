@@ -129,7 +129,7 @@ class RunExplorer extends Component
      */
     public function availableStatuses(): array
     {
-        return ['running', 'completed', 'failed'];
+        return ['running', 'pending_approval', 'completed', 'failed'];
     }
 
     /**

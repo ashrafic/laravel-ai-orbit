@@ -48,11 +48,15 @@ use Laravel\Ai\Events\ProviderFailedOver;
 use Laravel\Ai\Events\RemovingFileFromStore;
 use Laravel\Ai\Events\Reranked;
 use Laravel\Ai\Events\Reranking;
+use Laravel\Ai\Events\StartingStep;
+use Laravel\Ai\Events\StepCompleted;
 use Laravel\Ai\Events\StepFailed;
 use Laravel\Ai\Events\StoreCreated;
 use Laravel\Ai\Events\StoreDeleted;
 use Laravel\Ai\Events\StoringFile;
 use Laravel\Ai\Events\StreamingAgent;
+use Laravel\Ai\Events\ToolApprovalRequested;
+use Laravel\Ai\Events\ToolApprovalResolved;
 use Laravel\Ai\Events\ToolFailed;
 use Laravel\Ai\Events\ToolInvoked;
 use Laravel\Ai\Events\TranscriptionGenerated;
@@ -279,6 +283,22 @@ class OrbitServiceProvider extends ServiceProvider
 
         $events->listen(ToolFailed::class, function (ToolFailed $event): void {
             $this->app->make(AiRunRecorder::class)->recordToolFailed($event);
+        });
+
+        $events->listen(StartingStep::class, function (StartingStep $event): void {
+            $this->app->make(AiRunRecorder::class)->recordStepStarting($event);
+        });
+
+        $events->listen(StepCompleted::class, function (StepCompleted $event): void {
+            $this->app->make(AiRunRecorder::class)->recordStepCompleted($event);
+        });
+
+        $events->listen(ToolApprovalRequested::class, function (ToolApprovalRequested $event): void {
+            $this->app->make(AiRunRecorder::class)->recordApprovalRequested($event);
+        });
+
+        $events->listen(ToolApprovalResolved::class, function (ToolApprovalResolved $event): void {
+            $this->app->make(AiRunRecorder::class)->recordApprovalResolved($event);
         });
     }
 }

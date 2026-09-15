@@ -107,6 +107,8 @@ php artisan migrate
 
 Visit `/ai-orbit` in your browser.
 
+> **Upgrading from Orbit 1.2.x?** See the [upgrade guide](https://github.com/ashrafic/laravel-ai-orbit/blob/main/docs/getting-started/upgrading.md) — it covers the Laravel AI SDK version bump and Orbit's participant migrations, step by step.
+
 > Orbit reads directly from the SDK's `agent_conversations` and `agent_conversation_messages` tables, and also captures one-off SDK runs to its own `orbit_ai_runs` table. If SDK tables don't exist yet, you'll see a friendly setup banner.
 
 ---

@@ -14,7 +14,11 @@ use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\AgentStreamed;
 use Laravel\Ai\Events\InvokingTool;
 use Laravel\Ai\Events\ProviderFailedOver;
+use Laravel\Ai\Events\StartingStep;
+use Laravel\Ai\Events\StepCompleted;
 use Laravel\Ai\Events\StepFailed;
+use Laravel\Ai\Events\ToolApprovalRequested;
+use Laravel\Ai\Events\ToolApprovalResolved;
 use Laravel\Ai\Events\ToolFailed;
 use Laravel\Ai\Events\ToolInvoked;
 use Throwable;
@@ -263,6 +267,128 @@ class AiRunRecorder
     }
 
     /**
+     * Record a generation step starting (SDK 0.11+ step reporting).
+     */
+    public function recordStepStarting(StartingStep $event): void
+    {
+        if (! $this->shouldRecord('agent_text') || ! Schema::hasTable('orbit_ai_runs')) {
+            return;
+        }
+
+        $this->appendRunEvent($event->invocationId, $event, [
+            'type' => 'step_started',
+            'step_number' => $event->stepNumber,
+            'is_final' => $event->isFinalStep,
+            'provider' => $this->providerName($event->provider),
+            'model' => $event->model,
+            'recorded_at' => now()->toISOString(),
+        ]);
+    }
+
+    /**
+     * Record a generation step completing with its wall time (SDK 0.11+).
+     */
+    public function recordStepCompleted(StepCompleted $event): void
+    {
+        if (! $this->shouldRecord('agent_text') || ! Schema::hasTable('orbit_ai_runs')) {
+            return;
+        }
+
+        $this->appendRunEvent($event->invocationId, $event, [
+            'type' => 'step_completed',
+            'step_number' => $event->stepNumber,
+            'is_final' => $event->isFinalStep,
+            'model' => $event->model,
+            'time_ms' => $event->time,
+            'recorded_at' => now()->toISOString(),
+        ]);
+    }
+
+    /**
+     * Record a run pausing for human-in-the-loop tool approval (SDK 0.11+).
+     */
+    public function recordApprovalRequested(ToolApprovalRequested $event): void
+    {
+        if (! $this->shouldRecord('agent_text') || ! Schema::hasTable('orbit_ai_runs')) {
+            return;
+        }
+
+        $entry = [
+            'type' => 'approval_requested',
+            'approvals' => $event->pendingApprovals
+                ->map(fn ($approval) => array_filter([
+                    'id' => $approval->id,
+                    'tool' => $approval->tool,
+                    'reason' => $approval->reason,
+                ]))
+                ->all(),
+            'recorded_at' => now()->toISOString(),
+        ];
+
+        $run = AiRun::query()->where('invocation_id', $event->invocationId)->first();
+
+        if ($run) {
+            $events = $run->events ?? [];
+            $events[] = $entry;
+            $run->update(['events' => $events, 'status' => 'pending_approval']);
+
+            return;
+        }
+
+        $this->upsertRun($event, [
+            'operation' => 'agent_text',
+            'status' => 'pending_approval',
+            'conversation_id' => $event->conversationId,
+            'user_id' => $this->userIdFor($event),
+            ...($this->orbitHasParticipants() ? $this->participantFor($event) : []),
+            'started_at' => now(),
+            'events' => [$entry],
+        ]);
+    }
+
+    /**
+     * Record a run resuming after tool approval (SDK 0.11+).
+     */
+    public function recordApprovalResolved(ToolApprovalResolved $event): void
+    {
+        if (! $this->shouldRecord('agent_text') || ! Schema::hasTable('orbit_ai_runs')) {
+            return;
+        }
+
+        $this->appendRunEvent($event->invocationId, $event, [
+            'type' => 'approval_resolved',
+            'tool_results' => $event->toolResults->count(),
+            'recorded_at' => now()->toISOString(),
+        ], ['status' => 'running']);
+    }
+
+    /**
+     * Append an entry to a run's event trace, creating a minimal run when none exists.
+     *
+     * @param  array<string, mixed>  $entry
+     * @param  array<string, mixed>  $attributes
+     */
+    private function appendRunEvent(string $invocationId, object $event, array $entry, array $attributes = []): void
+    {
+        $run = AiRun::query()->where('invocation_id', $invocationId)->first();
+
+        if ($run) {
+            $events = $run->events ?? [];
+            $events[] = $entry;
+            $run->update(array_filter(array_merge(['events' => $events], $attributes), fn ($value) => $value !== null));
+
+            return;
+        }
+
+        $this->upsertRun($event, array_merge([
+            'operation' => 'agent_text',
+            'status' => 'running',
+            'started_at' => now(),
+            'events' => [$entry],
+        ], $attributes));
+    }
+
+    /**
      * @param  array<string, mixed>  $attributes
      */
     private function upsertRun(object $event, array $attributes): void
@@ -418,6 +544,8 @@ class AiRunRecorder
 
         if (property_exists($event, 'response') && isset($event->response->conversationUser)) {
             $participant = $event->response->conversationUser;
+        } elseif (property_exists($event, 'conversationUser') && $event->conversationUser !== null) {
+            $participant = $event->conversationUser;
         }
 
         if ($participant === null) {

@@ -147,6 +147,10 @@ class ConversationRepository
             $selectColumns[] = 'meta';
         }
 
+        if ($this->hasColumn('agent_conversation_messages', 'approval_state')) {
+            $selectColumns[] = 'approval_state';
+        }
+
         return $this->connection()->table('agent_conversation_messages')
             ->select($selectColumns)
             ->where('conversation_id', $conversationId)
