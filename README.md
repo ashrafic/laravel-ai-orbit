@@ -22,7 +22,7 @@
 
 ---
 
-**Laravel AI Orbit** is a standalone observability dashboard and developer playground for the official [Laravel AI SDK](https://github.com/laravel/ai) (`laravel/ai` v0.6–v0.9). Think of it as **Telescope for your AI agents** — a polished, real-time window into everything your agents are doing, with powerful tools to test, compare, and optimize them.
+**Laravel AI Orbit** is a standalone observability dashboard and developer playground for the official [Laravel AI SDK](https://github.com/laravel/ai) (`laravel/ai` v0.10–v0.11). Think of it as **Telescope for your AI agents** — a polished, real-time window into everything your agents are doing, with powerful tools to test, compare, and optimize them.
 
 Built for Laravel 12+ and PHP 8.3+, Orbit installs in seconds, requires **zero frontend build steps**, and ships with a gorgeous glassmorphism UI in both dark and light modes.
 
@@ -90,7 +90,9 @@ Built for Laravel 12+ and PHP 8.3+, Orbit installs in seconds, requires **zero f
 
 ## Installation
 
-Requires PHP 8.3+, Laravel 12+, and the [Laravel AI SDK](https://github.com/laravel/ai) installed with migrations run.
+Requires PHP 8.3+, Laravel 12+, and the [Laravel AI SDK](https://github.com/laravel/ai) (`laravel/ai` `^0.10|^0.11`) installed with migrations run.
+
+> Using `laravel/ai` 0.9 or lower? Stay on Orbit `^1.2` — it supports the SDK down to 0.6. Orbit 1.3+ requires the SDK `^0.10|^0.11`.
 
 ```bash
 composer require ashrafic/laravel-ai-orbit
@@ -184,6 +186,8 @@ Published views land in `resources/views/vendor/ai-orbit/`.
 ## Documentation
 
 Full documentation is available at **[ashrafic.github.io/laravel-ai-orbit](https://ashrafic.github.io/laravel-ai-orbit/)**.
+
+Upgrading from Orbit 1.2.x? See the [upgrade guide](https://github.com/ashrafic/laravel-ai-orbit/blob/main/docs/getting-started/upgrading.md) — it walks you through the Laravel AI SDK version bump and Orbit's new participant migrations, step by step. Nothing breaks if you skip Orbit's migration: run recording continues on the legacy columns until you run it.
 
 ---
 

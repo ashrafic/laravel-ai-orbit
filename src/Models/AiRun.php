@@ -13,7 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $provider
  * @property string|null $model
  * @property string|null $agent_class
- * @property string|null $user_id
+ * @property string|null $user_id Deprecated: kept for backward compatibility, will be removed in 2.0. Prefer participant_type/participant_id.
+ * @property string|null $participant_type
+ * @property int|null $participant_id
  * @property string|null $conversation_id
  * @property int $input_tokens
  * @property int $output_tokens
@@ -40,6 +42,8 @@ class AiRun extends Model
         'model',
         'agent_class',
         'user_id',
+        'participant_type',
+        'participant_id',
         'conversation_id',
         'input_tokens',
         'output_tokens',
@@ -62,6 +66,7 @@ class AiRun extends Model
         'priced' => 'boolean',
         'missing_pricing' => 'boolean',
         'latency_ms' => 'integer',
+        'participant_id' => 'integer',
         'payload' => 'array',
         'usage' => 'array',
         'events' => 'array',

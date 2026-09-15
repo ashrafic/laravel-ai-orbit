@@ -2,6 +2,20 @@
 
 All notable changes to Laravel AI Orbit are documented in this file.
 
+## [1.3.0]
+
+### Changed
+- **Laravel AI SDK Compatibility** — Now requires `laravel/ai` `^0.10|^0.11`. Reads the SDK's polymorphic conversation participants (`participant_type`/`participant_id`) and the `approval_state` message column introduced in SDK 0.10.
+- **CI Matrix** — The test suite now runs against both the highest and lowest dependency sets, covering Laravel 12 and 13 as well as SDK 0.10 and 0.11.
+
+### Added
+- **Failure Observability** — Records the SDK's `AgentFailed`, `StepFailed`, and `ToolFailed` events (SDK 0.11+): terminal failures are marked as `failed` runs instead of lingering in `running` state, step failures are appended to run traces, and tool invocations record wall time (`time_ms`).
+- **Participant Tracking** — `orbit_ai_runs` gains additive `participant_type` and `participant_id` columns (shipped migration with a guarded backfill from `user_id`). The recorder captures the SDK conversation participant's morph class and key, falling back to the authenticated principal. The legacy `user_id` column keeps being written and is deprecated — it will be removed in 2.0 (planned for the SDK's stable 1.0 era).
+
+### Fixed
+- **PHPStan** — Simplified failover error extraction in `AiRunRecorder` to match the SDK's widened `FailoverableException` contract.
+- **Test Environment** — Tests now define an application encryption key, required by Livewire 4.4 component rendering under Laravel 13.
+
 ## [1.2.2]
 
 ### Changed

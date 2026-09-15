@@ -2,6 +2,13 @@
 
 Planned features and improvements for Laravel AI Orbit.
 
+## Versioning Plan
+
+The Laravel AI SDK is pre-1.0 and may continue to change its schema before reaching a stable version. Orbit's versioning plan reflects that:
+
+- **Orbit 1.x (current)** — While the SDK is pre-1.0, Orbit ships additive changes only. SDK schema and API changes are absorbed internally in minor releases; nothing in Orbit 1.x will break.
+- **Orbit 2.0** — Planned for the SDK's stable 1.0 era. It will remove the deprecated `user_id` column from `orbit_ai_runs` (deprecated in 1.3, still written for backward compatibility) and align Orbit's own schema with the SDK's stable participant model. The breaking change will be documented in the [upgrade guide](/getting-started/upgrading).
+
 ## Short Term
 
 ### Enhanced Analytics

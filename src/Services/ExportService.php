@@ -100,7 +100,7 @@ class ExportService
                 $conv->id ?? '',
                 '"'.str_replace('"', '""', $conv->title ?? '').'"',
                 $conv->agent_class ?? '',
-                $conv->user_id ?? '',
+                $conv->participant_id ?? '',
                 $conv->created_at ?? '',
                 $conv->total_input_tokens ?? 0,
                 $conv->total_output_tokens ?? 0,

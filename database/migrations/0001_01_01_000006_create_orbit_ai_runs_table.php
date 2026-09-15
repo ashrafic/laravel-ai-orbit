@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('model')->nullable()->index();
             $table->string('agent_class')->nullable()->index();
             $table->string('user_id')->nullable()->index();
+            $table->string('participant_type')->nullable();
+            $table->unsignedBigInteger('participant_id')->nullable();
+            $table->index(['participant_type', 'participant_id']);
             $table->string('conversation_id')->nullable()->index();
             $table->unsignedInteger('input_tokens')->default(0);
             $table->unsignedInteger('output_tokens')->default(0);

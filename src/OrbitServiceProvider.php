@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Ai\Events\AddingFileToStore;
+use Laravel\Ai\Events\AgentFailed;
 use Laravel\Ai\Events\AgentFailedOver;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\AgentStreamed;
@@ -47,10 +48,12 @@ use Laravel\Ai\Events\ProviderFailedOver;
 use Laravel\Ai\Events\RemovingFileFromStore;
 use Laravel\Ai\Events\Reranked;
 use Laravel\Ai\Events\Reranking;
+use Laravel\Ai\Events\StepFailed;
 use Laravel\Ai\Events\StoreCreated;
 use Laravel\Ai\Events\StoreDeleted;
 use Laravel\Ai\Events\StoringFile;
 use Laravel\Ai\Events\StreamingAgent;
+use Laravel\Ai\Events\ToolFailed;
 use Laravel\Ai\Events\ToolInvoked;
 use Laravel\Ai\Events\TranscriptionGenerated;
 use Livewire\Livewire;
@@ -264,6 +267,18 @@ class OrbitServiceProvider extends ServiceProvider
 
         $events->listen(AgentFailedOver::class, function (AgentFailedOver $event): void {
             $this->app->make(AiRunRecorder::class)->recordFailover($event);
+        });
+
+        $events->listen(AgentFailed::class, function (AgentFailed $event): void {
+            $this->app->make(AiRunRecorder::class)->recordFailed($event);
+        });
+
+        $events->listen(StepFailed::class, function (StepFailed $event): void {
+            $this->app->make(AiRunRecorder::class)->recordFailed($event);
+        });
+
+        $events->listen(ToolFailed::class, function (ToolFailed $event): void {
+            $this->app->make(AiRunRecorder::class)->recordToolFailed($event);
         });
     }
 }

@@ -10,10 +10,12 @@ Before installing, make sure your environment meets the following:
 |:---|:---|:---|
 | PHP | `^8.3` | Required by the Laravel AI SDK |
 | Laravel | `^12.0 \| ^13.0` | Framework version |
-| Laravel AI SDK | `^0.6\|^0.7\|^0.8\|^0.9` | `laravel/ai` package with migrations run |
+| Laravel AI SDK | `^0.10\|^0.11` | `laravel/ai` package with migrations run |
 | Livewire | `^4.0` | Auto-installed as a dependency |
 
 > **Important:** The Laravel AI SDK (`laravel/ai`) must be installed and its migrations must have been run. Orbit reads directly from the SDK's `agent_conversations` and `agent_conversation_messages` tables.
+
+> Using `laravel/ai` 0.9 or lower? Stay on Orbit `^1.2` — it supports the SDK down to 0.6. Orbit 1.3+ requires the SDK `^0.10|^0.11`.
 
 ## Install via Composer
 

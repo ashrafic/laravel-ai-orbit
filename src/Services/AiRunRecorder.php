@@ -5,18 +5,24 @@ namespace Ashrafic\AiOrbit\Services;
 use Ashrafic\AiOrbit\Models\AiRun;
 use Carbon\CarbonInterface;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use JsonSerializable;
+use Laravel\Ai\Events\AgentFailed;
 use Laravel\Ai\Events\AgentFailedOver;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\AgentStreamed;
 use Laravel\Ai\Events\InvokingTool;
 use Laravel\Ai\Events\ProviderFailedOver;
+use Laravel\Ai\Events\StepFailed;
+use Laravel\Ai\Events\ToolFailed;
 use Laravel\Ai\Events\ToolInvoked;
 use Throwable;
 
 class AiRunRecorder
 {
+    private ?bool $orbitHasParticipants = null;
+
     public function __construct(
         private readonly CostCalculator $costCalculator,
     ) {}
@@ -90,6 +96,10 @@ class AiRunRecorder
 
         if ($event instanceof ToolInvoked) {
             $entry['result'] = $this->summarize($event->result);
+
+            if (property_exists($event, 'time')) {
+                $entry['time_ms'] = $event->time;
+            }
         }
 
         $run = AiRun::query()->where('invocation_id', $event->invocationId)->first();
@@ -153,6 +163,106 @@ class AiRunRecorder
     }
 
     /**
+     * Record terminal agent failures from the SDK's failure events.
+     */
+    public function recordFailed(AgentFailed|StepFailed $event): void
+    {
+        if (! $this->shouldRecord('agent_text') || ! Schema::hasTable('orbit_ai_runs')) {
+            return;
+        }
+
+        $isFinal = $event instanceof AgentFailed || $event->isFinalStep;
+
+        $entry = $event instanceof StepFailed ? [
+            'type' => 'step_failed',
+            'step_number' => $event->stepNumber,
+            'is_final' => $event->isFinalStep,
+            'error' => $this->summarize($event->exception),
+            'time_ms' => $event->time,
+            'recorded_at' => now()->toISOString(),
+        ] : null;
+
+        $run = AiRun::query()->where('invocation_id', $event->invocationId)->first();
+
+        if ($run) {
+            $attributes = array_filter([
+                'status' => $isFinal ? 'failed' : null,
+                'error' => $isFinal ? $event->exception->getMessage() : null,
+                'completed_at' => $isFinal ? now() : null,
+                'latency_ms' => $isFinal && $run->started_at
+                    ? (int) $run->started_at->diffInMilliseconds(now())
+                    : null,
+            ]);
+
+            if ($entry) {
+                $events = $run->events ?? [];
+                $events[] = $entry;
+                $attributes['events'] = $events;
+            }
+
+            $run->update($attributes);
+
+            return;
+        }
+
+        if (! $isFinal) {
+            return;
+        }
+
+        AiRun::query()->create([
+            'invocation_id' => $event->invocationId,
+            'operation' => 'agent_text',
+            'status' => 'failed',
+            'provider' => $this->providerFor($event),
+            'model' => $this->modelFor($event),
+            'agent_class' => $this->agentClassFor($event),
+            'user_id' => $this->userIdFor($event),
+            ...($this->orbitHasParticipants() ? $this->participantFor($event) : []),
+            'error' => $event->exception->getMessage(),
+            'payload' => $this->payloadFor($event, false),
+            'started_at' => now(),
+            'completed_at' => now(),
+        ]);
+    }
+
+    /**
+     * Record tool failures from the SDK's tool failure events.
+     */
+    public function recordToolFailed(ToolFailed $event): void
+    {
+        if (! $this->shouldRecord('tool') || ! Schema::hasTable('orbit_ai_runs')) {
+            return;
+        }
+
+        $entry = [
+            'type' => 'tool_failed',
+            'tool_invocation_id' => $event->toolInvocationId,
+            'tool' => $event->tool::class,
+            'arguments' => $this->summarize($event->arguments),
+            'error' => $this->summarize($event->exception),
+            'time_ms' => $event->time,
+            'recorded_at' => now()->toISOString(),
+        ];
+
+        $run = AiRun::query()->where('invocation_id', $event->invocationId)->first();
+
+        if (! $run) {
+            $this->upsertRun($event, [
+                'operation' => 'agent_text',
+                'status' => 'running',
+                'started_at' => now(),
+                'events' => [$entry],
+            ]);
+
+            return;
+        }
+
+        $events = $run->events ?? [];
+        $events[] = $entry;
+        $run->update(['events' => $events]);
+    }
+
+    /**
      * @param  array<string, mixed>  $attributes
      */
     private function upsertRun(object $event, array $attributes): void
@@ -170,6 +280,7 @@ class AiRunRecorder
             'agent_class' => $this->agentClassFor($event),
             'user_id' => $this->userIdFor($event),
             'conversation_id' => $this->conversationIdFor($event),
+            ...($this->orbitHasParticipants() ? $this->participantFor($event) : []),
         ], fn ($value) => $value !== null);
 
         if ($invocationId) {
@@ -275,6 +386,58 @@ class AiRunRecorder
         }
 
         return auth()->id() ? (string) auth()->id() : null;
+    }
+
+    /**
+     * Whether the runs table has the participant columns.
+     *
+     * Upgrades ship via publishable migrations, so an application may run
+     * 1.3+ code against the pre-1.3 table shape. Probe once per recorder
+     * instance and write participant fields only when the columns exist.
+     */
+    private function orbitHasParticipants(): bool
+    {
+        if ($this->orbitHasParticipants === null) {
+            $this->orbitHasParticipants = Schema::hasTable('orbit_ai_runs')
+                && Schema::hasColumn('orbit_ai_runs', 'participant_id');
+        }
+
+        return $this->orbitHasParticipants;
+    }
+
+    /**
+     * Resolve the run's participant following the SDK's own resolution:
+     * the conversation participant object when present, the authenticated
+     * principal otherwise.
+     *
+     * @return array{participant_type?: string, participant_id?: int}
+     */
+    private function participantFor(object $event): array
+    {
+        $participant = null;
+
+        if (property_exists($event, 'response') && isset($event->response->conversationUser)) {
+            $participant = $event->response->conversationUser;
+        }
+
+        if ($participant === null) {
+            $participant = auth()->user();
+        }
+
+        if ($participant === null || ! is_object($participant)) {
+            return [];
+        }
+
+        $id = $participant instanceof Model
+            ? $participant->getKey()
+            : ($participant->id ?? null);
+
+        return array_filter([
+            'participant_type' => $participant instanceof Model
+                ? $participant->getMorphClass()
+                : $participant::class,
+            'participant_id' => is_numeric($id) ? (int) $id : null,
+        ]);
     }
 
     /**

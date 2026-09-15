@@ -76,7 +76,7 @@ class DataRetention
     {
         try {
             $staleIds = $this->connection()->table('agent_conversations')
-                ->where('user_id', '=', 0)
+                ->whereNull('participant_id')
                 ->where('created_at', '<', now()->subHours(24))
                 ->pluck('id');
         } catch (\Throwable) {

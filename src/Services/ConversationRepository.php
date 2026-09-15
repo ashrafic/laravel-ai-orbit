@@ -27,12 +27,13 @@ class ConversationRepository
         $query = $this->connection()->table('agent_conversations')
             ->select([
                 'agent_conversations.id',
-                'agent_conversations.user_id',
+                'agent_conversations.participant_type',
+                'agent_conversations.participant_id',
                 'agent_conversations.title',
                 'agent_conversations.created_at',
                 'agent_conversations.updated_at',
             ])
-            ->where('agent_conversations.user_id', '>=', 0);
+            ->whereNotNull('agent_conversations.participant_id');
 
         if ($this->hasTable('agent_conversation_messages')) {
             $query->selectRaw('COUNT(agent_conversation_messages.id) as message_count');
