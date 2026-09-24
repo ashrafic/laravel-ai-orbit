@@ -106,6 +106,7 @@ class RunExplorer extends Component
             'transcription',
             'embeddings',
             'reranking',
+            'classification',
             'file',
             'store',
             'store_file',

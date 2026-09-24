@@ -143,8 +143,24 @@
                             </div>
                         @endif
 
+                        {{-- Failed Turn --}}
+                        @if (($message->status ?? '') === 'failed')
+                            @php $messageMeta = json_decode($message->meta ?? '', true); @endphp
+                            <div class="mt-3 rounded-lg border border-red-200 dark:border-red-500/30 bg-red-50 dark:bg-red-500/10 px-3 py-2">
+                                <div class="inline-flex items-center gap-1.5 text-xs font-medium text-red-600 dark:text-red-400">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                    <span>Failed turn</span>
+                                </div>
+                                @if (!empty($messageMeta['error']))
+                                    <p class="mt-1 text-xs font-mono text-red-700 dark:text-red-300 whitespace-pre-wrap">{{ $messageMeta['error'] }}</p>
+                                @endif
+                            </div>
+                        @endif
+
                         {{-- Pending Tool Approval --}}
-                        @if (!empty($message->approval_state))
+                        @if (($message->status ?? '') === 'paused')
                             <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-full">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -153,40 +169,54 @@
                             </div>
                         @endif
 
-                        {{-- Tool Calls --}}
-                        @if (!empty($message->tool_calls) && $message->tool_calls !== 'null')
-                            @php
-                                $toolCalls = json_decode($message->tool_calls, true) ?? [];
-                            @endphp
-                            @foreach ($toolCalls as $index => $toolCall)
-                                <div
-                                    x-data="{ open: false }"
-                                    class="mt-3"
+                        {{-- Tool Calls (SDK 1.0 steps) --}}
+                        @php $toolCalls = \Ashrafic\AiOrbit\Support\StepParser::toolCalls($message->steps ?? null); @endphp
+                        @foreach ($toolCalls as $toolCall)
+                            <div
+                                x-data="{ open: false }"
+                                class="mt-3"
+                            >
+                                <button
+                                    @click="open = !open"
+                                    class="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100/50 dark:hover:bg-white/5 rounded-lg transition-colors"
                                 >
-                                    <button
-                                        @click="open = !open"
-                                        class="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100/50 dark:hover:bg-white/5 rounded-lg transition-colors"
-                                    >
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543-.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        </svg>
-                                        <span>Tool: <span class="font-mono">{{ $toolCall['function']['name'] ?? $toolCall['name'] ?? "Call #{$index}" }}</span></span>
-                                        <svg class="w-3 h-3 ml-auto transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                        </svg>
-                                    </button>
-                                    <div x-show="open" x-collapse>
-                                        <div class="rounded-lg bg-gray-900/50 dark:bg-black/40 border border-gray-700/30 dark:border-gray-600/20 mx-1">
-                                            <div class="px-3 pt-2">
-                                                <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Arguments</span>
-                                            </div>
-                                            <pre class="p-3 text-xs font-mono text-gray-200 whitespace-pre-wrap overflow-x-auto">{!! $this->highlightJson($toolCall['function']['arguments'] ?? $toolCall['arguments'] ?? []) !!}</pre>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    <span>Tool: <span class="font-mono">{{ $toolCall['name'] }}</span></span>
+                                    @if ($toolCall['pending'])
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30">Awaiting approval</span>
+                                    @elseif ($toolCall['denied'])
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10">Denied</span>
+                                    @elseif ($toolCall['failed'])
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30">Failed</span>
+                                    @endif
+                                    <svg class="w-3 h-3 ml-auto transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                                <div x-show="open" x-collapse>
+                                    <div class="rounded-lg bg-gray-900/50 dark:bg-black/40 border border-gray-700/30 dark:border-gray-600/20 mx-1">
+                                        <div class="px-3 pt-2">
+                                            <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Arguments</span>
                                         </div>
+                                        <pre class="p-3 text-xs font-mono text-gray-200 whitespace-pre-wrap overflow-x-auto">{!! $this->highlightJson($toolCall['arguments']) !!}</pre>
+                                        @if ($toolCall['pending'])
+                                            <div class="px-3 pb-3">
+                                                <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Approval reason</span>
+                                                <p class="mt-1 text-xs font-mono text-amber-200 whitespace-pre-wrap">{{ $toolCall['approval_reason'] }}</p>
+                                            </div>
+                                        @elseif ($toolCall['result'] !== null)
+                                            <div class="px-3 pb-3">
+                                                <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">Result</span>
+                                                <pre class="mt-1 p-2 text-xs font-mono text-gray-300 whitespace-pre-wrap overflow-x-auto rounded bg-black/30">{{ is_string($toolCall['result']) ? $toolCall['result'] : json_encode($toolCall['result'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
-                            @endforeach
-                        @endif
+                            </div>
+                        @endforeach
 
                         {{-- Raw Payload --}}
                         @if ($showRawPayload)

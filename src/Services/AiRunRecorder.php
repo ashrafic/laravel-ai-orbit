@@ -25,8 +25,6 @@ use Throwable;
 
 class AiRunRecorder
 {
-    private ?bool $orbitHasParticipants = null;
-
     public function __construct(
         private readonly CostCalculator $costCalculator,
     ) {}
@@ -78,7 +76,6 @@ class AiRunRecorder
             'missing_pricing' => $cost['missing_pricing'],
             'payload' => $this->payloadFor($event, true),
             'conversation_id' => $this->conversationIdFor($event),
-            'user_id' => $this->userIdFor($event),
             'latency_ms' => $startedAt ? (int) $startedAt->diffInMilliseconds($completedAt) : null,
             'completed_at' => $completedAt,
         ]);
@@ -100,10 +97,7 @@ class AiRunRecorder
 
         if ($event instanceof ToolInvoked) {
             $entry['result'] = $this->summarize($event->result);
-
-            if (property_exists($event, 'time')) {
-                $entry['time_ms'] = $event->time;
-            }
+            $entry['time_ms'] = $event->time;
         }
 
         $run = AiRun::query()->where('invocation_id', $event->invocationId)->first();
@@ -220,8 +214,7 @@ class AiRunRecorder
             'provider' => $this->providerFor($event),
             'model' => $this->modelFor($event),
             'agent_class' => $this->agentClassFor($event),
-            'user_id' => $this->userIdFor($event),
-            ...($this->orbitHasParticipants() ? $this->participantFor($event) : []),
+            ...$this->participantFor($event),
             'error' => $event->exception->getMessage(),
             'payload' => $this->payloadFor($event, false),
             'started_at' => now(),
@@ -339,8 +332,7 @@ class AiRunRecorder
             'operation' => 'agent_text',
             'status' => 'pending_approval',
             'conversation_id' => $event->conversationId,
-            'user_id' => $this->userIdFor($event),
-            ...($this->orbitHasParticipants() ? $this->participantFor($event) : []),
+            ...$this->participantFor($event),
             'started_at' => now(),
             'events' => [$entry],
         ]);
@@ -404,9 +396,8 @@ class AiRunRecorder
             'provider' => $this->providerFor($event),
             'model' => $this->modelFor($event),
             'agent_class' => $this->agentClassFor($event),
-            'user_id' => $this->userIdFor($event),
             'conversation_id' => $this->conversationIdFor($event),
-            ...($this->orbitHasParticipants() ? $this->participantFor($event) : []),
+            ...$this->participantFor($event),
         ], fn ($value) => $value !== null);
 
         if ($invocationId) {
@@ -493,42 +484,6 @@ class AiRunRecorder
         }
 
         return null;
-    }
-
-    private function userIdFor(object $event): ?string
-    {
-        if (! property_exists($event, 'response') || ! isset($event->response->conversationUser)) {
-            return auth()->id() ? (string) auth()->id() : null;
-        }
-
-        $user = $event->response->conversationUser;
-
-        if (is_object($user) && method_exists($user, 'getAuthIdentifier')) {
-            return (string) $user->getAuthIdentifier();
-        }
-
-        if (is_object($user) && isset($user->id)) {
-            return (string) $user->id;
-        }
-
-        return auth()->id() ? (string) auth()->id() : null;
-    }
-
-    /**
-     * Whether the runs table has the participant columns.
-     *
-     * Upgrades ship via publishable migrations, so an application may run
-     * 1.3+ code against the pre-1.3 table shape. Probe once per recorder
-     * instance and write participant fields only when the columns exist.
-     */
-    private function orbitHasParticipants(): bool
-    {
-        if ($this->orbitHasParticipants === null) {
-            $this->orbitHasParticipants = Schema::hasTable('orbit_ai_runs')
-                && Schema::hasColumn('orbit_ai_runs', 'participant_id');
-        }
-
-        return $this->orbitHasParticipants;
     }
 
     /**

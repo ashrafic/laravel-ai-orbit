@@ -13,9 +13,13 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Ai\AnonymousAgent;
 use Laravel\Ai\Approvals\PendingApproval;
+use Laravel\Ai\Contracts\Gateway\ClassificationGateway;
+use Laravel\Ai\Contracts\Providers\ClassificationProvider;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Events\AgentFailed;
 use Laravel\Ai\Events\AgentPrompted;
+use Laravel\Ai\Events\Classified;
+use Laravel\Ai\Events\Classifying;
 use Laravel\Ai\Events\PromptingAgent;
 use Laravel\Ai\Events\ProviderFailedOver;
 use Laravel\Ai\Events\StartingStep;
@@ -29,11 +33,14 @@ use Laravel\Ai\Exceptions\FailoverableException;
 use Laravel\Ai\Gateway\OpenAi\OpenAiGateway;
 use Laravel\Ai\Gateway\StepResponse;
 use Laravel\Ai\Prompts\AgentPrompt;
+use Laravel\Ai\Prompts\ClassificationPrompt;
 use Laravel\Ai\Providers\OpenAiProvider;
+use Laravel\Ai\Providers\Provider;
 use Laravel\Ai\Responses\AgentResponse;
+use Laravel\Ai\Responses\ClassificationResponse;
 use Laravel\Ai\Responses\Data\FinishReason;
 use Laravel\Ai\Responses\Data\Meta;
-use Laravel\Ai\Responses\Data\Usage;
+use Laravel\Ai\Responses\Data\TextUsage;
 use Laravel\Ai\Tools\Request;
 
 it('records one-off agent prompts when observability is enabled', function () {
@@ -144,10 +151,10 @@ it('uses sdk tables for core metrics and runs for run metrics', function () {
         'role' => 'assistant',
         'content' => 'Hello',
         'attachments' => json_encode([]),
-        'tool_calls' => json_encode([]),
-        'tool_results' => json_encode([]),
+        'steps' => json_encode([]),
         'usage' => json_encode(['prompt_tokens' => 2, 'completion_tokens' => 3]),
         'meta' => json_encode(['provider' => 'openai', 'model' => 'gpt-test']),
+        'status' => 'completed',
         'created_at' => now(),
         'updated_at' => now(),
     ]);
@@ -174,6 +181,44 @@ it('uses sdk tables for core metrics and runs for run metrics', function () {
         ->and($aggregator->periodStats()['total_runs'])->toBe(1)
         ->and($aggregator->periodStats()['completed_runs'])->toBe(1)
         ->and($aggregator->agentBreakdown()->first()->total)->toBe(30);
+});
+
+it('aggregates sdk 1.0 input_tokens usage format alongside the legacy format', function () {
+    DB::table('agent_conversations')->insert([
+        'id' => 'conversation-3',
+        'participant_type' => 'App\\Models\\User',
+        'participant_id' => 5,
+        'title' => 'Mixed formats',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    $message = fn (string $id, array $usage) => [
+        'id' => $id,
+        'conversation_id' => 'conversation-3',
+        'participant_type' => 'App\\Models\\User',
+        'participant_id' => 5,
+        'agent' => AnonymousAgent::class,
+        'role' => 'assistant',
+        'content' => 'Hello',
+        'attachments' => json_encode([]),
+        'steps' => json_encode([]),
+        'usage' => json_encode($usage),
+        'meta' => json_encode(['provider' => 'openai', 'model' => 'gpt-test']),
+        'status' => 'completed',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ];
+
+    DB::table('agent_conversation_messages')->insert([
+        $message('message-legacy', ['prompt_tokens' => 100, 'completion_tokens' => 50]),
+        $message('message-current', ['input_tokens' => 200, 'output_tokens' => 80]),
+    ]);
+
+    $aggregator = app(TokenAggregator::class);
+
+    expect($aggregator->periodStats()['input_tokens'])->toBe(300)
+        ->and($aggregator->periodStats()['output_tokens'])->toBe(130);
 });
 
 it('records failover events as failed runs', function () {
@@ -274,7 +319,7 @@ it('marks runs failed when the agent run fails', function () {
         ->and($run->operation)->toBe('agent_text')
         ->and($run->error)->toBe('Provider exploded')
         ->and($run->completed_at)->not->toBeNull();
-})->skip(! class_exists(AgentFailed::class), 'Requires laravel/ai ^0.11');
+});
 
 it('appends step failures and marks the run failed on the final step', function () {
     $invocationId = '018f0000-0000-7000-8000-000000000102';
@@ -293,7 +338,7 @@ it('appends step failures and marks the run failed on the final step', function 
         ->and($run->events)->toHaveCount(2)
         ->and($run->events[0])->toMatchArray(['type' => 'step_failed', 'step_number' => 1, 'is_final' => false])
         ->and($run->events[1]['step_number'])->toBe(2);
-})->skip(! class_exists(StepFailed::class), 'Requires laravel/ai ^0.11');
+});
 
 it('does not fail the run for recoverable step failures', function () {
     $invocationId = '018f0000-0000-7000-8000-000000000105';
@@ -309,7 +354,7 @@ it('does not fail the run for recoverable step failures', function () {
 
     expect($run->status)->toBe('completed')
         ->and($run->events[0]['type'])->toBe('step_failed');
-})->skip(! class_exists(StepFailed::class), 'Requires laravel/ai ^0.11');
+});
 
 it('records tool failures including wall time', function () {
     $invocationId = '018f0000-0000-7000-8000-000000000103';
@@ -326,7 +371,7 @@ it('records tool failures including wall time', function () {
             'tool_invocation_id' => 'tool-invocation-1',
             'time_ms' => 55.5,
         ]);
-})->skip(! class_exists(ToolFailed::class), 'Requires laravel/ai ^0.11');
+});
 
 it('records tool wall time on successful tool invocations', function () {
     $invocationId = '018f0000-0000-7000-8000-000000000104';
@@ -339,7 +384,7 @@ it('records tool wall time on successful tool invocations', function () {
         'type' => 'tool_invoked',
         'time_ms' => 42.0,
     ]);
-})->skip(! class_exists(ToolFailed::class), 'Tool timing requires laravel/ai ^0.11');
+});
 
 it('does not record failures when observability is disabled', function () {
     config()->set('ai-orbit.observability.enabled', false);
@@ -349,7 +394,7 @@ it('does not record failures when observability is disabled', function () {
     event(new AgentFailed('018f0000-0000-7000-8000-000000000106', $prompt, new RuntimeException('Silent')));
 
     expect(AiRun::query()->count())->toBe(0);
-})->skip(! class_exists(AgentFailed::class), 'Requires laravel/ai ^0.11');
+});
 
 it('records the participant type and id on runs', function () {
     $invocationId = '018f0000-0000-7000-8000-000000000107';
@@ -366,8 +411,7 @@ it('records the participant type and id on runs', function () {
     $run = AiRun::query()->first();
 
     expect($run->participant_id)->toBe(7)
-        ->and($run->participant_type)->toBe($participant::class)
-        ->and($run->user_id)->toBe('7');
+        ->and($run->participant_type)->toBe($participant::class);
 });
 
 it('records step starts and completions in the run trace', function () {
@@ -385,7 +429,7 @@ it('records step starts and completions in the run trace', function () {
     expect($run->events)->toHaveCount(2)
         ->and($run->events[0])->toMatchArray(['type' => 'step_started', 'step_number' => 1])
         ->and($run->events[1])->toMatchArray(['type' => 'step_completed', 'time_ms' => 340.5]);
-})->skip(! class_exists(StartingStep::class), 'Requires laravel/ai ^0.11');
+});
 
 it('marks runs pending approval and resumes them when approval resolves', function () {
     $invocationId = '018f0000-0000-7000-8000-000000000109';
@@ -408,7 +452,7 @@ it('marks runs pending approval and resumes them when approval resolves', functi
 
     expect($run->status)->toBe('running')
         ->and($run->events[1]['type'])->toBe('approval_resolved');
-})->skip(! class_exists(PendingApproval::class), 'Requires laravel/ai ^0.11');
+});
 
 it('creates a pending-approval run when no run exists yet', function () {
     $invocationId = '018f0000-0000-7000-8000-000000000110';
@@ -420,41 +464,9 @@ it('creates a pending-approval run when no run exists yet', function () {
     expect($run->status)->toBe('pending_approval')
         ->and($run->conversation_id)->toBe('conversation-9')
         ->and($run->participant_id)->toBe(3);
-})->skip(! class_exists(PendingApproval::class), 'Requires laravel/ai ^0.11');
-
-it('adds participant columns and backfills them from user_id', function () {
-    Schema::drop('orbit_ai_runs');
-    Schema::create('orbit_ai_runs', function (Blueprint $table) {
-        $table->id();
-        $table->uuid('invocation_id')->nullable();
-        $table->string('operation');
-        $table->string('status')->default('running');
-        $table->string('user_id')->nullable();
-        $table->json('payload')->nullable();
-        $table->timestamps();
-    });
-
-    DB::table('orbit_ai_runs')->insert([
-        ['operation' => 'agent_text', 'user_id' => '5', 'created_at' => now(), 'updated_at' => now()],
-        ['operation' => 'image', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
-    ]);
-
-    config()->set('auth.providers.users.model', AiRun::class);
-
-    $migration = include dirname(__DIR__, 2).'/database/migrations/2026_09_14_000001_add_participants_to_orbit_ai_runs_table.php';
-    $migration->up();
-
-    $rows = DB::table('orbit_ai_runs')->orderBy('id')->get();
-
-    expect($rows[0]->participant_id)->toBe(5)
-        ->and($rows[0]->participant_type)->toBe(AiRun::class)
-        ->and($rows[0]->user_id)->toBe('5')
-        ->and($rows[1]->participant_id)->toBeNull()
-        ->and($rows[1]->participant_type)->toBeNull()
-        ->and(Schema::hasColumn('orbit_ai_runs', 'user_id'))->toBeTrue();
 });
 
-it('still records runs against the pre-1.3 table shape', function () {
+it('upgrades the pre-1.3 table shape via the documented 2.0 migration and records participants', function () {
     Schema::drop('orbit_ai_runs');
     Schema::create('orbit_ai_runs', function (Blueprint $table) {
         $table->id();
@@ -481,17 +493,126 @@ it('still records runs against the pre-1.3 table shape', function () {
         $table->timestamps();
     });
 
+    DB::table('orbit_ai_runs')->insert([
+        ['operation' => 'agent_text', 'user_id' => '5', 'created_at' => now(), 'updated_at' => now()],
+        ['operation' => 'image', 'user_id' => null, 'created_at' => now(), 'updated_at' => now()],
+    ]);
+
+    config()->set('auth.providers.users.model', AiRun::class);
+
+    // The upgrade migration documented in docs/getting-started/upgrading.md ("Upgrading To 2.0"):
+    $table = 'orbit_ai_runs';
+
+    if (! Schema::hasColumn($table, 'participant_type')) {
+        Schema::table($table, function (Blueprint $t) {
+            $t->string('participant_type')->nullable();
+            $t->unsignedBigInteger('participant_id')->nullable()->index();
+        });
+
+        $guard = config('ai-orbit.auth_guard', config('auth.defaults.guard'));
+        $provider = config("auth.guards.{$guard}.provider", 'users');
+        $model = config("auth.providers.{$provider}.model");
+
+        DB::table($table)->whereNotNull('user_id')->orderBy('id')->chunk(100, function ($rows) use ($table, $model) {
+            foreach ($rows as $row) {
+                if (! is_numeric($row->user_id)) {
+                    continue;
+                }
+
+                DB::table($table)->where('id', $row->id)->update([
+                    'participant_type' => (new $model)->getMorphClass(),
+                    'participant_id' => (int) $row->user_id,
+                ]);
+            }
+        });
+    }
+
+    if (Schema::hasColumn($table, 'user_id')) {
+        Schema::table($table, function (Blueprint $t) {
+            $t->dropIndex(['user_id']);
+            $t->dropColumn('user_id');
+        });
+    }
+
+    $rows = DB::table('orbit_ai_runs')->orderBy('id')->get();
+
+    expect($rows[0]->participant_id)->toBe(5)
+        ->and($rows[0]->participant_type)->toBe(AiRun::class)
+        ->and($rows[1]->participant_id)->toBeNull()
+        ->and($rows[1]->participant_type)->toBeNull()
+        ->and(Schema::hasColumn('orbit_ai_runs', 'user_id'))->toBeFalse();
+
+    // The recorder writes participant runs against the upgraded shape.
     [$prompt, $response] = makeRunFixtures(invocationId: '018f0000-0000-7000-8000-000000000108');
+
+    $participant = new class extends Model {};
+    $participant->id = 9;
+    $response->withinConversation('conversation-up', $participant);
 
     event(new PromptingAgent('018f0000-0000-7000-8000-000000000108', $prompt));
     event(new AgentPrompted('018f0000-0000-7000-8000-000000000108', $prompt, $response));
 
-    $run = AiRun::query()->first();
+    $run = AiRun::query()->where('invocation_id', '018f0000-0000-7000-8000-000000000108')->first();
 
     expect($run)->not->toBeNull()
         ->and($run->status)->toBe('completed')
-        ->and($run->user_id)->toBeNull()
-        ->and($run->participant_id)->toBeNull();
+        ->and($run->participant_id)->toBe(9)
+        ->and($run->participant_type)->toBe($participant::class);
+});
+
+it('records classification runs from the Classifying and Classified events', function () {
+    $invocationId = '018f0000-0000-7000-8000-000000000112';
+
+    $classificationProvider = new class(new OpenAiGateway(app('events')), ['name' => 'test', 'driver' => 'openai', 'key' => 'test'], app('events')) extends Provider implements ClassificationProvider
+    {
+        public function classify(string|array $state, array $questions, ?string $model = null, int $timeout = 30, array $providerOptions = []): ClassificationResponse
+        {
+            return new ClassificationResponse([], new TextUsage, new Meta('test', 'gpt-test'));
+        }
+
+        public function classificationGateway(): ClassificationGateway
+        {
+            throw new RuntimeException('not needed');
+        }
+
+        public function useClassificationGateway(ClassificationGateway $gateway): static
+        {
+            return $this;
+        }
+
+        public function defaultClassificationModel(): string
+        {
+            return 'gpt-test';
+        }
+    };
+
+    $prompt = new ClassificationPrompt(
+        'Is this urgent?',
+        [],
+        $classificationProvider,
+        'gpt-test',
+    );
+
+    event(new Classifying($invocationId, $classificationProvider, 'gpt-test', $prompt));
+    event(new Classified(
+        $invocationId,
+        $classificationProvider,
+        'gpt-test',
+        $prompt,
+        new ClassificationResponse(
+            [],
+            new TextUsage(inputTokens: 4, outputTokens: 2),
+            new Meta('test', 'gpt-test'),
+        ),
+    ));
+
+    $run = AiRun::query()->where('invocation_id', $invocationId)->first();
+
+    expect($run)->not->toBeNull()
+        ->and($run->operation)->toBe('classification')
+        ->and($run->status)->toBe('completed')
+        ->and($run->input_tokens)->toBe(4)
+        ->and($run->output_tokens)->toBe(2);
 });
 
 function makeTestTool(): Tool
@@ -521,7 +642,7 @@ function makeStepResponse(): StepResponse
         'step text',
         [],
         FinishReason::Stop,
-        new Usage(promptTokens: 3, completionTokens: 2),
+        new TextUsage(inputTokens: 3, outputTokens: 2),
         new Meta('openai', 'gpt-test'),
     );
 }
@@ -538,7 +659,7 @@ function makeRunFixtures(
     $response = new AgentResponse(
         $invocationId,
         $responseText,
-        new Usage(promptTokens: 12, completionTokens: 8),
+        new TextUsage(inputTokens: 12, outputTokens: 8),
         new Meta('openai', 'gpt-test')
     );
 

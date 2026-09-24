@@ -82,7 +82,7 @@ class PromptLabService
             return [
                 'content' => (string) $response->text,
                 'latency_ms' => (int) ((microtime(true) - $start) * 1000),
-                'tokens' => $response->usage->promptTokens + $response->usage->completionTokens,
+                'tokens' => $response->usage->inputTokens + $response->usage->outputTokens,
                 'cost' => 0,
                 'success' => true,
             ];

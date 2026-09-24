@@ -2,6 +2,23 @@
 
 All notable changes to Laravel AI Orbit are documented in this file.
 
+## [2.0.0]
+
+### Changed
+- **Laravel AI SDK 1.0** — Now requires `laravel/ai` `^1.0` (and Laravel `^12.0|^13.0`). Apps on SDK 0.10/0.11 should stay on Orbit `^1.3`.
+- **`user_id` removed from `orbit_ai_runs`** — Runs identify people by `participant_type`/`participant_id` only. The CSV export's "User" column became "Participant". Existing installs upgrade via the hand-written migration in the upgrade guide.
+- **Steps-based message rendering** — The Message Timeline and Trace views read the SDK 1.0 `steps` and `status` columns: tool calls render with their inline per-call results, "Awaiting tool approval" derives from `status = paused` (with the pending call's `approval_reason`), and failed turns are shown with their error from `meta.error`.
+- **Dual usage formats** — Token and cost dashboards aggregate both the SDK's legacy (`prompt_tokens`/`completion_tokens`) and current (`input_tokens`/`output_tokens`) usage keys, so rows written before and after SDK 1.0 both count.
+- **Schema change policy** — Orbit now ships create migrations only (matching the SDK's convention); breaking schema changes are documented as hand-written upgrade migrations instead of accumulating in the package. The 1.3 participant migration no longer ships.
+
+### Added
+- **Classification Observability** — Records the SDK's new `Classifying`/`Classified` events as `classification` runs (filterable in Run Explorer).
+- **Failed Turn Visibility** — SDK 1.0 stores failed turns as messages; the Message Timeline shows them with a "Failed turn" badge and the error message.
+
+### Fixed
+- **Prompt Lab usage read** — Slot token totals now read the SDK 1.0 `inputTokens`/`outputTokens` properties (previously a hard breakage on SDK 1.0).
+- **Budget alerts for SDK 1.0 runs** — Budget cost checks read both usage key formats, so SDK 1.0-completed events count towards budgets again.
+
 ## [1.3.2]
 
 ### Fixed

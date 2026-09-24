@@ -59,10 +59,10 @@ Traces are built from the `agent_conversation_messages` table, reading:
 
 - `role` — user, assistant, system, tool
 - `content` — Message content
-- `tool_calls` — Tool call payloads
-- `tool_results` — Tool execution results
-- `usage` — Token statistics
-- `meta` — Provider, model, latency, errors
+- `steps` — Per-round-trip steps, each carrying its tool calls with inline results (SDK 1.0 schema)
+- `status` — Message status: `completed`, `paused` (awaiting tool approval), or `failed`
+- `usage` — Token statistics (both legacy and SDK 1.0 key formats)
+- `meta` — Provider, model, latency, errors (`meta.error` on failed turns)
 - `created_at` — Timestamps for sequencing
 
 ### ConversationRepository

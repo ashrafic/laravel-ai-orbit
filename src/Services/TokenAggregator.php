@@ -141,8 +141,8 @@ class TokenAggregator
 
         if ($this->hasTable('agent_conversation_messages') && $this->hasColumn('agent_conversation_messages', 'usage')) {
             $selects = [
-                $this->jsonSum('usage', 'prompt_tokens', 'input_tokens'),
-                $this->jsonSum('usage', 'completion_tokens', 'output_tokens'),
+                $this->jsonSumEither('usage', ['prompt_tokens', 'input_tokens'], 'input_tokens'),
+                $this->jsonSumEither('usage', ['completion_tokens', 'output_tokens'], 'output_tokens'),
             ];
 
             $tokenData = $this->applyDateFilter(
@@ -361,10 +361,11 @@ class TokenAggregator
         }
 
         if ($this->hasColumn('agent_conversation_messages', 'usage')) {
-            $selects[] = $this->jsonSum('usage', 'prompt_tokens', 'input_tokens');
-            $selects[] = $this->jsonSum('usage', 'completion_tokens', 'output_tokens');
+            $selects[] = $this->jsonSumEither('usage', ['prompt_tokens', 'input_tokens'], 'input_tokens');
+            $selects[] = $this->jsonSumEither('usage', ['completion_tokens', 'output_tokens'], 'output_tokens');
             $selects[] = $this->connection()->raw(
-                'COALESCE(SUM('.$this->jsonExprNumeric('usage', 'prompt_tokens').'), 0) + COALESCE(SUM('.$this->jsonExprNumeric('usage', 'completion_tokens').'), 0) as total'
+                'COALESCE(SUM(COALESCE('.$this->jsonExprNumeric('usage', 'prompt_tokens').', 0) + COALESCE('.$this->jsonExprNumeric('usage', 'input_tokens').', 0)), 0)'
+                .' + COALESCE(SUM(COALESCE('.$this->jsonExprNumeric('usage', 'completion_tokens').', 0) + COALESCE('.$this->jsonExprNumeric('usage', 'output_tokens').', 0)), 0) as total'
             );
         }
 

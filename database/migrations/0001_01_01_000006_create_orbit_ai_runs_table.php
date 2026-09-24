@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('provider')->nullable()->index();
             $table->string('model')->nullable()->index();
             $table->string('agent_class')->nullable()->index();
-            $table->string('user_id')->nullable()->index();
             $table->string('participant_type')->nullable();
             $table->unsignedBigInteger('participant_id')->nullable();
             $table->index(['participant_type', 'participant_id']);

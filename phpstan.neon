@@ -13,8 +13,6 @@ parameters:
         # Laravel 13 types raw SQL params as literal-string which dynamic composition can never satisfy
         - '#literal-string#'
 
-        # ToolInvoked gained ->time in SDK 0.11; the guard keeps 0.10 compatibility
-        - '#Call to function property_exists\(\) with Laravel\\Ai\\Events\\ToolInvoked#'
         - '#should return Illuminate\\Support\\Collection#'
         - '#Using nullsafe property access#'
 

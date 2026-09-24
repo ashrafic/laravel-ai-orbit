@@ -75,6 +75,41 @@ trait UsesJsonQueries
     }
 
     /**
+     * Build a portable SUM expression over multiple JSON keys, coalescing per
+     * row (for usage columns written under both legacy and current key names).
+     *
+     * @param  list<string>  $paths
+     * @return Expression
+     */
+    protected function jsonSumEither(string $column, array $paths, string $alias)
+    {
+        $perRow = collect($paths)
+            ->map(fn (string $path) => 'COALESCE('.$this->jsonExprNumeric($column, $path).', 0)')
+            ->implode(' + ');
+
+        return $this->connection()->raw(
+            'COALESCE(SUM('.$perRow.'), 0) as '.$alias
+        );
+    }
+
+    /**
+     * Build a portable AVG expression over the sum of multiple JSON keys.
+     *
+     * @param  list<string>  $paths
+     * @return Expression
+     */
+    protected function jsonAvgEither(string $column, array $paths, string $alias)
+    {
+        $perRow = collect($paths)
+            ->map(fn (string $path) => 'COALESCE('.$this->jsonExprNumeric($column, $path).', 0)')
+            ->implode(' + ');
+
+        return $this->connection()->raw(
+            'AVG('.$perRow.') as '.$alias
+        );
+    }
+
+    /**
      * Get the query grammar for the configured connection.
      */
     private function grammar(): Grammar

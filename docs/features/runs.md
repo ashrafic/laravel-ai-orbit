@@ -32,12 +32,12 @@ Each run record includes:
 
 ### SDK Events Captured
 
-Orbit listens to the SDK's full event surface. Starting, completed, failover, and failure events exist since SDK 0.10; the step, tool timing, and approval events require **SDK 0.11+** (on 0.10 those listeners stay dormant — they simply never fire).
+Orbit listens to the SDK's full event surface, including the step, tool timing, approval, and classification events of the SDK's stable 1.0 line.
 
 | SDK Events | What Orbit Records |
 |:---|:---|
-| `PromptingAgent`, `StreamingAgent`, `GeneratingImage`, `GeneratingAudio`, `GeneratingTranscription`, `GeneratingEmbeddings`, `Reranking`, `StoringFile`, `CreatingStore`, `AddingFileToStore`, `RemovingFileFromStore` | Run starts (`running`) with operation, provider, model, agent class, participant, and prompt payload |
-| `AgentPrompted`, `AgentStreamed`, `ImageGenerated`, `AudioGenerated`, `TranscriptionGenerated`, `EmbeddingsGenerated`, `Reranked`, `FileStored`, `FileDeleted`, `StoreCreated`, `StoreDeleted`, `FileAddedToStore`, `FileRemovedFromStore` | Run completes: tokens, cost, latency, response payload, conversation link — budget alerts are checked here too |
+| `PromptingAgent`, `StreamingAgent`, `GeneratingImage`, `GeneratingAudio`, `GeneratingTranscription`, `GeneratingEmbeddings`, `Reranking`, `Classifying`, `StoringFile`, `CreatingStore`, `AddingFileToStore`, `RemovingFileFromStore` | Run starts (`running`) with operation, provider, model, agent class, participant, and prompt payload |
+| `AgentPrompted`, `AgentStreamed`, `ImageGenerated`, `AudioGenerated`, `TranscriptionGenerated`, `EmbeddingsGenerated`, `Reranked`, `Classified`, `FileStored`, `FileDeleted`, `StoreCreated`, `StoreDeleted`, `FileAddedToStore`, `FileRemovedFromStore` | Run completes: tokens, cost, latency, response payload, conversation link — budget alerts are checked here too |
 | `AgentFailed`, `StepFailed` (final step) | Run marked `failed` with the error message |
 | `StartingStep`, `StepCompleted` | Step timeline entries in the run trace, including per-provider-call wall time (`time_ms`) |
 | `InvokingTool`, `ToolInvoked` | Tool invocation trace entries, including wall time |

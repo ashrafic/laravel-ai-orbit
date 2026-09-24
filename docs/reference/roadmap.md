@@ -4,10 +4,11 @@ Planned features and improvements for Laravel AI Orbit.
 
 ## Versioning Plan
 
-The Laravel AI SDK is pre-1.0 and may continue to change its schema before reaching a stable version. Orbit's versioning plan reflects that:
+The Laravel AI SDK reached stable 1.0, and Orbit's versioning reflects that:
 
-- **Orbit 1.x (current)** — While the SDK is pre-1.0, Orbit ships additive changes only. SDK schema and API changes are absorbed internally in minor releases; nothing in Orbit 1.x will break.
-- **Orbit 2.0** — Planned for the SDK's stable 1.0 era. It will remove the deprecated `user_id` column from `orbit_ai_runs` (deprecated in 1.3, still written for backward compatibility) and align Orbit's own schema with the SDK's stable participant model. The breaking change will be documented in the [upgrade guide](/getting-started/upgrading).
+- **Orbit 2.x (current)** — Targets the SDK's stable `^1.0` line. Breaking schema changes are documented as hand-written upgrade migrations (matching the SDK's own convention); the package ships create migrations only. The deprecated `user_id` column was removed from `orbit_ai_runs` in 2.0.0.
+- **Orbit 1.x (maintenance)** — For apps still on SDK 0.10/0.11 (`^1.3`) or older (down to 0.6 on `^1.2`). Additive only.
+- **Cache-rate pricing** — SDK 1.0's `inputTokens` includes cached and cache-written tokens; the pricing matrix currently bills them at the base rate. Fine-grained `uncachedInputTokens()` / `cacheReadInputTokens` / `cacheWriteInputTokens` pricing is planned.
 
 ## Short Term
 

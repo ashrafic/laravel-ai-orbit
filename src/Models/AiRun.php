@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $provider
  * @property string|null $model
  * @property string|null $agent_class
- * @property string|null $user_id Deprecated: kept for backward compatibility, will be removed in 2.0. Prefer participant_type/participant_id.
  * @property string|null $participant_type
  * @property int|null $participant_id
  * @property string|null $conversation_id
@@ -41,7 +40,6 @@ class AiRun extends Model
         'provider',
         'model',
         'agent_class',
-        'user_id',
         'participant_type',
         'participant_id',
         'conversation_id',

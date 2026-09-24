@@ -106,7 +106,7 @@ Toggle the bookmark star directly from the message timeline view. The bookmark s
 
 ### Approval Badge
 
-For agents using the SDK's human-in-the-loop tool approval (SDK 0.11+), messages paused while awaiting a tool decision show an **"Awaiting tool approval"** badge. Orbit reads the SDK's `approval_state` column on the message — no configuration needed.
+For agents using the SDK's human-in-the-loop tool approval, messages paused while awaiting a tool decision show an **"Awaiting tool approval"** badge. Orbit reads the message's `status` column (`paused` in SDK 1.0) and the pending call's `approval_reason` — no configuration needed. Failed turns (stored by SDK 1.0 with `status = failed`) show a **"Failed turn"** badge with the error message from the message's `meta.error`.
 
 ## How It Works
 

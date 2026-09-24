@@ -85,8 +85,8 @@ class BudgetMonitor
 
         $cost = $this->costCalculator->calculate(
             $model,
-            (int) ($usage['prompt_tokens'] ?? 0),
-            (int) ($usage['completion_tokens'] ?? 0),
+            (int) ($usage['prompt_tokens'] ?? $usage['input_tokens'] ?? 0),
+            (int) ($usage['completion_tokens'] ?? $usage['output_tokens'] ?? 0),
             $this->providerFor($event),
         );
 
@@ -184,8 +184,8 @@ class BudgetMonitor
             ->where('created_at', '>=', $this->periodStart($period))
             ->selectRaw("{$provider} as provider")
             ->selectRaw("{$model} as model")
-            ->addSelect($this->jsonSum('usage', 'prompt_tokens', 'input_tokens'))
-            ->addSelect($this->jsonSum('usage', 'completion_tokens', 'output_tokens'))
+            ->addSelect($this->jsonSumEither('usage', ['prompt_tokens', 'input_tokens'], 'input_tokens'))
+            ->addSelect($this->jsonSumEither('usage', ['completion_tokens', 'output_tokens'], 'output_tokens'))
             ->groupByRaw($provider)
             ->groupByRaw($model)
             ->get();

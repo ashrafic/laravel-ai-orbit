@@ -87,7 +87,7 @@ class ExportService
     public function toCsv(array $conversationIds): string
     {
         $rows = [];
-        $rows[] = implode(',', ['ID', 'Title', 'Agent', 'User', 'Created At', 'Tokens Input', 'Tokens Output']);
+        $rows[] = implode(',', ['ID', 'Title', 'Agent', 'Participant', 'Created At', 'Tokens Input', 'Tokens Output']);
 
         foreach ($conversationIds as $id) {
             $conv = $this->repository->find((string) $id);

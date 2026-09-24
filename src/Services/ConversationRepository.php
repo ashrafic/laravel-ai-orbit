@@ -46,10 +46,10 @@ class ConversationRepository
 
             if ($this->hasColumn('agent_conversation_messages', 'usage')) {
                 $query->addSelect(
-                    $this->jsonSum('agent_conversation_messages.usage', 'prompt_tokens', 'total_input_tokens')
+                    $this->jsonSumEither('agent_conversation_messages.usage', ['prompt_tokens', 'input_tokens'], 'total_input_tokens')
                 );
                 $query->addSelect(
-                    $this->jsonSum('agent_conversation_messages.usage', 'completion_tokens', 'total_output_tokens')
+                    $this->jsonSumEither('agent_conversation_messages.usage', ['completion_tokens', 'output_tokens'], 'total_output_tokens')
                 );
             }
 
@@ -127,12 +127,12 @@ class ConversationRepository
             $selectColumns[] = 'agent';
         }
 
-        if ($this->hasColumn('agent_conversation_messages', 'tool_calls')) {
-            $selectColumns[] = 'tool_calls';
+        if ($this->hasColumn('agent_conversation_messages', 'steps')) {
+            $selectColumns[] = 'steps';
         }
 
-        if ($this->hasColumn('agent_conversation_messages', 'tool_results')) {
-            $selectColumns[] = 'tool_results';
+        if ($this->hasColumn('agent_conversation_messages', 'status')) {
+            $selectColumns[] = 'status';
         }
 
         if ($this->hasColumn('agent_conversation_messages', 'usage')) {
@@ -145,10 +145,6 @@ class ConversationRepository
 
         if ($this->hasColumn('agent_conversation_messages', 'meta')) {
             $selectColumns[] = 'meta';
-        }
-
-        if ($this->hasColumn('agent_conversation_messages', 'approval_state')) {
-            $selectColumns[] = 'approval_state';
         }
 
         return $this->connection()->table('agent_conversation_messages')

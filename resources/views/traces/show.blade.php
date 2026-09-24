@@ -129,40 +129,54 @@
                                 </div>
                             @endif
 
-                            {{-- Tool calls --}}
-                            @if (!empty($message->tool_calls) && $message->tool_calls !== 'null')
-                                @php $toolCalls = json_decode($message->tool_calls, true) ?? []; @endphp
-                                @foreach ($toolCalls as $callIndex => $toolCall)
-                                    <div x-data="{ open: true }" class="mt-3">
-                                        <button @click="open = !open"
-                                            class="flex items-center gap-2 text-xs font-medium text-purple-600 dark:text-purple-300 hover:text-purple-700 dark:hover:text-purple-200 transition-colors">
-                                            <svg class="w-3.5 h-3.5 transition-transform" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                            </svg>
-                                            Tool: {{ $toolCall['function']['name'] ?? $toolCall['name'] ?? "Call #{$callIndex}" }}
-                                        </button>
-                                        <div x-show="open" x-collapse class="mt-2">
-                                            <pre class="text-xs font-mono text-gray-200 bg-gray-900/80 dark:bg-black/50 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap">{{ json_encode($toolCall['function']['arguments'] ?? $toolCall['arguments'] ?? [], JSON_PRETTY_PRINT) }}</pre>
-                                        </div>
+                            {{-- Tool calls (SDK 1.0 steps) --}}
+                            @php $traceToolCalls = \Ashrafic\AiOrbit\Support\StepParser::toolCalls($message->steps ?? null); @endphp
+                            @foreach ($traceToolCalls as $callIndex => $toolCall)
+                                <div x-data="{ open: true }" class="mt-3">
+                                    <button @click="open = !open"
+                                        class="flex items-center gap-2 text-xs font-medium text-purple-600 dark:text-purple-300 hover:text-purple-700 dark:hover:text-purple-200 transition-colors">
+                                        <svg class="w-3.5 h-3.5 transition-transform" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                        Tool: {{ $toolCall['name'] }}
+                                        @if ($toolCall['pending'])
+                                            <span class="text-amber-600 dark:text-amber-400">(awaiting approval)</span>
+                                        @elseif ($toolCall['denied'])
+                                            <span class="text-gray-500 dark:text-gray-400">(denied)</span>
+                                        @elseif ($toolCall['failed'])
+                                            <span class="text-red-600 dark:text-red-400">(failed)</span>
+                                        @endif
+                                    </button>
+                                    <div x-show="open" x-collapse class="mt-2 space-y-2">
+                                        <pre class="text-xs font-mono text-gray-200 bg-gray-900/80 dark:bg-black/50 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap">{{ json_encode($toolCall['arguments'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                                        @if ($toolCall['pending'])
+                                            <p class="text-xs font-mono text-amber-600 dark:text-amber-300">{{ $toolCall['approval_reason'] }}</p>
+                                        @elseif ($toolCall['result'] !== null)
+                                            <pre class="text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-900/40 dark:bg-black/30 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap">{{ is_string($toolCall['result']) ? $toolCall['result'] : json_encode($toolCall['result'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                                        @endif
                                     </div>
-                                @endforeach
-                            @endif
+                                </div>
+                            @endforeach
 
                             {{-- Usage --}}
                             @if (!empty($message->usage) && $message->usage !== 'null')
                                 @php $usage = json_decode($message->usage, true) ?? []; @endphp
                                 @if (!empty($usage))
+                                    @php
+                                        $usageIn = $usage['input_tokens'] ?? $usage['prompt_tokens'] ?? null;
+                                        $usageOut = $usage['output_tokens'] ?? $usage['completion_tokens'] ?? null;
+                                    @endphp
                                     <div class="mt-3 flex flex-wrap gap-3 text-xs text-gray-400 dark:text-gray-500">
-                                        @if (!empty($usage['input_tokens']))
+                                        @if (!empty($usageIn))
                                             <span class="inline-flex items-center gap-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                                {{ number_format($usage['input_tokens']) }} in
+                                                {{ number_format($usageIn) }} in
                                             </span>
                                         @endif
-                                        @if (!empty($usage['output_tokens']))
+                                        @if (!empty($usageOut))
                                             <span class="inline-flex items-center gap-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 14V3L2 14h7v7l9-11H11z"/></svg>
-                                                {{ number_format($usage['output_tokens']) }} out
+                                                {{ number_format($usageOut) }} out
                                             </span>
                                         @endif
                                     </div>

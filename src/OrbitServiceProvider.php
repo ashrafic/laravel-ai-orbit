@@ -31,6 +31,8 @@ use Laravel\Ai\Events\AgentFailedOver;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\AgentStreamed;
 use Laravel\Ai\Events\AudioGenerated;
+use Laravel\Ai\Events\Classified;
+use Laravel\Ai\Events\Classifying;
 use Laravel\Ai\Events\CreatingStore;
 use Laravel\Ai\Events\EmbeddingsGenerated;
 use Laravel\Ai\Events\FileAddedToStore;
@@ -222,6 +224,7 @@ class OrbitServiceProvider extends ServiceProvider
             GeneratingTranscription::class => 'transcription',
             GeneratingEmbeddings::class => 'embeddings',
             Reranking::class => 'reranking',
+            Classifying::class => 'classification',
             StoringFile::class => 'file',
             CreatingStore::class => 'store',
             AddingFileToStore::class => 'store_file',
@@ -242,6 +245,7 @@ class OrbitServiceProvider extends ServiceProvider
             TranscriptionGenerated::class => 'transcription',
             EmbeddingsGenerated::class => 'embeddings',
             Reranked::class => 'reranking',
+            Classified::class => 'classification',
             FileStored::class => 'file',
             FileDeleted::class => 'file',
             StoreCreated::class => 'store',
