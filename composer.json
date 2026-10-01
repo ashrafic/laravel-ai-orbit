@@ -29,12 +29,12 @@
         "php": "^8.3",
         "illuminate/support": "^12.0|^13.0",
         "laravel/ai": "^1.0",
-        "livewire/livewire": "^4.0"
+        "livewire/livewire": "^4.4"
     },
     "require-dev": {
-        "larastan/larastan": "^3.0",
-        "laravel/pint": "^1.0",
-        "orchestra/testbench": "^10.0|^11.0",
+        "larastan/larastan": "^3.12",
+        "laravel/pint": "^1.32",
+        "orchestra/testbench": "^11.3.0",
         "pestphp/pest": "^3.0"
     },
     "autoload": {
